@@ -1,4 +1,4 @@
-# nice-grpc
+# nice-grpc [![npm version][npm-image]][npm-url]
 
 A Node.js gRPC library that is nice to you. Built on top of
 [`grpc-js`](https://www.npmjs.com/package/@grpc/grpc-js).
@@ -863,3 +863,6 @@ await client.exampleUnaryMethod(new ExampleRequest(), {
   timeout: '15s',
 });
 ```
+
+[npm-image]: https://badge.fury.io/js/nice-grpc.svg
+[npm-url]: https://badge.fury.io/js/nice-grpc
