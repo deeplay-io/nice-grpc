@@ -17,7 +17,7 @@
     "!src/**/__tests__"
   ],
   "scripts": {
-    "clean": "rimraf lib es",
+    "clean": "rimraf lib",
     "test": "jest",
     "build": "tsc -P tsconfig.build.json",
     "prepublishOnly": "npm test && npm run clean && npm run build",
