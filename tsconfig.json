@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "lib",
+    "sourceMap": true,
+    "declaration": true,
+    "stripInternal": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true
+  },
+  "files": ["src/index.ts"],
+  "include": ["src/**/*.test.ts", "src/**/__tests__/**/*.ts", "test.ts"]
+}
