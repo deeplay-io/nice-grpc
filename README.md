@@ -41,14 +41,15 @@ A Node.js gRPC library that is nice to you. Built on top of
 
 - Written in TypeScript for TypeScript.
 - Modern API that uses Promises and Async Iterables for streaming.
-- Canceling client and server calls using
+- Cancelling client and server calls using
   [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal).
-- Client and server middleware via concise API that uses Async Generators.
+- Client and server middleware support via concise API that uses Async
+  Generators.
 
 ## Installation
 
 ```
-npm install nice-grpc google-protobuf
+npm install nice-grpc google-protobuf @grpc/grpc-js
 npm install --save-dev @types/google-protobuf
 ```
 
@@ -813,7 +814,8 @@ async function* loggingMiddleware<Request, Response>(
 
 ##### Example: Timeouts
 
-Support specifying timeouts for unary calls instead of absolute deadlines:
+Add support for specifying timeouts for unary calls instead of absolute
+deadlines:
 
 ```ts
 import ms = require('ms');
