@@ -392,6 +392,8 @@ In the above example, `Service1` gets `middlewareA` and `middlewareB`, and
 Log all calls:
 
 ```ts
+import {isAbortError} from 'abort-controller-x';
+
 async function* loggingMiddleware<Request, Response>(
   call: ServerMiddlewareCall<Request, Response>,
   context: CallContext,
@@ -409,6 +411,8 @@ async function* loggingMiddleware<Request, Response>(
   } catch (error) {
     if (error instanceof ServerError) {
       console.log('Server call', path, `end: ${status[error.code]}`);
+    } else if (isAbortError(error)) {
+      console.log('Server call', path, 'cancel');
     } else {
       console.log('Server call', path, `error: ${error?.stack}`);
     }
@@ -423,6 +427,8 @@ async function* loggingMiddleware<Request, Response>(
 Catch unknown errors and wrap them into `ServerError`s with friendly messages:
 
 ```ts
+import {isAbortError} from 'abort-controller-x';
+
 async function* errorHandlingMiddleware<Request, Response>(
   call: ServerMiddlewareCall<Request, Response>,
   context: CallContext,
@@ -430,7 +436,7 @@ async function* errorHandlingMiddleware<Request, Response>(
   try {
     return yield* call.next(call.request, context);
   } catch (error: unknown) {
-    if (error instanceof ServerError) {
+    if (error instanceof ServerError || isAbortError(error)) {
       throw error;
     }
 
@@ -785,6 +791,7 @@ Log all calls:
 
 ```ts
 import {ClientMiddlewareCall, CallOptions, ClientError} from 'nice-grpc';
+import {isAbortError} from 'abort-controller-x';
 
 async function* loggingMiddleware<Request, Response>(
   call: ClientMiddlewareCall<Request, Response>,
@@ -803,6 +810,8 @@ async function* loggingMiddleware<Request, Response>(
   } catch (error) {
     if (error instanceof ClientError) {
       console.log('Client call', path, `end: ${status[error.code]}`);
+    } else if (isAbortError(error)) {
+      console.log('Client call', path, 'cancel');
     } else {
       console.log('Client call', path, `error: ${error?.stack}`);
     }
