@@ -1,8 +1,10 @@
 import {Metadata, status, StatusObject} from '@grpc/grpc-js';
+import {isAbortError} from 'abort-controller-x';
 import {ServerError} from './ServerError';
 
 /** @internal */
 export function createErrorStatusObject(
+  path: string,
   error: unknown,
   trailer: Metadata,
 ): StatusObject {
@@ -12,8 +14,19 @@ export function createErrorStatusObject(
       details: error.details,
       metadata: trailer,
     };
+  } else if (isAbortError(error)) {
+    return {
+      code: status.CANCELLED,
+      details: 'The operation was cancelled',
+      metadata: trailer,
+    };
   } else {
-    // TODO: warning
+    process.emitWarning(
+      `${path}: Uncaught error in server implementation method: ${
+        error instanceof Error ? error.stack : error
+      }`,
+    );
+
     return {
       code: status.UNKNOWN,
       details: 'Unknown server error occurred',

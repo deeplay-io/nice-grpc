@@ -73,7 +73,13 @@ export function createServerStreamingMethodHandler<Request, Response>(
           call.end(context.trailer);
         },
         err => {
-          call.destroy(createErrorStatusObject(err, context.trailer) as any);
+          call.destroy(
+            createErrorStatusObject(
+              definition.path,
+              err,
+              context.trailer,
+            ) as any,
+          );
         },
       );
   };

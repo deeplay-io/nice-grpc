@@ -69,7 +69,9 @@ export function createClientStreamingMethodHandler<Request, Response>(
           callback(null, res, context.trailer);
         },
         err => {
-          callback(createErrorStatusObject(err, context.trailer));
+          callback(
+            createErrorStatusObject(definition.path, err, context.trailer),
+          );
         },
       );
   };

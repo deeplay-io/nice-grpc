@@ -11,10 +11,7 @@ export function createUnaryMethodHandler<Request, Response>(
   implementation: UnaryMethodImplementation<Request, Response>,
   middleware?: ServerMiddleware,
 ): handleUnaryCall<Request, Response> {
-  async function* unaryMethodHandler(
-    request: Request,
-    context: CallContext,
-  ) {
+  async function* unaryMethodHandler(request: Request, context: CallContext) {
     if (isAsyncIterable(request)) {
       throw new Error(
         'A middleware passed invalid request to next(): expected a single message for unary method',
@@ -68,7 +65,9 @@ export function createUnaryMethodHandler<Request, Response>(
           callback(null, res, context.trailer);
         },
         err => {
-          callback(createErrorStatusObject(err, context.trailer));
+          callback(
+            createErrorStatusObject(definition.path, err, context.trailer),
+          );
         },
       );
   };
