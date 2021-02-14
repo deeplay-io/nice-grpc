@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A gRPC library that is nice to you",
   "keywords": [
     "grpc",
