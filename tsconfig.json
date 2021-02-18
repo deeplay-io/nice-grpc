@@ -12,5 +12,5 @@
     "noUnusedLocals": true
   },
   "files": ["src/index.ts"],
-  "include": ["src/**/*.test.ts", "src/**/__tests__/**/*.ts", "test.ts"]
+  "include": ["src/**/*.test.ts", "src/**/__tests__/**/*.ts"]
 }
