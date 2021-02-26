@@ -476,7 +476,7 @@ async function* authMiddleware<Request, Response>(
   const authorization = context.metadata.get('Authorization')[0];
 
   if (authorization == null) {
-    throw new ServiceError(
+    throw new ServerError(
       grpc.status.UNAUTHENTICATED,
       'Missing Authorization metadata',
     );
@@ -485,7 +485,7 @@ async function* authMiddleware<Request, Response>(
   const parts = authorization.toString().split(' ');
 
   if (parts.length !== 2 || parts[0] !== 'Bearer') {
-    throw new ServiceError(
+    throw new ServerError(
       grpc.status.UNAUTHENTICATED,
       'Invalid Authorization metadata format. Expected "Bearer <token>"',
     );
@@ -495,7 +495,7 @@ async function* authMiddleware<Request, Response>(
 
   const {payload} = await jwtVerify(token, jwks).catch(error => {
     if (error instanceof JOSEError) {
-      throw new ServiceError(grpc.status.UNAUTHENTICATED, error.message);
+      throw new ServerError(grpc.status.UNAUTHENTICATED, error.message);
     } else {
       throw error;
     }
