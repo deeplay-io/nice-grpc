@@ -157,6 +157,9 @@ To report an error to a client, use `ServerError`.
 > error with status code `UNKNOWN`. Use server middleware for custom handling of
 > uncaught errors.
 
+See [gRPC docs](https://grpc.github.io/grpc/core/md_doc_statuscodes.html) for
+the correct usage of status codes.
+
 ```ts
 import {status} from '@grpc/grpc-js';
 import {ServerError} from 'nice-grpc';
