@@ -11,6 +11,8 @@ on:
 
 jobs:
   build:
+    name: Test and Build
+
     runs-on: ubuntu-latest
 
     strategy:
@@ -26,5 +28,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn
+      - run: yarn --frozen-lockfile
       - run: yarn test
+      - run: yarn build
