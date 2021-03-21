@@ -6,17 +6,18 @@ export function createChannel(
   credentials?: ChannelCredentials,
   options: ChannelOptions = {},
 ): Channel {
-  const parts = address.split(/:\/\/(.*)/);
+  const match = /^(?:([^:]+):\/\/)?(.*?)(?::(\d+))?$/.exec(address);
 
-  let protocol: string;
-  let host: string;
-
-  if (parts.length === 1) {
-    protocol = 'http';
-    host = address;
-  } else {
-    [protocol, host] = parts;
+  if (match == null) {
+    throw new Error(`Invalid address: '${address}'`);
   }
+
+  const [
+    ,
+    protocol = 'http',
+    host,
+    port = protocol === 'http' ? '80' : '443',
+  ] = match;
 
   if (protocol === 'http') {
     credentials ??= ChannelCredentials.createInsecure();
@@ -28,7 +29,7 @@ export function createChannel(
     );
   }
 
-  return new Channel(host, credentials, options);
+  return new Channel(`${host}:${port}`, credentials, options);
 }
 
 export async function waitForChannelReady(

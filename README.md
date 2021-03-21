@@ -600,6 +600,9 @@ createChannel('https://example.com:8080');
 createChannel('example.com:8080', ChannelCredentials.createSsl());
 ```
 
+If port is omitted, it defaults to `80` for insecure connections, and `443` for
+secure connections.
+
 #### Metadata
 
 Client can send request metadata and receive response headers and trailers:

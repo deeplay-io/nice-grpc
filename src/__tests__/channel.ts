@@ -30,6 +30,18 @@ test('http', async () => {
   await server.shutdown();
 });
 
+test('default port', async () => {
+  const channel = createChannel('http://localhost');
+  expect(channel.getTarget()).toMatchInlineSnapshot(`"dns:localhost:80"`);
+  channel.close();
+
+  const secureChannel = createChannel('https://localhost');
+  expect(secureChannel.getTarget()).toMatchInlineSnapshot(
+    `"dns:localhost:443"`,
+  );
+  secureChannel.close();
+});
+
 test('invalid protocol', () => {
   expect(() =>
     createChannel('htttp://localhost:123'),
