@@ -21,6 +21,7 @@ A Node.js gRPC library that is nice to you. Built on top of
       - [Example: Logging](#example-logging)
       - [Example: Error handling](#example-error-handling)
       - [Example: Authentication](#example-authentication)
+    - [Server Reflection](#server-reflection)
   - [Client](#client)
     - [Channels](#channels)
     - [Metadata](#metadata-1)
@@ -70,8 +71,6 @@ definitions into directory `./compiled_proto`:
 
 ```
 ./node_modules/.bin/grpc_tools_node_protoc \
-  --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts \
-  --plugin=protoc-gen-grpc=./node_modules/.bin/grpc_tools_node_protoc_plugin \
   --js_out=import_style=commonjs,binary:./compiled_proto \
   --ts_out=grpc_js:./compiled_proto \
   --grpc_out=grpc_js:./compiled_proto \
@@ -528,6 +527,11 @@ const exampleServiceImpl: ServiceImplementation<
   },
 };
 ```
+
+#### Server Reflection
+
+See
+[deeplay-io/nice-grpc-server-reflection](https://github.com/deeplay-io/nice-grpc-server-reflection).
 
 ### Client
 
