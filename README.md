@@ -9,6 +9,8 @@ A Node.js gRPC library that is nice to you. Built on top of
 - [Installation](#installation)
 - [Usage](#usage)
   - [Compiling Protobuf files](#compiling-protobuf-files)
+    - [Using `ts-proto`](#using-ts-proto)
+    - [Using `google-protobuf`](#using-google-protobuf)
   - [Server](#server)
     - [Errors](#errors)
     - [Metadata](#metadata)
@@ -50,20 +52,42 @@ A Node.js gRPC library that is nice to you. Built on top of
 ## Installation
 
 ```
-npm install nice-grpc google-protobuf @grpc/grpc-js
-npm install --save-dev @types/google-protobuf
+npm install nice-grpc @grpc/grpc-js
 ```
 
 ## Usage
 
 ### Compiling Protobuf files
 
-This works the same way as you would do for `grpc-js`.
+The recommended way is to use
+[`ts-proto`](https://github.com/stephenh/ts-proto).
+
+#### Using `ts-proto`
 
 Install necessary tools:
 
 ```
-npm install --save-dev grpc-tools grpc_tools_node_protoc_ts
+npm install protobufjs long
+npm install --save-dev grpc-tools ts-proto
+```
+
+Given a Protobuf file `./proto/example.proto`, generate TypeScript code into
+directory `./compiled_proto`:
+
+```
+./node_modules/.bin/grpc_tools_node_protoc \
+  --ts_proto_out=./compiled_proto \
+  --ts_proto_opt=outputServices=grpc-js \
+  ./proto/example.proto
+```
+
+#### Using `google-protobuf`
+
+Install necessary tools:
+
+```
+npm install google-protobuf
+npm install --save-dev grpc-tools grpc_tools_node_protoc_ts @types/google-protobuf
 ```
 
 Given a Protobuf file `./proto/example.proto`, generate JS code and TypeScript
@@ -76,9 +100,6 @@ definitions into directory `./compiled_proto`:
   --grpc_out=grpc_js:./compiled_proto \
   ./proto/example.proto
 ```
-
-Alternative methods include [Buf](https://github.com/bufbuild/buf) and
-[Prototool](https://github.com/uber/prototool).
 
 ### Server
 
