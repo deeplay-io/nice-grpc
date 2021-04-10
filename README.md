@@ -602,7 +602,7 @@ const response: ExampleResponse = await client.exampleUnaryMethod(
 Once we've done with the client, close the channel:
 
 ```ts
-client.close();
+channel.close();
 ```
 
 #### Channels
