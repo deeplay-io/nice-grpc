@@ -5,9 +5,9 @@ import {
   MethodDefinition,
 } from '@grpc/grpc-js';
 import {isAbortError, throwIfAborted, waitForEvent} from 'abort-controller-x';
-import AbortController from 'node-abort-controller';
+import AbortController, {AbortSignal} from 'node-abort-controller';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
-import { patchClientWritableStream } from '../utils/patchClientWritableStream';
+import {patchClientWritableStream} from '../utils/patchClientWritableStream';
 import {readableToAsyncIterable} from '../utils/readableToAsyncIterable';
 import {CallOptions} from './CallOptions';
 import {BidiStreamingClientMethod} from './Client';

@@ -631,12 +631,12 @@ abbrev@1:
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
   integrity sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==
 
-abort-controller-x@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/abort-controller-x/-/abort-controller-x-0.2.0.tgz#462ea0871643a766d0dea1ed329f1fcdda466663"
-  integrity sha512-eDPMKYtheP+5NjD1TMDOLuQ2jyYWEWLnhYeBKYw4Q+/mQ7e4xwM5pXWTuFer1Axpuk1PoSOojKqsFmUhl1iG+A==
+abort-controller-x@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/abort-controller-x/-/abort-controller-x-0.2.4.tgz#9ac58a24685825a6fd0ccbee8ef14b0e46b8d66b"
+  integrity sha512-Hv1QoLAsSBx15omKbuH+sTVTwJX9Z5iYeXb6OFTcrKH6n0SsBHxHsns1KVFyKFz97dW/SsbyI+M/O/un6zzjPA==
   dependencies:
-    node-abort-controller "^1.1.0"
+    node-abort-controller "^1.2.1"
 
 abort-controller@^3.0.0:
   version "3.0.0"
@@ -3463,10 +3463,10 @@ nice-try@^1.0.4:
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
 
-node-abort-controller@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/node-abort-controller/-/node-abort-controller-1.1.0.tgz#8a734a631b022af29963be7245c1483cbb9e070d"
-  integrity sha512-dEYmUqjtbivotqjraOe8UvhT/poFfog1BQRNsZm/MSEDDESk2cQ1tvD8kGyuN07TM/zoW+n42odL8zTeJupYdQ==
+node-abort-controller@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/node-abort-controller/-/node-abort-controller-1.2.1.tgz#1eddb57eb8fea734198b11b28857596dc6165708"
+  integrity sha512-79PYeJuj6S9+yOHirR0JBLFOgjB6sQCir10uN6xRx25iD+ZD4ULqgRn3MwWBRaQGB0vEgReJzWwJo42T1R6YbQ==
 
 node-fetch@^2.3.0:
   version "2.6.1"

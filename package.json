@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.2.6",
-    "abort-controller-x": "^0.2.0",
-    "node-abort-controller": "^1.1.0"
+    "abort-controller-x": "^0.2.4",
+    "node-abort-controller": "^1.2.1"
   }
 }

@@ -1,6 +1,6 @@
 import {Metadata} from '@grpc/grpc-js';
 import {ServerSurfaceCall} from '@grpc/grpc-js/build/src/server-call';
-import AbortController from 'node-abort-controller';
+import AbortController, {AbortSignal} from 'node-abort-controller';
 
 /**
  * Call context passed to server methods.

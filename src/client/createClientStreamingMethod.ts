@@ -10,9 +10,9 @@ import {
   throwIfAborted,
   waitForEvent,
 } from 'abort-controller-x';
-import AbortController from 'node-abort-controller';
+import AbortController, {AbortSignal} from 'node-abort-controller';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
-import { patchClientWritableStream } from '../utils/patchClientWritableStream'
+import {patchClientWritableStream} from '../utils/patchClientWritableStream';
 import {CallOptions} from './CallOptions';
 import {ClientStreamingClientMethod} from './Client';
 import {wrapClientError} from './ClientError';
