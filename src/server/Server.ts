@@ -26,7 +26,14 @@ export type Server<CallContextExt = {}> = {
     implementation: ServiceImplementation<Service, CallContextExt>,
   ): void;
 
-  listen(address: string, credentials?: ServerCredentials): Promise<void>;
+  /**
+   * Start listening on given 'host:port'.
+   * 
+   * Use 'localhost:0' to bind to a random port.
+   * 
+   * Returns port that the server is bound to.  
+   */
+  listen(address: string, credentials?: ServerCredentials): Promise<number>;
 
   shutdown(): Promise<void>;
   forceShutdown(): void;
@@ -156,21 +163,23 @@ function createServerWithMiddleware<CallContextExt = {}>(
         server.addService(definition, grpcImplementation);
       }
 
-      await new Promise<void>((resolve, reject) => {
+      const port = await new Promise<number>((resolve, reject) => {
         server!.bindAsync(
           address,
           credentials ?? ServerCredentials.createInsecure(),
-          err => {
+          (err, port) => {
             if (err != null) {
               reject(err);
             } else {
-              resolve();
+              resolve(port);
             }
           },
         );
       });
 
       server.start();
+
+      return port;
     },
 
     async shutdown() {
