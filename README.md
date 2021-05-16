@@ -126,14 +126,17 @@ After compiling Protobuf file, we can write service implementation:
 
 ```ts
 import {ServiceImplementation} from 'nice-grpc';
-import {IExampleService} from './compiled_proto/example_grpc_pb';
-import {ExampleRequest, ExampleResponse} from './compiled_proto/example_pb';
+import {
+  ExampleService,
+  ExampleRequest,
+  ExampleResponse,
+} from './compiled_proto/example';
 
-const exampleServiceImpl: ServiceImplementation<IExampleService> = {
+const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
   async exampleUnaryMethod(request: ExampleRequest): Promise<ExampleResponse> {
     // ... method logic
 
-    return new ExampleResponse();
+    return ExampleResponse.fromPartial({});
   },
 };
 ```
@@ -141,11 +144,12 @@ const exampleServiceImpl: ServiceImplementation<IExampleService> = {
 Alternatively, you can use classes:
 
 ```ts
-class ExampleServiceImpl implements ServiceImplementation<IExampleService> {
+class ExampleServiceImpl
+  implements ServiceImplementation<typeof ExampleService> {
   async exampleUnaryMethod(request: ExampleRequest): Promise<ExampleResponse> {
     // ... method logic
 
-    return new ExampleResponse();
+    return ExampleResponse.fromPartial({});
   }
 }
 ```
@@ -154,7 +158,7 @@ Now we can create and start a server that exposes our service:
 
 ```ts
 import {createServer} from 'nice-grpc';
-import {ExampleService} from './compiled_proto/example_grpc_pb';
+import {ExampleService} from './compiled_proto/example';
 
 const server = createServer();
 
@@ -184,7 +188,7 @@ the correct usage of status codes.
 import {status} from '@grpc/grpc-js';
 import {ServerError} from 'nice-grpc';
 
-const exampleServiceImpl: ServiceImplementation<IExampleService> = {
+const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
   async exampleUnaryMethod(request: ExampleRequest): Promise<ExampleResponse> {
     // ... method logic
 
@@ -199,7 +203,7 @@ A server receives client metadata along with request, and can send response
 metadata in header and trailer.
 
 ```ts
-const exampleServiceImpl: ServiceImplementation<IExampleService> = {
+const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
   async exampleUnaryMethod(
     request: ExampleRequest,
     context: CallContext,
@@ -215,7 +219,7 @@ const exampleServiceImpl: ServiceImplementation<IExampleService> = {
     // add metadata to trailer
     context.trailer.set('some-key', 'some-value');
 
-    return new ExampleResponse();
+    return ExampleResponse.fromPartial({});
   },
 };
 ```
@@ -230,7 +234,7 @@ deadline. You can use it to cancel any inner requests.
 ```ts
 import fetch from 'node-fetch';
 
-const exampleServiceImpl: ServiceImplementation<IExampleService> = {
+const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
   async exampleUnaryMethod(
     request: ExampleRequest,
     context: CallContext,
@@ -260,7 +264,7 @@ Service implementation defines this method as an Async Generator:
 ```ts
 import {delay} from 'abort-controller-x';
 
-const exampleServiceImpl: ServiceImplementation<IExampleService> = {
+const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
   async *exampleStreamingMethod(
     request: ExampleRequest,
     context: CallContext,
@@ -268,7 +272,7 @@ const exampleServiceImpl: ServiceImplementation<IExampleService> = {
     for (let i = 0; i < 10; i++) {
       await delay(context.signal, 1000);
 
-      yield new ExampleResponse();
+      yield ExampleResponse.fromPartial({});
     }
   },
 };
@@ -280,14 +284,14 @@ const exampleServiceImpl: ServiceImplementation<IExampleService> = {
 import {range} from 'ix/asynciterable';
 import {withAbort, map} from 'ix/asynciterable/operators';
 
-const exampleServiceImpl: ServiceImplementation<IExampleService> = {
+const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
   async *exampleStreamingMethod(
     request: ExampleRequest,
     context: CallContext,
   ): AsyncIterable<ExampleResponse> {
     yield* range(0, 10).pipe(
       withAbort(context.signal),
-      map(() => new ExampleResponse()),
+      map(() => ExampleResponse.fromPartial({})),
     );
   },
 };
@@ -300,7 +304,7 @@ import {Observable} from 'rxjs';
 import {from} from 'ix/asynciterable';
 import {withAbort} from 'ix/asynciterable/operators';
 
-const exampleServiceImpl: ServiceImplementation<IExampleService> = {
+const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
   async *exampleStreamingMethod(
     request: ExampleRequest,
     context: CallContext,
@@ -326,7 +330,7 @@ service ExampleService {
 Service implementation method receives request as an Async Iterable:
 
 ```ts
-const exampleServiceImpl: ServiceImplementation<IExampleService> = {
+const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
   async exampleUnaryMethod(
     request: AsyncIterable<ExampleRequest>,
   ): Promise<ExampleResponse> {
@@ -334,7 +338,7 @@ const exampleServiceImpl: ServiceImplementation<IExampleService> = {
       // ...
     }
 
-    return new ExampleResponse();
+    return ExampleResponse.fromPartial({});
   },
 };
 ```
@@ -535,7 +539,7 @@ Service implementation can then access JWT claims via call context:
 
 ```ts
 const exampleServiceImpl: ServiceImplementation<
-  IExampleService,
+  typeof ExampleService,
   AuthCallContextExt
 > = {
   async exampleUnaryMethod(
@@ -579,7 +583,7 @@ After compiling Protobuf file, we can create the client:
 
 ```ts
 import {createChannel, createClient} from 'nice-grpc';
-import {ExampleService} from './compiled_proto/example_grpc_pb';
+import {ExampleService} from './compiled_proto/example';
 
 const channel = createChannel('localhost:8080');
 
@@ -592,10 +596,10 @@ per-method. See [Example: Timeouts](#example-timeouts).
 Call the method:
 
 ```ts
-import {ExampleRequest, ExampleResponse} from './compiled_proto/example_pb';
+import {ExampleRequest, ExampleResponse} from './compiled_proto/example';
 
 const response: ExampleResponse = await client.exampleUnaryMethod(
-  new ExampleRequest(),
+  ExampleRequest.fromPartial({}),
 );
 ```
 
@@ -638,15 +642,18 @@ import {Metadata} from '@grpc/grpc-js';
 const metadata = new Metadata();
 metadata.set('key', 'value');
 
-const response = await client.exampleUnaryMethod(new ExampleRequest(), {
-  metadata,
-  onHeader(header: Metadata) {
-    // ...
+const response = await client.exampleUnaryMethod(
+  ExampleRequest.fromPartial({}),
+  {
+    metadata,
+    onHeader(header: Metadata) {
+      // ...
+    },
+    onTrailer(trailer: Metadata) {
+      // ...
+    },
   },
-  onTrailer(trailer: Metadata) {
-    // ...
-  },
-});
+);
 ```
 
 #### Errors
@@ -661,7 +668,7 @@ import {ClientError} from 'nice-grpc';
 let response: ExampleResponse | null;
 
 try {
-  response = await client.exampleUnaryMethod(new ExampleRequest());
+  response = await client.exampleUnaryMethod(ExampleRequest.fromPartial({}));
 } catch (error: unknown) {
   if (error instanceof ClientError && error.code === status.NOT_FOUND) {
     response = null;
@@ -683,7 +690,7 @@ import {isAbortError} from 'abort-controller-x';
 const abortController = new AbortController();
 
 client
-  .exampleUnaryMethod(new ExampleRequest(), {
+  .exampleUnaryMethod(ExampleRequest.fromPartial({}), {
     signal: abortController.signal,
   })
   .catch(error => {
@@ -707,9 +714,12 @@ import {ClientError} from 'nice-grpc';
 import {addSeconds} from 'date-fns';
 
 try {
-  const response = await client.exampleUnaryMethod(new ExampleRequest(), {
-    deadline: addSeconds(new Date(), 15),
-  });
+  const response = await client.exampleUnaryMethod(
+    ExampleRequest.fromPartial({}),
+    {
+      deadline: addSeconds(new Date(), 15),
+    },
+  );
 } catch (error: unknown) {
   if (error instanceof ClientError && error.code === status.DEADLINE_EXCEEDED) {
     // timed out
@@ -734,7 +744,7 @@ Client method returns an Async Iterable:
 
 ```ts
 for await (const response of client.exampleStreamingMethod(
-  new ExampleRequest(),
+  ExampleRequest.fromPartial({}),
 )) {
   // ...
 }
@@ -756,7 +766,7 @@ Client method expects an Async Iterable as its first argument:
 ```ts
 async function* createRequest(): AsyncIterable<ExampleRequest> {
   for (let i = 0; i < 10; i++) {
-    yield new ExampleRequest();
+    yield ExampleRequest.fromPartial({});
   }
 }
 
@@ -901,7 +911,7 @@ const client = createClientFactory()
 Specify call options per-call:
 
 ```ts
-await client.exampleUnaryMethod(new ExampleRequest(), {
+await client.exampleUnaryMethod(ExampleRequest.fromPartial({}), {
   timeout: '15s',
 });
 ```
