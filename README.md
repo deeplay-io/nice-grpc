@@ -419,6 +419,7 @@ In the above example, `Service1` gets `middlewareA` and `middlewareB`, and
 Log all calls:
 
 ```ts
+import {status} from '@grpc/grpc-js';
 import {isAbortError} from 'abort-controller-x';
 
 async function* loggingMiddleware<Request, Response>(
@@ -454,6 +455,7 @@ async function* loggingMiddleware<Request, Response>(
 Catch unknown errors and wrap them into `ServerError`s with friendly messages:
 
 ```ts
+import {status} from '@grpc/grpc-js';
 import {isAbortError} from 'abort-controller-x';
 
 async function* errorHandlingMiddleware<Request, Response>(
@@ -484,6 +486,7 @@ Validate JSON Web Token (JWT) from request metadata and put its claims to
 `CallContext`:
 
 ```ts
+import {status} from '@grpc/grpc-js';
 import createRemoteJWKSet from 'jose/jwks/remote';
 import jwtVerify, {JWTPayload} from 'jose/jwt/verify';
 import {JOSEError} from 'jose/util/errors';
@@ -504,7 +507,7 @@ async function* authMiddleware<Request, Response>(
 
   if (authorization == null) {
     throw new ServerError(
-      grpc.status.UNAUTHENTICATED,
+      status.UNAUTHENTICATED,
       'Missing Authorization metadata',
     );
   }
@@ -513,7 +516,7 @@ async function* authMiddleware<Request, Response>(
 
   if (parts.length !== 2 || parts[0] !== 'Bearer') {
     throw new ServerError(
-      grpc.status.UNAUTHENTICATED,
+      status.UNAUTHENTICATED,
       'Invalid Authorization metadata format. Expected "Bearer <token>"',
     );
   }
@@ -522,7 +525,7 @@ async function* authMiddleware<Request, Response>(
 
   const {payload} = await jwtVerify(token, jwks).catch(error => {
     if (error instanceof JOSEError) {
-      throw new ServerError(grpc.status.UNAUTHENTICATED, error.message);
+      throw new ServerError(status.UNAUTHENTICATED, error.message);
     } else {
       throw error;
     }
@@ -831,6 +834,7 @@ and `Service2` client gets `middlewareA` and `middlewareC`.
 Log all calls:
 
 ```ts
+import {status} from '@grpc/grpc-js';
 import {ClientMiddlewareCall, CallOptions, ClientError} from 'nice-grpc';
 import {isAbortError} from 'abort-controller-x';
 
