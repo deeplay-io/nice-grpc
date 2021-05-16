@@ -630,7 +630,7 @@ secure connections.
 
 #### Metadata
 
-Client can send request metadata and receive response headers and trailers:
+Client can send request metadata and receive response header and trailer:
 
 ```ts
 import {Metadata} from '@grpc/grpc-js';
