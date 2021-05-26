@@ -90,6 +90,8 @@ export function createBidiStreamingMethod<Request, Response>(
       signal.removeEventListener('abort', abortListener);
       throwIfAborted(signal);
 
+      call.cancel();
+
       if (pipeError) {
         throw pipeError;
       }
@@ -119,22 +121,28 @@ export function createBidiStreamingMethod<Request, Response>(
     const iterator = iterable[Symbol.asyncIterator]();
 
     return {
-      async *[Symbol.asyncIterator]() {
-        while (true) {
-          const result = await iterator.next();
+      [Symbol.asyncIterator]() {
+        return {
+          async next() {
+            const result = await iterator.next();
 
-          if (!result.done) {
-            yield result.value;
-          } else {
-            if (result.value != null) {
-              throw new Error(
-                'A middleware returned a message, but expected to return void for bidirectional streaming method',
+            if (result.done && result.value != null) {
+              return await iterator.throw(
+                new Error(
+                  'A middleware returned a message, but expected to return void for bidirectional streaming method',
+                ),
               );
             }
 
-            break;
-          }
-        }
+            return result;
+          },
+          return() {
+            return iterator.return();
+          },
+          throw(err) {
+            return iterator.throw(err);
+          },
+        };
       },
     };
   };

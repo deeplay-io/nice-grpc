@@ -362,3 +362,70 @@ test('high rate', async () => {
 
   await server.shutdown();
 });
+
+test('aborted iteration on client', async () => {
+  const server = createServer();
+
+  const serverAbortDeferred = defer<void>();
+
+  server.add(TestService, {
+    testUnary: throwUnimplemented,
+    async *testServerStream(request: TestRequest, {signal}) {
+      yield new TestResponse().setId(request.getId());
+
+      try {
+        return await forever(signal);
+      } catch (err) {
+        if (isAbortError(err)) {
+          serverAbortDeferred.resolve();
+        }
+
+        throw err;
+      }
+    },
+    testClientStream: throwUnimplemented,
+    testBidiStream: throwUnimplemented,
+  });
+
+  const address = `localhost:${await getPort()}`;
+
+  await server.listen(address);
+
+  const channel = createChannel(address);
+  const client = createClient(TestService, channel);
+
+  const iterable = client.testServerStream(new TestRequest().setId('test'));
+
+  const responses: any[] = [];
+
+  try {
+    for await (const response of iterable) {
+      responses.push({type: 'response', response: response});
+
+      throw new Error('test');
+    }
+  } catch (error) {
+    responses.push({type: 'error', error});
+  }
+
+  expect(responses).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "response": nice_grpc.test.TestResponse {
+          "id": "test",
+        },
+        "type": "response",
+      },
+      Object {
+        "error": [Error: test],
+        "type": "error",
+      },
+    ]
+  `);
+
+  await serverAbortDeferred.promise;
+
+  channel.close();
+
+  await server.shutdown();
+});

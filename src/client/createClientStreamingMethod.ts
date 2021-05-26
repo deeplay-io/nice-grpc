@@ -115,21 +115,31 @@ export function createClientStreamingMethod<Request, Response>(
     });
     const iterator = iterable[Symbol.asyncIterator]();
 
-    const result = await iterator.next();
+    let result = await iterator.next();
 
-    if (!result.done) {
-      throw new Error(
-        'A middleware yielded a message, but expected to only return a message for client streaming method',
-      );
+    while (true) {
+      if (!result.done) {
+        result = await iterator.throw(
+          new Error(
+            'A middleware yielded a message, but expected to only return a message for client streaming method',
+          ),
+        );
+
+        continue;
+      }
+
+      if (result.value == null) {
+        result = await iterator.throw(
+          new Error(
+            'A middleware returned void, but expected to return a message for client streaming method',
+          ),
+        );
+
+        continue;
+      }
+
+      return result.value;
     }
-
-    if (result.value == null) {
-      throw new Error(
-        'A middleware returned void, but expected to return a message for client streaming method',
-      );
-    }
-
-    return result.value;
   };
 }
 

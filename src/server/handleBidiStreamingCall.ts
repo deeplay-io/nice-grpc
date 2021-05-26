@@ -1,5 +1,5 @@
 import {handleBidiStreamingCall, MethodDefinition} from '@grpc/grpc-js';
-import {waitForEvent} from 'abort-controller-x';
+import {isAbortError, waitForEvent} from 'abort-controller-x';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
 import {readableToAsyncIterable} from '../utils/readableToAsyncIterable';
 import {CallContext, createCallContext} from './CallContext';
@@ -49,24 +49,40 @@ export function createBidiStreamingMethodHandler<Request, Response>(
         const iterable = handler(readableToAsyncIterable(call), context);
         const iterator = iterable[Symbol.asyncIterator]();
 
+        let result = await iterator.next();
+
         while (true) {
-          const result = await iterator.next();
-
           if (!result.done) {
-            const shouldContinue = call.write(result.value);
+            try {
+              const shouldContinue = call.write(result.value);
 
-            if (!shouldContinue) {
-              await waitForEvent(context.signal, call, 'drain');
-            }
-          } else {
-            if (result.value != null) {
-              throw new Error(
-                'A middleware returned a message, but expected to return void for bidirectional streaming method',
-              );
+              if (!shouldContinue) {
+                await waitForEvent(context.signal, call, 'drain');
+              }
+            } catch (err) {
+              result = isAbortError(err)
+                ? await iterator.return()
+                : await iterator.throw(err);
+
+              continue;
             }
 
-            break;
+            result = await iterator.next();
+
+            continue;
           }
+
+          if (result.value != null) {
+            result = await iterator.throw(
+              new Error(
+                'A middleware returned a message, but expected to return void for bidirectional streaming method',
+              ),
+            );
+
+            continue;
+          }
+
+          break;
         }
       })
       .then(
