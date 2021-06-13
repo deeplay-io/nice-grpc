@@ -1,6 +1,7 @@
 {
   "name": "nice-grpc-root",
   "version": "0.0.0",
+  "description": "A gRPC library that is nice to you",
   "private": true,
   "workspaces": [
     "packages/*"
