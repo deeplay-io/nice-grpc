@@ -13,7 +13,5 @@ A gRPC library that is nice to you.
 
 ## Packages
 
-- [nice-grpc](/packages/nice-grpc)
-  [![npm version](https://badge.fury.io/js/nice-grpc.svg)](https://badge.fury.io/js/nice-grpc)
-  — server and client library for Node.js.
+- [nice-grpc](/packages/nice-grpc) — server and client library for Node.js.
 - nice-grpc-web (coming soon) — client library for the Browser.
