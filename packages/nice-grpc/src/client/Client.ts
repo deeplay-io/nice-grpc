@@ -9,19 +9,19 @@ import {MethodRequestIn, MethodResponseOut} from '../utils/methodTypes';
 
 export type Client<
   Service extends CompatServiceDefinition,
-  CallOptionsExt = {},
+  CallOptionsExt = {}
 > = RawClient<NormalizedServiceDefinition<Service>, CallOptionsExt>;
 
 export type RawClient<
   Service extends ServiceDefinition,
-  CallOptionsExt = {},
+  CallOptionsExt = {}
 > = {
   [Method in keyof Service]: ClientMethod<Service[Method], CallOptionsExt>;
 };
 
 export type ClientMethod<
   Definition extends MethodDefinition<any, any, any, any>,
-  CallOptionsExt = {},
+  CallOptionsExt = {}
 > = Definition['requestStream'] extends false
   ? Definition['responseStream'] extends false
     ? UnaryClientMethod<
