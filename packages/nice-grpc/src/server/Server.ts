@@ -61,13 +61,11 @@ function createServerWithMiddleware<CallContextExt = {}>(
   options: ChannelOptions,
   middleware?: ServerMiddleware<CallContextExt>,
 ): Server<CallContextExt> {
-  const services = new Map<
-    ServiceDefinition,
-    {
-      middleware?: ServerMiddleware<any, any>;
-      implementation: ServiceImplementation<ServiceDefinition, any>;
-    }
-  >();
+  const services: Array<{
+    definition: ServiceDefinition;
+    middleware?: ServerMiddleware<any, any>;
+    implementation: ServiceImplementation<ServiceDefinition, any>;
+  }> = [];
 
   let server: GrpcServer | undefined;
 
@@ -87,7 +85,8 @@ function createServerWithMiddleware<CallContextExt = {}>(
           throw new Error('server.add() must be used before listen()');
         }
 
-        services.set(normalizeServiceDefinition(definition), {
+        services.push({
+          definition: normalizeServiceDefinition(definition),
           middleware,
           implementation,
         });
@@ -101,7 +100,7 @@ function createServerWithMiddleware<CallContextExt = {}>(
         throw new Error('server.use() must be used before listen()');
       }
 
-      if (services.size > 0) {
+      if (services.length > 0) {
         throw new Error('server.use() must be used before adding any services');
       }
 
@@ -122,7 +121,7 @@ function createServerWithMiddleware<CallContextExt = {}>(
 
       server = new GrpcServer(options);
 
-      for (const [definition, {middleware, implementation}] of services) {
+      for (const {definition, middleware, implementation} of services) {
         const grpcImplementation: UntypedServiceImplementation = {};
 
         for (const [methodName, methodDefinition] of Object.entries(
@@ -140,23 +139,21 @@ function createServerWithMiddleware<CallContextExt = {}>(
                 middleware,
               );
             } else {
-              grpcImplementation[
-                methodName
-              ] = createServerStreamingMethodHandler(
-                methodDefinition,
-                methodImplementation,
-                middleware,
-              );
+              grpcImplementation[methodName] =
+                createServerStreamingMethodHandler(
+                  methodDefinition,
+                  methodImplementation,
+                  middleware,
+                );
             }
           } else {
             if (!methodDefinition.responseStream) {
-              grpcImplementation[
-                methodName
-              ] = createClientStreamingMethodHandler(
-                methodDefinition,
-                methodImplementation,
-                middleware,
-              );
+              grpcImplementation[methodName] =
+                createClientStreamingMethodHandler(
+                  methodDefinition,
+                  methodImplementation,
+                  middleware,
+                );
             } else {
               grpcImplementation[methodName] = createBidiStreamingMethodHandler(
                 methodDefinition,
