@@ -1,6 +1,5 @@
 import getPort = require('get-port');
-import {createChannel, waitForChannelReady} from '../client/channel';
-import {createServer} from '../server/Server';
+import {createChannel, createServer, waitForChannelReady} from '..';
 
 test('implicit protocol', async () => {
   const address = `localhost:${await getPort()}`;

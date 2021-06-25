@@ -1,14 +1,17 @@
+import {Channel, Client as GrpcClient} from '@grpc/grpc-js';
 import {
-  Channel,
-  Client as GrpcClient,
-  MethodDefinition,
+  CallOptions,
+  ClientMiddleware,
+  composeClientMiddleware,
+} from 'nice-grpc-common';
+import {
+  AnyMethodDefinition,
+  CompatServiceDefinition,
+  NormalizedServiceDefinition,
+  normalizeServiceDefinition,
   ServiceDefinition,
-} from '@grpc/grpc-js';
-import {KnownKeys} from '../utils/KnownKeys';
-import {CallOptions} from './CallOptions';
+} from '../service-definitions';
 import {Client} from './Client';
-import {ClientMiddleware} from './ClientMiddleware';
-import {composeClientMiddleware} from './composeClientMiddleware';
 import {createBidiStreamingMethod} from './createBidiStreamingMethod';
 import {createClientStreamingMethod} from './createClientStreamingMethod';
 import {createServerStreamingMethod} from './createServerStreamingMethod';
@@ -19,10 +22,13 @@ export type ClientFactory<CallOptionsExt = {}> = {
     middleware: ClientMiddleware<Ext, CallOptionsExt>,
   ): ClientFactory<CallOptionsExt & Ext>;
 
-  create<Service extends ServiceDefinition>(
+  create<Service extends CompatServiceDefinition>(
     definition: Service,
     channel: Channel,
-    defaultCallOptions?: DefaultCallOptions<Service, CallOptionsExt>,
+    defaultCallOptions?: DefaultCallOptions<
+      NormalizedServiceDefinition<Service>,
+      CallOptionsExt
+    >,
   ): Client<Service, CallOptionsExt>;
 };
 
@@ -30,17 +36,17 @@ export type DefaultCallOptions<
   Service extends ServiceDefinition,
   CallOptionsExt = {}
 > = {
-  [K in KnownKeys<Service> | '*']?: CallOptions & Partial<CallOptionsExt>;
+  [K in keyof Service | '*']?: CallOptions & Partial<CallOptionsExt>;
 };
 
 export function createClientFactory(): ClientFactory {
   return createClientFactoryWithMiddleware();
 }
 
-export function createClient<Service extends ServiceDefinition>(
+export function createClient<Service extends CompatServiceDefinition>(
   definition: Service,
   channel: Channel,
-  defaultCallOptions?: DefaultCallOptions<Service>,
+  defaultCallOptions?: DefaultCallOptions<NormalizedServiceDefinition<Service>>,
 ): Client<Service> {
   return createClientFactory().create(definition, channel, defaultCallOptions);
 }
@@ -57,20 +63,27 @@ function createClientFactoryWithMiddleware<CallOptionsExt = {}>(
       );
     },
 
-    create<Service extends ServiceDefinition>(
+    create<Service extends CompatServiceDefinition>(
       definition: Service,
       channel: Channel,
-      defaultCallOptions: DefaultCallOptions<Service, CallOptionsExt> = {},
+      defaultCallOptions: DefaultCallOptions<
+        NormalizedServiceDefinition<Service>,
+        CallOptionsExt
+      > = {},
     ) {
       const grpcClient = new GrpcClient('', null!, {
         channelOverride: channel,
       });
 
-      const client = {} as {[K in KnownKeys<Service>]: Function};
+      type NormalizedService = NormalizedServiceDefinition<Service>;
 
-      const methodEntries = Object.entries(definition) as Array<
-        [KnownKeys<Service>, MethodDefinition<any, any>]
-      >;
+      const client = {} as {
+        [K in keyof NormalizedService]: Function;
+      };
+
+      const methodEntries = Object.entries(
+        normalizeServiceDefinition(definition),
+      ) as Array<[keyof NormalizedService, AnyMethodDefinition]>;
 
       for (const [methodName, methodDefinition] of methodEntries) {
         const defaultOptions = {

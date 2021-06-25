@@ -1,30 +1,44 @@
-import {
-  Client,
-  ClientWritableStream,
-  Metadata,
-  MethodDefinition,
-} from '@grpc/grpc-js';
+import {Client, ClientWritableStream} from '@grpc/grpc-js';
 import {
   execute,
   isAbortError,
   throwIfAborted,
   waitForEvent,
 } from 'abort-controller-x';
+import {
+  CallOptions,
+  ClientMiddleware,
+  Metadata,
+  MethodDescriptor,
+} from 'nice-grpc-common';
 import AbortController, {AbortSignal} from 'node-abort-controller';
+import {
+  MethodDefinition,
+  toGrpcJsMethodDefinition,
+} from '../service-definitions';
+import {
+  convertMetadataFromGrpcJs,
+  convertMetadataToGrpcJs,
+} from '../utils/convertMetadata';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
 import {patchClientWritableStream} from '../utils/patchClientWritableStream';
-import {CallOptions} from './CallOptions';
 import {ClientStreamingClientMethod} from './Client';
-import {wrapClientError} from './ClientError';
-import {ClientMiddleware} from './ClientMiddleware';
+import {wrapClientError} from './wrapClientError';
 
 /** @internal */
 export function createClientStreamingMethod<Request, Response>(
-  definition: MethodDefinition<Request, Response>,
+  definition: MethodDefinition<Request, unknown, unknown, Response>,
   client: Client,
   middleware: ClientMiddleware | undefined,
   defaultOptions: CallOptions,
 ): ClientStreamingClientMethod<Request, Response> {
+  const grpcMethodDefinition = toGrpcJsMethodDefinition(definition);
+
+  const methodDescriptor: MethodDescriptor = {
+    path: definition.path,
+    options: definition.options,
+  };
+
   async function* clientStreamingMethod(
     request: AsyncIterable<Request>,
     options: CallOptions,
@@ -36,8 +50,7 @@ export function createClientStreamingMethod<Request, Response>(
     }
 
     const {
-      deadline,
-      metadata = new Metadata(),
+      metadata = Metadata(),
       signal = new AbortController().signal,
       onHeader,
       onTrailer,
@@ -47,13 +60,10 @@ export function createClientStreamingMethod<Request, Response>(
       const pipeAbortController = new AbortController();
 
       const call = client.makeClientStreamRequest(
-        definition.path,
-        definition.requestSerialize,
-        definition.responseDeserialize,
-        metadata,
-        {
-          deadline,
-        },
+        grpcMethodDefinition.path,
+        grpcMethodDefinition.requestSerialize,
+        grpcMethodDefinition.responseDeserialize,
+        convertMetadataToGrpcJs(metadata),
         (err, response) => {
           pipeAbortController.abort();
 
@@ -68,10 +78,10 @@ export function createClientStreamingMethod<Request, Response>(
       patchClientWritableStream(call);
 
       call.on('metadata', metadata => {
-        onHeader?.(metadata);
+        onHeader?.(convertMetadataFromGrpcJs(metadata));
       });
       call.on('status', status => {
-        onTrailer?.(status.metadata);
+        onTrailer?.(convertMetadataFromGrpcJs(status.metadata));
       });
 
       pipeRequest(pipeAbortController.signal, request, call).then(
@@ -99,7 +109,7 @@ export function createClientStreamingMethod<Request, Response>(
       : (request: AsyncIterable<Request>, options: CallOptions) =>
           middleware(
             {
-              definition,
+              method: methodDescriptor,
               requestStream: true,
               request,
               responseStream: false,

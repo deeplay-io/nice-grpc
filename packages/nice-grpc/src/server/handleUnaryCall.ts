@@ -1,16 +1,27 @@
-import {handleUnaryCall, MethodDefinition} from '@grpc/grpc-js';
+import {handleUnaryCall} from '@grpc/grpc-js';
+import {
+  CallContext,
+  MethodDescriptor,
+  ServerMiddleware,
+} from 'nice-grpc-common';
+import {MethodDefinition} from '../service-definitions';
+import {convertMetadataToGrpcJs} from '../utils/convertMetadata';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
-import {CallContext, createCallContext} from './CallContext';
+import {createCallContext} from './createCallContext';
 import {createErrorStatusObject} from './createErrorStatusObject';
-import {ServerMiddleware} from './ServerMiddleware';
 import {UnaryMethodImplementation} from './ServiceImplementation';
 
 /** @internal */
 export function createUnaryMethodHandler<Request, Response>(
-  definition: MethodDefinition<Request, Response>,
+  definition: MethodDefinition<unknown, Request, Response, unknown>,
   implementation: UnaryMethodImplementation<Request, Response>,
   middleware?: ServerMiddleware,
 ): handleUnaryCall<Request, Response> {
+  const methodDescriptor: MethodDescriptor = {
+    path: definition.path,
+    options: definition.options,
+  };
+
   async function* unaryMethodHandler(request: Request, context: CallContext) {
     if (isAsyncIterable(request)) {
       throw new Error(
@@ -27,7 +38,7 @@ export function createUnaryMethodHandler<Request, Response>(
       : (request: Request, context: CallContext) =>
           middleware(
             {
-              definition,
+              method: methodDescriptor,
               requestStream: false,
               request,
               responseStream: false,
@@ -72,11 +83,15 @@ export function createUnaryMethodHandler<Request, Response>(
       })
       .then(
         res => {
-          callback(null, res, context.trailer);
+          callback(null, res, convertMetadataToGrpcJs(context.trailer));
         },
         err => {
           callback(
-            createErrorStatusObject(definition.path, err, context.trailer),
+            createErrorStatusObject(
+              definition.path,
+              err,
+              convertMetadataToGrpcJs(context.trailer),
+            ),
           );
         },
       );

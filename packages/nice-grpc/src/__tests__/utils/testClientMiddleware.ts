@@ -1,8 +1,4 @@
-import {CallOptions} from '../../client/CallOptions';
-import {
-  ClientMiddleware,
-  ClientMiddlewareCall,
-} from '../../client/ClientMiddleware';
+import {CallOptions, ClientMiddleware, ClientMiddlewareCall} from '../..';
 
 export function createTestClientMiddleware<ExtraOption extends string>(
   extraOption: ExtraOption,
