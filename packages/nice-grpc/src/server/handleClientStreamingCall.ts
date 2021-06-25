@@ -1,17 +1,28 @@
-import {handleClientStreamingCall, MethodDefinition} from '@grpc/grpc-js';
+import {handleClientStreamingCall} from '@grpc/grpc-js';
+import {
+  CallContext,
+  MethodDescriptor,
+  ServerMiddleware,
+} from 'nice-grpc-common';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
-import {CallContext, createCallContext} from './CallContext';
-import {ServerMiddleware} from './ServerMiddleware';
+import {createCallContext} from './createCallContext';
 import {ClientStreamingMethodImplementation} from './ServiceImplementation';
 import {createErrorStatusObject} from './createErrorStatusObject';
 import {readableToAsyncIterable} from '../utils/readableToAsyncIterable';
+import {MethodDefinition} from '../service-definitions';
+import {convertMetadataToGrpcJs} from '../utils/convertMetadata';
 
 /** @internal */
 export function createClientStreamingMethodHandler<Request, Response>(
-  definition: MethodDefinition<Request, Response>,
+  definition: MethodDefinition<unknown, Request, Response, unknown>,
   implementation: ClientStreamingMethodImplementation<Request, Response>,
   middleware?: ServerMiddleware,
 ): handleClientStreamingCall<Request, Response> {
+  const methodDescriptor: MethodDescriptor = {
+    path: definition.path,
+    options: definition.options,
+  };
+
   async function* clientStreamingMethodHandler(
     request: AsyncIterable<Request>,
     context: CallContext,
@@ -31,7 +42,7 @@ export function createClientStreamingMethodHandler<Request, Response>(
       : (request: AsyncIterable<Request>, context: CallContext) =>
           middleware(
             {
-              definition,
+              method: methodDescriptor,
               requestStream: true,
               request,
               responseStream: false,
@@ -76,11 +87,15 @@ export function createClientStreamingMethodHandler<Request, Response>(
       })
       .then(
         res => {
-          callback(null, res, context.trailer);
+          callback(null, res, convertMetadataToGrpcJs(context.trailer));
         },
         err => {
           callback(
-            createErrorStatusObject(definition.path, err, context.trailer),
+            createErrorStatusObject(
+              definition.path,
+              err,
+              convertMetadataToGrpcJs(context.trailer),
+            ),
           );
         },
       );

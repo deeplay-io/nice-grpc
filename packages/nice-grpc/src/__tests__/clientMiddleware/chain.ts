@@ -1,11 +1,9 @@
+import getPort = require('get-port');
+import {createChannel, createClientFactory, createServer} from '../..';
 import {TestService} from '../../../fixtures/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../../fixtures/test_pb';
-import {createChannel} from '../../client/channel';
-import {createClientFactory} from '../../client/ClientFactory';
-import {createServer} from '../../server/Server';
 import {createTestClientMiddleware} from '../utils/testClientMiddleware';
 import {throwUnimplemented} from '../utils/throwUnimplemented';
-import getPort = require('get-port');
 
 test('chain', async () => {
   const actions: any[] = [];

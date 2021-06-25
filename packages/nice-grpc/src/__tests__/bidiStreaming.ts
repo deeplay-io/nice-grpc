@@ -1,15 +1,18 @@
-import {Metadata, status} from '@grpc/grpc-js';
-import {forever, isAbortError} from 'abort-controller-x';
-import AbortController from 'node-abort-controller';
-import {TestService} from '../../fixtures/test_grpc_pb';
-import {TestRequest, TestResponse} from '../../fixtures/test_pb';
-import {createChannel} from '../client/channel';
-import {createClient} from '../client/ClientFactory';
-import {createServer} from '../server/Server';
-import {ServerError} from '../server/ServerError';
-import {throwUnimplemented} from './utils/throwUnimplemented';
 import getPort = require('get-port');
 import defer = require('defer-promise');
+import {forever, isAbortError} from 'abort-controller-x';
+import AbortController from 'node-abort-controller';
+import {
+  createChannel,
+  createClient,
+  createServer,
+  Metadata,
+  ServerError,
+  Status,
+} from '..';
+import {TestService} from '../../fixtures/test_grpc_pb';
+import {TestRequest, TestResponse} from '../../fixtures/test_pb';
+import {throwUnimplemented} from './utils/throwUnimplemented';
 
 test('basic', async () => {
   const server = createServer();
@@ -69,19 +72,18 @@ test('metadata', async () => {
     testServerStream: throwUnimplemented,
     testClientStream: throwUnimplemented,
     async *testBidiStream(request: AsyncIterable<TestRequest>, context) {
-      const values = context.metadata.get('test');
+      const values = context.metadata.getAll('test');
+      const binValues = context.metadata.getAll('test-bin');
 
-      for (const value of values) {
-        context.header.add('test', value);
-      }
+      context.header.set('test', values);
+      context.header.set('test-bin', binValues);
 
       context.sendHeader();
 
       await responseDeferred.promise;
 
-      for (const value of values) {
-        context.trailer.set('test', value);
-      }
+      context.trailer.set('test', values);
+      context.trailer.set('test-bin', binValues);
     },
   });
 
@@ -95,9 +97,9 @@ test('metadata', async () => {
   const headerDeferred = defer<Metadata>();
   const trailerDeferred = defer<Metadata>();
 
-  const metadata = new Metadata();
-  metadata.add('test', 'test-value-1');
-  metadata.add('test', 'test-value-2');
+  const metadata = Metadata();
+  metadata.set('test', ['test-value-1', 'test-value-2']);
+  metadata.set('test-bin', [new Uint8Array([1]), new Uint8Array([2])]);
 
   async function* createRequest() {
     yield new TestRequest();
@@ -123,10 +125,27 @@ test('metadata', async () => {
     return responses;
   });
 
-  await expect(headerDeferred.promise.then(header => header.get('test')))
+  await expect(headerDeferred.promise.then(header => header.getAll('test')))
     .resolves.toMatchInlineSnapshot(`
           Array [
             "test-value-1, test-value-2",
+          ]
+        `);
+  await expect(headerDeferred.promise.then(header => header.getAll('test-bin')))
+    .resolves.toMatchInlineSnapshot(`
+          Array [
+            Object {
+              "data": Array [
+                1,
+              ],
+              "type": "Buffer",
+            },
+            Object {
+              "data": Array [
+                2,
+              ],
+              "type": "Buffer",
+            },
           ]
         `);
 
@@ -134,12 +153,30 @@ test('metadata', async () => {
 
   await expect(promise).resolves.toMatchInlineSnapshot(`Array []`);
 
-  await expect(trailerDeferred.promise.then(header => header.get('test')))
+  await expect(trailerDeferred.promise.then(header => header.getAll('test')))
     .resolves.toMatchInlineSnapshot(`
           Array [
             "test-value-1, test-value-2",
           ]
         `);
+  await expect(
+    trailerDeferred.promise.then(header => header.getAll('test-bin')),
+  ).resolves.toMatchInlineSnapshot(`
+                Array [
+                  Object {
+                    "data": Array [
+                      1,
+                    ],
+                    "type": "Buffer",
+                  },
+                  Object {
+                    "data": Array [
+                      2,
+                    ],
+                    "type": "Buffer",
+                  },
+                ]
+              `);
 
   channel.close();
 
@@ -154,11 +191,10 @@ test('error', async () => {
     testServerStream: throwUnimplemented,
     testClientStream: throwUnimplemented,
     async *testBidiStream(request: AsyncIterable<TestRequest>, context) {
-      context.trailer.add('test', 'test-value-1');
-      context.trailer.add('test', 'test-value-2');
+      context.trailer.set('test', ['test-value-1', 'test-value-2']);
 
       for await (const item of request) {
-        throw new ServerError(status.NOT_FOUND, item.getId());
+        throw new ServerError(Status.NOT_FOUND, item.getId());
       }
     },
   });
@@ -181,6 +217,7 @@ test('error', async () => {
     try {
       while (true) {
         yield new TestRequest().setId(`test-${i++}`);
+        await new Promise(resolve => setTimeout(resolve, 50));
       }
     } catch (err) {
       requestIterableFinish.reject(err);
@@ -213,7 +250,7 @@ test('error', async () => {
 
   await requestIterableFinish.promise;
 
-  expect(trailer?.get('test')).toMatchInlineSnapshot(`
+  expect(trailer?.getAll('test')).toMatchInlineSnapshot(`
     Array [
       "test-value-1, test-value-2",
     ]
@@ -267,6 +304,7 @@ test('cancel', async () => {
     try {
       while (true) {
         yield new TestRequest().setId(`test-${i++}`);
+        await new Promise(resolve => setTimeout(resolve, 50));
       }
     } catch (err) {
       requestIterableFinish.reject(err);
@@ -317,78 +355,6 @@ test('cancel', async () => {
   await server.shutdown();
 });
 
-test('deadline', async () => {
-  const server = createServer();
-
-  const serverAbortDeferred = defer<void>();
-
-  server.add(TestService, {
-    testUnary: throwUnimplemented,
-    testServerStream: throwUnimplemented,
-    testClientStream: throwUnimplemented,
-    async *testBidiStream(request: AsyncIterable<TestRequest>, {signal}) {
-      try {
-        await forever(signal);
-      } catch (err) {
-        if (isAbortError(err)) {
-          serverAbortDeferred.resolve();
-        }
-
-        throw err;
-      }
-    },
-  });
-
-  const address = `localhost:${await getPort()}`;
-
-  await server.listen(address);
-
-  const channel = createChannel(address);
-  const client = createClient(TestService, channel);
-
-  const requestIterableFinish = defer<void>();
-
-  async function* createRequest() {
-    let i = 0;
-
-    try {
-      while (true) {
-        yield new TestRequest().setId(`test-${i++}`);
-      }
-    } catch (err) {
-      requestIterableFinish.reject(err);
-      throw err;
-    } finally {
-      requestIterableFinish.resolve();
-    }
-  }
-
-  const promise = Promise.resolve().then(async () => {
-    const responses: any[] = [];
-    const iterable = client.testBidiStream(createRequest(), {
-      deadline: new Date(Date.now() + 100),
-    });
-
-    for await (const response of iterable) {
-      responses.push(response);
-    }
-
-    return responses;
-  });
-
-  await expect(promise).rejects.toMatchInlineSnapshot(
-    `[ClientError: /nice_grpc.test.Test/TestBidiStream DEADLINE_EXCEEDED: Deadline exceeded]`,
-  );
-
-  await serverAbortDeferred.promise;
-
-  await requestIterableFinish.promise;
-
-  channel.close();
-
-  await server.shutdown();
-});
-
 test('early response', async () => {
   const server = createServer();
 
@@ -419,6 +385,7 @@ test('early response', async () => {
     try {
       while (true) {
         yield new TestRequest().setId(`test-${i++}`);
+        await new Promise(resolve => setTimeout(resolve, 50));
       }
     } catch (err) {
       requestIterableFinish.reject(err);

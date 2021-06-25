@@ -1,26 +1,40 @@
+import {Client, ClientWritableStream} from '@grpc/grpc-js';
 import {
-  Client,
-  ClientWritableStream,
   Metadata,
-  MethodDefinition,
-} from '@grpc/grpc-js';
+  CallOptions,
+  ClientMiddleware,
+  MethodDescriptor,
+} from 'nice-grpc-common';
 import {isAbortError, throwIfAborted, waitForEvent} from 'abort-controller-x';
 import AbortController, {AbortSignal} from 'node-abort-controller';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
 import {patchClientWritableStream} from '../utils/patchClientWritableStream';
 import {readableToAsyncIterable} from '../utils/readableToAsyncIterable';
-import {CallOptions} from './CallOptions';
+import {
+  convertMetadataFromGrpcJs,
+  convertMetadataToGrpcJs,
+} from '../utils/convertMetadata';
 import {BidiStreamingClientMethod} from './Client';
-import {wrapClientError} from './ClientError';
-import {ClientMiddleware} from './ClientMiddleware';
+import {wrapClientError} from './wrapClientError';
+import {
+  MethodDefinition,
+  toGrpcJsMethodDefinition,
+} from '../service-definitions';
 
 /** @internal */
 export function createBidiStreamingMethod<Request, Response>(
-  definition: MethodDefinition<Request, Response>,
+  definition: MethodDefinition<Request, unknown, unknown, Response>,
   client: Client,
   middleware: ClientMiddleware | undefined,
   defaultOptions: CallOptions,
 ): BidiStreamingClientMethod<Request, Response> {
+  const grpcMethodDefinition = toGrpcJsMethodDefinition(definition);
+
+  const methodDescriptor: MethodDescriptor = {
+    path: definition.path,
+    options: definition.options,
+  };
+
   async function* bidiStreamingMethod(
     request: AsyncIterable<Request>,
     options: CallOptions,
@@ -32,8 +46,7 @@ export function createBidiStreamingMethod<Request, Response>(
     }
 
     const {
-      deadline,
-      metadata = new Metadata(),
+      metadata = Metadata(),
       signal = new AbortController().signal,
       onHeader,
       onTrailer,
@@ -42,22 +55,19 @@ export function createBidiStreamingMethod<Request, Response>(
     const pipeAbortController = new AbortController();
 
     const call = client.makeBidiStreamRequest(
-      definition.path,
-      definition.requestSerialize,
-      definition.responseDeserialize,
-      metadata,
-      {
-        deadline,
-      },
+      grpcMethodDefinition.path,
+      grpcMethodDefinition.requestSerialize,
+      grpcMethodDefinition.responseDeserialize,
+      convertMetadataToGrpcJs(metadata),
     );
 
     patchClientWritableStream(call);
 
     call.on('metadata', metadata => {
-      onHeader?.(metadata);
+      onHeader?.(convertMetadataFromGrpcJs(metadata));
     });
     call.on('status', status => {
-      onTrailer?.(status.metadata);
+      onTrailer?.(convertMetadataFromGrpcJs(status.metadata));
     });
 
     let pipeError: unknown;
@@ -104,7 +114,7 @@ export function createBidiStreamingMethod<Request, Response>(
       : (request: AsyncIterable<Request>, options: CallOptions) =>
           middleware(
             {
-              definition,
+              method: methodDescriptor,
               requestStream: true,
               request,
               responseStream: true,

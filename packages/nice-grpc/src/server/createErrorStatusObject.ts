@@ -1,6 +1,6 @@
 import {Metadata, status, StatusObject} from '@grpc/grpc-js';
 import {isAbortError} from 'abort-controller-x';
-import {ServerError} from './ServerError';
+import {ServerError} from 'nice-grpc-common';
 
 /** @internal */
 export function createErrorStatusObject(

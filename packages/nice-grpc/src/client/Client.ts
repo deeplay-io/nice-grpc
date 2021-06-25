@@ -1,73 +1,85 @@
-import {MethodDefinition, ServiceDefinition} from '@grpc/grpc-js';
-import {KnownKeys} from '../utils/KnownKeys';
-import {MethodRequest, MethodResponse} from '../utils/methodTypes';
-import {CallOptions} from './CallOptions';
+import {CallOptions} from 'nice-grpc-common';
+import {
+  CompatServiceDefinition,
+  MethodDefinition,
+  NormalizedServiceDefinition,
+  ServiceDefinition,
+} from '../service-definitions';
+import {MethodRequestIn, MethodResponseOut} from '../utils/methodTypes';
 
-export type Client<Service extends ServiceDefinition, CallOptionsExt = {}> = {
-  [Method in KnownKeys<Service>]: ClientMethod<Service[Method], CallOptionsExt>;
+export type Client<
+  Service extends CompatServiceDefinition,
+  CallOptionsExt = {}
+> = RawClient<NormalizedServiceDefinition<Service>, CallOptionsExt>;
+
+export type RawClient<
+  Service extends ServiceDefinition,
+  CallOptionsExt = {}
+> = {
+  [Method in keyof Service]: ClientMethod<Service[Method], CallOptionsExt>;
 };
 
 export type ClientMethod<
-  Definition extends MethodDefinition<any, any>,
+  Definition extends MethodDefinition<any, any, any, any>,
   CallOptionsExt = {}
 > = Definition['requestStream'] extends false
   ? Definition['responseStream'] extends false
     ? UnaryClientMethod<
-        MethodRequest<Definition>,
-        MethodResponse<Definition>,
+        MethodRequestIn<Definition>,
+        MethodResponseOut<Definition>,
         CallOptionsExt
       >
     : Definition['responseStream'] extends true
     ? ServerStreamingClientMethod<
-        MethodRequest<Definition>,
-        MethodResponse<Definition>,
+        MethodRequestIn<Definition>,
+        MethodResponseOut<Definition>,
         CallOptionsExt
       >
     : never
   : Definition['requestStream'] extends true
   ? Definition['responseStream'] extends false
     ? ClientStreamingClientMethod<
-        MethodRequest<Definition>,
-        MethodResponse<Definition>,
+        MethodRequestIn<Definition>,
+        MethodResponseOut<Definition>,
         CallOptionsExt
       >
     : Definition['responseStream'] extends true
     ? BidiStreamingClientMethod<
-        MethodRequest<Definition>,
-        MethodResponse<Definition>,
+        MethodRequestIn<Definition>,
+        MethodResponseOut<Definition>,
         CallOptionsExt
       >
     : never
   : never;
 
-export type UnaryClientMethod<Request, Response, CallOptionsExt = {}> = (
-  request: Request,
+export type UnaryClientMethod<RequestIn, ResponseOut, CallOptionsExt = {}> = (
+  request: RequestIn,
   options?: CallOptions & CallOptionsExt,
-) => Promise<Response>;
+) => Promise<ResponseOut>;
 
 export type ServerStreamingClientMethod<
-  Request,
-  Response,
+  RequestIn,
+  ResponseOut,
   CallOptionsExt = {}
 > = (
-  request: Request,
+  request: RequestIn,
   options?: CallOptions & CallOptionsExt,
-) => AsyncIterable<Response>;
+) => AsyncIterable<ResponseOut>;
 
 export type ClientStreamingClientMethod<
-  Request,
-  Response,
+  RequestIn,
+  ResponseOut,
   CallOptionsExt = {}
 > = (
-  request: AsyncIterable<Request>,
+  request: AsyncIterable<RequestIn>,
   options?: CallOptions & CallOptionsExt,
-) => Promise<Response>;
+) => Promise<ResponseOut>;
 
 export type BidiStreamingClientMethod<
-  Request,
-  Response,
+  RequestIn,
+  ResponseOut,
   CallOptionsExt = {}
 > = (
-  request: AsyncIterable<Request>,
+  request: AsyncIterable<RequestIn>,
   options?: CallOptions & CallOptionsExt,
-) => AsyncIterable<Response>;
+) => AsyncIterable<ResponseOut>;

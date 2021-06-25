@@ -1,19 +1,38 @@
-import {Client, Metadata, MethodDefinition} from '@grpc/grpc-js';
+import {Client} from '@grpc/grpc-js';
 import {execute} from 'abort-controller-x';
+import {
+  CallOptions,
+  ClientMiddleware,
+  Metadata,
+  MethodDescriptor,
+} from 'nice-grpc-common';
 import AbortController from 'node-abort-controller';
+import {
+  MethodDefinition,
+  toGrpcJsMethodDefinition,
+} from '../service-definitions';
+import {
+  convertMetadataFromGrpcJs,
+  convertMetadataToGrpcJs,
+} from '../utils/convertMetadata';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
-import {CallOptions} from './CallOptions';
 import {UnaryClientMethod} from './Client';
-import {wrapClientError} from './ClientError';
-import {ClientMiddleware} from './ClientMiddleware';
+import {wrapClientError} from './wrapClientError';
 
 /** @internal */
 export function createUnaryMethod<Request, Response>(
-  definition: MethodDefinition<Request, Response>,
+  definition: MethodDefinition<Request, unknown, unknown, Response>,
   client: Client,
   middleware: ClientMiddleware | undefined,
   defaultOptions: CallOptions,
 ): UnaryClientMethod<Request, Response> {
+  const grpcMethodDefinition = toGrpcJsMethodDefinition(definition);
+
+  const methodDescriptor: MethodDescriptor = {
+    path: definition.path,
+    options: definition.options,
+  };
+
   async function* unaryMethod(
     request: Request,
     options: CallOptions,
@@ -25,8 +44,7 @@ export function createUnaryMethod<Request, Response>(
     }
 
     const {
-      deadline,
-      metadata = new Metadata(),
+      metadata = Metadata(),
       signal = new AbortController().signal,
       onHeader,
       onTrailer,
@@ -34,14 +52,11 @@ export function createUnaryMethod<Request, Response>(
 
     return await execute<Response>(signal, (resolve, reject) => {
       const call = client.makeUnaryRequest(
-        definition.path,
-        definition.requestSerialize,
-        definition.responseDeserialize,
+        grpcMethodDefinition.path,
+        grpcMethodDefinition.requestSerialize,
+        grpcMethodDefinition.responseDeserialize,
         request,
-        metadata,
-        {
-          deadline,
-        },
+        convertMetadataToGrpcJs(metadata),
         (err, response) => {
           if (err != null) {
             reject(wrapClientError(err, definition.path));
@@ -52,10 +67,10 @@ export function createUnaryMethod<Request, Response>(
       );
 
       call.on('metadata', metadata => {
-        onHeader?.(metadata);
+        onHeader?.(convertMetadataFromGrpcJs(metadata));
       });
       call.on('status', status => {
-        onTrailer?.(status.metadata);
+        onTrailer?.(convertMetadataFromGrpcJs(status.metadata));
       });
 
       return () => {
@@ -70,7 +85,7 @@ export function createUnaryMethod<Request, Response>(
       : (request: Request, options: CallOptions) =>
           middleware(
             {
-              definition,
+              method: methodDescriptor,
               requestStream: false,
               request,
               responseStream: false,

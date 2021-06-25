@@ -1,12 +1,14 @@
-import {status} from '@grpc/grpc-js';
+import getPort = require('get-port');
+import {
+  createChannel,
+  createClient,
+  createServer,
+  ServerError,
+  ServiceImplementation,
+  Status,
+} from '..';
 import {ITestService, TestService} from '../../fixtures/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../fixtures/test_pb';
-import {createChannel} from '../client/channel';
-import {createClient} from '../client/ClientFactory';
-import {createServer} from '../server/Server';
-import {ServerError} from '../server/ServerError';
-import {ServiceImplementation} from '../server/ServiceImplementation';
-import getPort = require('get-port');
 
 test('server class', async () => {
   const server = createServer();
@@ -16,17 +18,17 @@ test('server class', async () => {
       return new TestResponse().setId(request.getId());
     }
     async *testServerStream(request: TestRequest): AsyncIterable<TestResponse> {
-      throw new ServerError(status.UNIMPLEMENTED, '');
+      throw new ServerError(Status.UNIMPLEMENTED, '');
     }
     async testClientStream(
       request: AsyncIterable<TestRequest>,
     ): Promise<TestResponse> {
-      throw new ServerError(status.UNIMPLEMENTED, '');
+      throw new ServerError(Status.UNIMPLEMENTED, '');
     }
     async *testBidiStream(
       request: AsyncIterable<TestRequest>,
     ): AsyncIterable<TestResponse> {
-      throw new ServerError(status.UNIMPLEMENTED, '');
+      throw new ServerError(Status.UNIMPLEMENTED, '');
     }
   }
 

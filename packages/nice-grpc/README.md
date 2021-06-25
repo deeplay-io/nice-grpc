@@ -52,7 +52,7 @@ A Node.js gRPC library that is nice to you. Built on top of
 ## Installation
 
 ```
-npm install nice-grpc @grpc/grpc-js
+npm install nice-grpc
 ```
 
 ## Usage
@@ -145,7 +145,8 @@ Alternatively, you can use classes:
 
 ```ts
 class ExampleServiceImpl
-  implements ServiceImplementation<typeof ExampleService> {
+  implements ServiceImplementation<typeof ExampleService>
+{
   async exampleUnaryMethod(request: ExampleRequest): Promise<ExampleResponse> {
     // ... method logic
 
@@ -185,14 +186,13 @@ See [gRPC docs](https://grpc.github.io/grpc/core/md_doc_statuscodes.html) for
 the correct usage of status codes.
 
 ```ts
-import {status} from '@grpc/grpc-js';
-import {ServerError} from 'nice-grpc';
+import {ServerError, Status} from 'nice-grpc';
 
 const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
   async exampleUnaryMethod(request: ExampleRequest): Promise<ExampleResponse> {
     // ... method logic
 
-    throw new ServerError(status.NOT_FOUND, 'Requested data does not exist');
+    throw new ServerError(Status.NOT_FOUND, 'Requested data does not exist');
   },
 };
 ```
@@ -209,7 +209,7 @@ const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
     context: CallContext,
   ): Promise<ExampleResponse> {
     // read client metadata
-    const someValue = context.metadata.get('some-key')[0] as string | undefined;
+    const someValue = context.metadata.get('some-key');
 
     // add metadata to header
     context.header.set('some-key', 'some-value');
@@ -419,14 +419,14 @@ In the above example, `Service1` gets `middlewareA` and `middlewareB`, and
 Log all calls:
 
 ```ts
-import {status} from '@grpc/grpc-js';
+import {Status} from 'nice-grpc';
 import {isAbortError} from 'abort-controller-x';
 
 async function* loggingMiddleware<Request, Response>(
   call: ServerMiddlewareCall<Request, Response>,
   context: CallContext,
 ) {
-  const {path} = call.definition;
+  const {path} = call.method;
 
   console.log('Server call', path, 'start');
 
@@ -438,7 +438,11 @@ async function* loggingMiddleware<Request, Response>(
     return result;
   } catch (error) {
     if (error instanceof ServerError) {
-      console.log('Server call', path, `end: ${status[error.code]}`);
+      console.log(
+        'Server call',
+        path,
+        `end: ${Status[error.code]}: ${error.details}`,
+      );
     } else if (isAbortError(error)) {
       console.log('Server call', path, 'cancel');
     } else {
@@ -455,7 +459,7 @@ async function* loggingMiddleware<Request, Response>(
 Catch unknown errors and wrap them into `ServerError`s with friendly messages:
 
 ```ts
-import {status} from '@grpc/grpc-js';
+import {Status} from 'nice-grpc';
 import {isAbortError} from 'abort-controller-x';
 
 async function* errorHandlingMiddleware<Request, Response>(
@@ -475,7 +479,7 @@ async function* errorHandlingMiddleware<Request, Response>(
       details += `: ${error.stack}`;
     }
 
-    throw new ServerError(status.UNKNOWN, details);
+    throw new ServerError(Status.UNKNOWN, details);
   }
 }
 ```
@@ -486,7 +490,7 @@ Validate JSON Web Token (JWT) from request metadata and put its claims to
 `CallContext`:
 
 ```ts
-import {status} from '@grpc/grpc-js';
+import {Status} from 'nice-grpc';
 import createRemoteJWKSet from 'jose/jwks/remote';
 import jwtVerify, {JWTPayload} from 'jose/jwt/verify';
 import {JOSEError} from 'jose/util/errors';
@@ -503,11 +507,11 @@ async function* authMiddleware<Request, Response>(
   call: ServerMiddlewareCall<Request, Response, AuthCallContextExt>,
   context: CallContext,
 ) {
-  const authorization = context.metadata.get('Authorization')[0];
+  const authorization = context.metadata.get('Authorization');
 
   if (authorization == null) {
     throw new ServerError(
-      status.UNAUTHENTICATED,
+      Status.UNAUTHENTICATED,
       'Missing Authorization metadata',
     );
   }
@@ -516,7 +520,7 @@ async function* authMiddleware<Request, Response>(
 
   if (parts.length !== 2 || parts[0] !== 'Bearer') {
     throw new ServerError(
-      status.UNAUTHENTICATED,
+      Status.UNAUTHENTICATED,
       'Invalid Authorization metadata format. Expected "Bearer <token>"',
     );
   }
@@ -525,7 +529,7 @@ async function* authMiddleware<Request, Response>(
 
   const {payload} = await jwtVerify(token, jwks).catch(error => {
     if (error instanceof JOSEError) {
-      throw new ServerError(status.UNAUTHENTICATED, error.message);
+      throw new ServerError(Status.UNAUTHENTICATED, error.message);
     } else {
       throw error;
     }
@@ -617,8 +621,7 @@ channel.close();
 By default, a channel uses insecure connection. The following are equivalent:
 
 ```ts
-import {ChannelCredentials} from '@grpc/grpc-js';
-import {createChannel} from 'nice-grpc';
+import {createChannel, ChannelCredentials} from 'nice-grpc';
 
 createChannel('example.com:8080');
 createChannel('http://example.com:8080');
@@ -640,9 +643,9 @@ secure connections.
 Client can send request metadata and receive response header and trailer:
 
 ```ts
-import {Metadata} from '@grpc/grpc-js';
+import {Metadata} from 'nice-grpc';
 
-const metadata = new Metadata();
+const metadata = Metadata();
 metadata.set('key', 'value');
 
 const response = await client.exampleUnaryMethod(
@@ -665,15 +668,14 @@ Client calls may throw gRPC errors represented as `ClientError`, that contain
 status code and description.
 
 ```ts
-import {status} from '@grpc/grpc-js';
-import {ClientError} from 'nice-grpc';
+import {ClientError, Status} from 'nice-grpc';
 
 let response: ExampleResponse | null;
 
 try {
   response = await client.exampleUnaryMethod(ExampleRequest.fromPartial({}));
 } catch (error: unknown) {
-  if (error instanceof ClientError && error.code === status.NOT_FOUND) {
+  if (error instanceof ClientError && error.code === Status.NOT_FOUND) {
     response = null;
   } else {
     throw error;
@@ -709,28 +711,7 @@ abortController.abort();
 
 #### Deadlines
 
-You can specify a deadline for a client call using `Date` object:
-
-```ts
-import {status} from '@grpc/grpc-js';
-import {ClientError} from 'nice-grpc';
-import {addSeconds} from 'date-fns';
-
-try {
-  const response = await client.exampleUnaryMethod(
-    ExampleRequest.fromPartial({}),
-    {
-      deadline: addSeconds(new Date(), 15),
-    },
-  );
-} catch (error: unknown) {
-  if (error instanceof ClientError && error.code === status.DEADLINE_EXCEEDED) {
-    // timed out
-  } else {
-    throw error;
-  }
-}
-```
+See [Deadline middleware](/packages/nice-grpc-client-middleware-deadline).
 
 #### Server streaming
 
@@ -834,15 +815,19 @@ and `Service2` client gets `middlewareA` and `middlewareC`.
 Log all calls:
 
 ```ts
-import {status} from '@grpc/grpc-js';
-import {ClientMiddlewareCall, CallOptions, ClientError} from 'nice-grpc';
+import {
+  ClientMiddlewareCall,
+  CallOptions,
+  ClientError,
+  Status,
+} from 'nice-grpc';
 import {isAbortError} from 'abort-controller-x';
 
 async function* loggingMiddleware<Request, Response>(
   call: ClientMiddlewareCall<Request, Response>,
   options: CallOptions,
 ) {
-  const {path} = call.definition;
+  const {path} = call.method;
 
   console.log('Client call', path, 'start');
 
@@ -854,7 +839,11 @@ async function* loggingMiddleware<Request, Response>(
     return result;
   } catch (error) {
     if (error instanceof ClientError) {
-      console.log('Client call', path, `end: ${status[error.code]}`);
+      console.log(
+        'Client call',
+        path,
+        `end: ${Status[error.code]}: ${error.details}`,
+      );
     } else if (isAbortError(error)) {
       console.log('Client call', path, 'cancel');
     } else {
@@ -864,60 +853,6 @@ async function* loggingMiddleware<Request, Response>(
     throw error;
   }
 }
-```
-
-##### Example: Timeouts
-
-Add support for specifying timeouts for unary calls instead of absolute
-deadlines:
-
-```ts
-import ms = require('ms');
-import {ClientMiddlewareCall, CallOptions} from 'nice-grpc';
-
-type TimeoutCallOptionsExt = {
-  /**
-   * Examples: '10s', '1m'
-   */
-  timeout?: string;
-};
-
-async function* timeoutMiddleware<Request, Response>(
-  call: ClientMiddlewareCall<Request, Response>,
-  options: CallOptions & TimeoutCallOptionsExt,
-) {
-  const {timeout, ...nextOptions} = options;
-
-  if (timeout != null && !call.requestStream && !call.responseStream) {
-    nextOptions.deadline ??= new Date(Date.now() + ms(timeout));
-  }
-
-  return yield* call.next(call.request, nextOptions);
-}
-```
-
-When creating a client, you can specify default call options for all methods, or
-per-method:
-
-```ts
-const client = createClientFactory()
-  .use(timeoutMiddleware)
-  .create(ExampleService, channel, {
-    '*': {
-      timeout: '1m',
-    },
-    exampleUnaryMethod: {
-      timeout: '30s',
-    },
-  });
-```
-
-Specify call options per-call:
-
-```ts
-await client.exampleUnaryMethod(ExampleRequest.fromPartial({}), {
-  timeout: '15s',
-});
 ```
 
 [npm-image]: https://badge.fury.io/js/nice-grpc.svg
