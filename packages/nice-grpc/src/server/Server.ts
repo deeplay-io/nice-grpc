@@ -2,15 +2,19 @@ import {
   ChannelOptions,
   Server as GrpcServer,
   ServerCredentials,
-  ServiceDefinition,
   UntypedServiceImplementation,
 } from '@grpc/grpc-js';
-import {composeServerMiddleware} from './composeServerMiddleware';
+import {ServerMiddleware, composeServerMiddleware} from 'nice-grpc-common';
+import {
+  CompatServiceDefinition,
+  normalizeServiceDefinition,
+  ServiceDefinition,
+  toGrpcJsServiceDefinition,
+} from '../service-definitions';
 import {createBidiStreamingMethodHandler} from './handleBidiStreamingCall';
 import {createClientStreamingMethodHandler} from './handleClientStreamingCall';
 import {createServerStreamingMethodHandler} from './handleServerStreamingCall';
 import {createUnaryMethodHandler} from './handleUnaryCall';
-import {ServerMiddleware} from './ServerMiddleware';
 import {ServiceImplementation} from './ServiceImplementation';
 
 export type Server<CallContextExt = {}> = {
@@ -21,17 +25,17 @@ export type Server<CallContextExt = {}> = {
   with<Ext>(
     middleware: ServerMiddleware<Ext, CallContextExt>,
   ): ServerAddBuilder<CallContextExt & Ext>;
-  add<Service extends ServiceDefinition>(
+  add<Service extends CompatServiceDefinition>(
     definition: Service,
     implementation: ServiceImplementation<Service, CallContextExt>,
   ): void;
 
   /**
    * Start listening on given 'host:port'.
-   * 
+   *
    * Use 'localhost:0' to bind to a random port.
-   * 
-   * Returns port that the server is bound to.  
+   *
+   * Returns port that the server is bound to.
    */
   listen(address: string, credentials?: ServerCredentials): Promise<number>;
 
@@ -43,7 +47,7 @@ export type ServerAddBuilder<CallContextExt> = {
   with<Ext>(
     middleware: ServerMiddleware<Ext, CallContextExt>,
   ): ServerAddBuilder<CallContextExt & Ext>;
-  add<Service extends ServiceDefinition>(
+  add<Service extends CompatServiceDefinition>(
     definition: Service,
     implementation: ServiceImplementation<Service, CallContextExt>,
   ): void;
@@ -57,13 +61,11 @@ function createServerWithMiddleware<CallContextExt = {}>(
   options: ChannelOptions,
   middleware?: ServerMiddleware<CallContextExt>,
 ): Server<CallContextExt> {
-  const services = new Map<
-    ServiceDefinition,
-    {
-      middleware?: ServerMiddleware<any, any>;
-      implementation: ServiceImplementation<ServiceDefinition, any>;
-    }
-  >();
+  const services: Array<{
+    definition: ServiceDefinition;
+    middleware?: ServerMiddleware<any, any>;
+    implementation: ServiceImplementation<ServiceDefinition, any>;
+  }> = [];
 
   let server: GrpcServer | undefined;
 
@@ -83,7 +85,11 @@ function createServerWithMiddleware<CallContextExt = {}>(
           throw new Error('server.add() must be used before listen()');
         }
 
-        services.set(definition, {middleware, implementation});
+        services.push({
+          definition: normalizeServiceDefinition(definition),
+          middleware,
+          implementation,
+        });
       },
     };
   }
@@ -94,7 +100,7 @@ function createServerWithMiddleware<CallContextExt = {}>(
         throw new Error('server.use() must be used before listen()');
       }
 
-      if (services.size > 0) {
+      if (services.length > 0) {
         throw new Error('server.use() must be used before adding any services');
       }
 
@@ -115,7 +121,7 @@ function createServerWithMiddleware<CallContextExt = {}>(
 
       server = new GrpcServer(options);
 
-      for (const [definition, {middleware, implementation}] of services) {
+      for (const {definition, middleware, implementation} of services) {
         const grpcImplementation: UntypedServiceImplementation = {};
 
         for (const [methodName, methodDefinition] of Object.entries(
@@ -133,23 +139,21 @@ function createServerWithMiddleware<CallContextExt = {}>(
                 middleware,
               );
             } else {
-              grpcImplementation[
-                methodName
-              ] = createServerStreamingMethodHandler(
-                methodDefinition,
-                methodImplementation,
-                middleware,
-              );
+              grpcImplementation[methodName] =
+                createServerStreamingMethodHandler(
+                  methodDefinition,
+                  methodImplementation,
+                  middleware,
+                );
             }
           } else {
             if (!methodDefinition.responseStream) {
-              grpcImplementation[
-                methodName
-              ] = createClientStreamingMethodHandler(
-                methodDefinition,
-                methodImplementation,
-                middleware,
-              );
+              grpcImplementation[methodName] =
+                createClientStreamingMethodHandler(
+                  methodDefinition,
+                  methodImplementation,
+                  middleware,
+                );
             } else {
               grpcImplementation[methodName] = createBidiStreamingMethodHandler(
                 methodDefinition,
@@ -160,7 +164,10 @@ function createServerWithMiddleware<CallContextExt = {}>(
           }
         }
 
-        server.addService(definition, grpcImplementation);
+        server.addService(
+          toGrpcJsServiceDefinition(definition),
+          grpcImplementation,
+        );
       }
 
       const port = await new Promise<number>((resolve, reject) => {

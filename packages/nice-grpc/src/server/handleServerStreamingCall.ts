@@ -1,17 +1,28 @@
-import {handleServerStreamingCall, MethodDefinition} from '@grpc/grpc-js';
+import {handleServerStreamingCall} from '@grpc/grpc-js';
 import {isAbortError, waitForEvent} from 'abort-controller-x';
+import {
+  CallContext,
+  MethodDescriptor,
+  ServerMiddleware,
+} from 'nice-grpc-common';
+import {MethodDefinition} from '../service-definitions';
+import {convertMetadataToGrpcJs} from '../utils/convertMetadata';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
-import {CallContext, createCallContext} from './CallContext';
+import {createCallContext} from './createCallContext';
 import {createErrorStatusObject} from './createErrorStatusObject';
-import {ServerMiddleware} from './ServerMiddleware';
 import {ServerStreamingMethodImplementation} from './ServiceImplementation';
 
 /** @internal */
 export function createServerStreamingMethodHandler<Request, Response>(
-  definition: MethodDefinition<Request, Response>,
+  definition: MethodDefinition<unknown, Request, Response, unknown>,
   implementation: ServerStreamingMethodImplementation<Request, Response>,
   middleware?: ServerMiddleware,
 ): handleServerStreamingCall<Request, Response> {
+  const methodDescriptor: MethodDescriptor = {
+    path: definition.path,
+    options: definition.options,
+  };
+
   async function* serverStreamingMethodHandler(
     request: Request,
     context: CallContext,
@@ -31,7 +42,7 @@ export function createServerStreamingMethodHandler<Request, Response>(
       : (request: Request, context: CallContext) =>
           middleware(
             {
-              definition,
+              method: methodDescriptor,
               requestStream: false,
               request,
               responseStream: true,
@@ -86,14 +97,14 @@ export function createServerStreamingMethodHandler<Request, Response>(
       })
       .then(
         () => {
-          call.end(context.trailer);
+          call.end(convertMetadataToGrpcJs(context.trailer));
         },
         err => {
           call.destroy(
             createErrorStatusObject(
               definition.path,
               err,
-              context.trailer,
+              convertMetadataToGrpcJs(context.trailer),
             ) as any,
           );
         },

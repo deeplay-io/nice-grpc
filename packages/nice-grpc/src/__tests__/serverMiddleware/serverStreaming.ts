@@ -1,13 +1,15 @@
-import {status} from '@grpc/grpc-js';
+import getPort = require('get-port');
+import {
+  createChannel,
+  createClient,
+  createServer,
+  ServerError,
+  Status,
+} from '../..';
 import {TestService} from '../../../fixtures/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../../fixtures/test_pb';
-import {createChannel} from '../../client/channel';
-import {createClient} from '../../client/ClientFactory';
-import {createServer} from '../../server/Server';
-import {ServerError} from '../../server/ServerError';
 import {createTestServerMiddleware} from '../utils/testServerMiddleware';
 import {throwUnimplemented} from '../utils/throwUnimplemented';
-import getPort = require('get-port');
 
 test('basic', async () => {
   const actions: any[] = [];
@@ -100,7 +102,7 @@ test('error', async () => {
     testUnary: throwUnimplemented,
     async *testServerStream(request: TestRequest) {
       yield new TestResponse().setId(`${request.getId()}-0`);
-      throw new ServerError(status.NOT_FOUND, `${request.getId()}-1`);
+      throw new ServerError(Status.NOT_FOUND, `${request.getId()}-1`);
     },
     testClientStream: throwUnimplemented,
     testBidiStream: throwUnimplemented,

@@ -1,17 +1,20 @@
-import {Metadata, MetadataValue, status} from '@grpc/grpc-js';
 import getPort = require('get-port');
+import {
+  createChannel,
+  createClientFactory,
+  createServer,
+  Metadata,
+  ServerError,
+  Status,
+} from '../..';
 import {TestService} from '../../../fixtures/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../../fixtures/test_pb';
-import {createChannel} from '../../client/channel';
-import {createClientFactory} from '../../client/ClientFactory';
-import {createServer} from '../../server/Server';
-import {ServerError} from '../../server/ServerError';
 import {createTestClientMiddleware} from '../utils/testClientMiddleware';
 import {throwUnimplemented} from '../utils/throwUnimplemented';
 
 test('basic', async () => {
   const actions: any[] = [];
-  let metadataValue: MetadataValue | undefined;
+  let metadataValue: string | undefined;
 
   const server = createServer();
 
@@ -19,7 +22,7 @@ test('basic', async () => {
     testUnary: throwUnimplemented,
     testServerStream: throwUnimplemented,
     async testClientStream(request: AsyncIterable<TestRequest>, context) {
-      metadataValue = context.metadata.get('test')[0];
+      metadataValue = context.metadata.get('test');
 
       const requests: TestRequest[] = [];
 
@@ -43,7 +46,7 @@ test('basic', async () => {
     .use(createTestClientMiddleware('testOption', actions))
     .create(TestService, channel);
 
-  const metadata = new Metadata();
+  const metadata = Metadata();
   metadata.set('test', 'test-metadata-value');
 
   async function* createRequest() {
@@ -110,7 +113,7 @@ test('error', async () => {
     testServerStream: throwUnimplemented,
     async testClientStream(request: AsyncIterable<TestRequest>) {
       for await (const item of request) {
-        throw new ServerError(status.NOT_FOUND, item.getId());
+        throw new ServerError(Status.NOT_FOUND, item.getId());
       }
 
       return new TestResponse();

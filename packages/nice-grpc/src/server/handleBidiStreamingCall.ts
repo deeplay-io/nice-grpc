@@ -1,18 +1,29 @@
-import {handleBidiStreamingCall, MethodDefinition} from '@grpc/grpc-js';
+import {handleBidiStreamingCall} from '@grpc/grpc-js';
 import {isAbortError, waitForEvent} from 'abort-controller-x';
+import {
+  CallContext,
+  MethodDescriptor,
+  ServerMiddleware,
+} from 'nice-grpc-common';
+import {MethodDefinition} from '../service-definitions';
+import {convertMetadataToGrpcJs} from '../utils/convertMetadata';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
 import {readableToAsyncIterable} from '../utils/readableToAsyncIterable';
-import {CallContext, createCallContext} from './CallContext';
+import {createCallContext} from './createCallContext';
 import {createErrorStatusObject} from './createErrorStatusObject';
-import {ServerMiddleware} from './ServerMiddleware';
 import {BidiStreamingMethodImplementation} from './ServiceImplementation';
 
 /** @internal */
 export function createBidiStreamingMethodHandler<Request, Response>(
-  definition: MethodDefinition<Request, Response>,
+  definition: MethodDefinition<unknown, Request, Response, unknown>,
   implementation: BidiStreamingMethodImplementation<Request, Response>,
   middleware?: ServerMiddleware,
 ): handleBidiStreamingCall<Request, Response> {
+  const methodDescriptor: MethodDescriptor = {
+    path: definition.path,
+    options: definition.options,
+  };
+
   async function* bidiStreamingMethodHandler(
     request: AsyncIterable<Request>,
     context: CallContext,
@@ -32,7 +43,7 @@ export function createBidiStreamingMethodHandler<Request, Response>(
       : (request: AsyncIterable<Request>, context: CallContext) =>
           middleware(
             {
-              definition,
+              method: methodDescriptor,
               requestStream: true,
               request,
               responseStream: true,
@@ -87,14 +98,14 @@ export function createBidiStreamingMethodHandler<Request, Response>(
       })
       .then(
         () => {
-          call.end(context.trailer);
+          call.end(convertMetadataToGrpcJs(context.trailer));
         },
         err => {
           call.destroy(
             createErrorStatusObject(
               definition.path,
               err,
-              context.trailer,
+              convertMetadataToGrpcJs(context.trailer),
             ) as any,
           );
         },

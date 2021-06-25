@@ -1,8 +1,4 @@
-import {CallContext} from '../../server/CallContext';
-import {
-  ServerMiddleware,
-  ServerMiddlewareCall,
-} from '../../server/ServerMiddleware';
+import {CallContext, ServerMiddleware, ServerMiddlewareCall} from '../..';
 
 export function createTestServerMiddleware<Ext>(
   contextExt: Ext,

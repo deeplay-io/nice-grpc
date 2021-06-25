@@ -1,6 +1,5 @@
-import {status} from '@grpc/grpc-js';
-import {ServerError} from '../../server/ServerError';
+import {ServerError, Status} from '../..';
 
 export function throwUnimplemented(): never {
-  throw new ServerError(status.UNIMPLEMENTED, '');
+  throw new ServerError(Status.UNIMPLEMENTED, '');
 }

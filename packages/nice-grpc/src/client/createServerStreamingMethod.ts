@@ -1,20 +1,39 @@
-import {Client, Metadata, MethodDefinition} from '@grpc/grpc-js';
+import {Client} from '@grpc/grpc-js';
 import {throwIfAborted} from 'abort-controller-x';
+import {
+  CallOptions,
+  ClientMiddleware,
+  Metadata,
+  MethodDescriptor,
+} from 'nice-grpc-common';
 import AbortController from 'node-abort-controller';
+import {
+  MethodDefinition,
+  toGrpcJsMethodDefinition,
+} from '../service-definitions';
+import {
+  convertMetadataFromGrpcJs,
+  convertMetadataToGrpcJs,
+} from '../utils/convertMetadata';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
 import {readableToAsyncIterable} from '../utils/readableToAsyncIterable';
-import {CallOptions} from './CallOptions';
 import {ServerStreamingClientMethod} from './Client';
-import {wrapClientError} from './ClientError';
-import {ClientMiddleware} from './ClientMiddleware';
+import {wrapClientError} from './wrapClientError';
 
 /** @internal */
 export function createServerStreamingMethod<Request, Response>(
-  definition: MethodDefinition<Request, Response>,
+  definition: MethodDefinition<Request, unknown, unknown, Response>,
   client: Client,
   middleware: ClientMiddleware | undefined,
   defaultOptions: CallOptions,
 ): ServerStreamingClientMethod<Request, Response> {
+  const grpcMethodDefinition = toGrpcJsMethodDefinition(definition);
+
+  const methodDescriptor: MethodDescriptor = {
+    path: definition.path,
+    options: definition.options,
+  };
+
   async function* serverStreamingMethod(
     request: Request,
     options: CallOptions,
@@ -26,29 +45,25 @@ export function createServerStreamingMethod<Request, Response>(
     }
 
     const {
-      deadline,
-      metadata = new Metadata(),
+      metadata = Metadata(),
       signal = new AbortController().signal,
       onHeader,
       onTrailer,
     } = options;
 
     const call = client.makeServerStreamRequest(
-      definition.path,
-      definition.requestSerialize,
-      definition.responseDeserialize,
+      grpcMethodDefinition.path,
+      grpcMethodDefinition.requestSerialize,
+      grpcMethodDefinition.responseDeserialize,
       request,
-      metadata,
-      {
-        deadline,
-      },
+      convertMetadataToGrpcJs(metadata),
     );
 
     call.on('metadata', metadata => {
-      onHeader?.(metadata);
+      onHeader?.(convertMetadataFromGrpcJs(metadata));
     });
     call.on('status', status => {
-      onTrailer?.(status.metadata);
+      onTrailer?.(convertMetadataFromGrpcJs(status.metadata));
     });
 
     const abortListener = () => {
@@ -74,7 +89,7 @@ export function createServerStreamingMethod<Request, Response>(
       : (request: Request, options: CallOptions) =>
           middleware(
             {
-              definition,
+              method: methodDescriptor,
               requestStream: false,
               request,
               responseStream: true,

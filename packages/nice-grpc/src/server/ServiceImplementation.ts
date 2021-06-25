@@ -1,46 +1,58 @@
-import {MethodDefinition, ServiceDefinition} from '@grpc/grpc-js';
-import {CallContext} from './CallContext';
-import {KnownKeys} from '../utils/KnownKeys';
-import {MethodRequest, MethodResponse} from '../utils/methodTypes';
+import {CallContext} from 'nice-grpc-common';
+import {
+  CompatServiceDefinition,
+  MethodDefinition,
+  NormalizedServiceDefinition,
+  ServiceDefinition,
+} from '../service-definitions';
+import {MethodRequestOut, MethodResponseIn} from '../utils/methodTypes';
 
 export type ServiceImplementation<
+  Service extends CompatServiceDefinition,
+  CallContextExt = {}
+> = RawServiceImplementation<
+  NormalizedServiceDefinition<Service>,
+  CallContextExt
+>;
+
+export type RawServiceImplementation<
   Service extends ServiceDefinition,
   CallContextExt = {}
 > = {
-  [Method in KnownKeys<Service>]: MethodImplementation<
+  [Method in keyof Service]: MethodImplementation<
     Service[Method],
     CallContextExt
   >;
 };
 
 export type MethodImplementation<
-  Definition extends MethodDefinition<any, any>,
+  Definition extends MethodDefinition<any, any, any, any>,
   CallContextExt = {}
 > = Definition['requestStream'] extends false
   ? Definition['responseStream'] extends false
     ? UnaryMethodImplementation<
-        MethodRequest<Definition>,
-        MethodResponse<Definition>,
+        MethodRequestOut<Definition>,
+        MethodResponseIn<Definition>,
         CallContextExt
       >
     : Definition['responseStream'] extends true
     ? ServerStreamingMethodImplementation<
-        MethodRequest<Definition>,
-        MethodResponse<Definition>,
+        MethodRequestOut<Definition>,
+        MethodResponseIn<Definition>,
         CallContextExt
       >
     : never
   : Definition['requestStream'] extends true
   ? Definition['responseStream'] extends false
     ? ClientStreamingMethodImplementation<
-        MethodRequest<Definition>,
-        MethodResponse<Definition>,
+        MethodRequestOut<Definition>,
+        MethodResponseIn<Definition>,
         CallContextExt
       >
     : Definition['responseStream'] extends true
     ? BidiStreamingMethodImplementation<
-        MethodRequest<Definition>,
-        MethodResponse<Definition>,
+        MethodRequestOut<Definition>,
+        MethodResponseIn<Definition>,
         CallContextExt
       >
     : never

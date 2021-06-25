@@ -1,10 +1,8 @@
-import {Channel, Metadata} from '@grpc/grpc-js';
 import getPort = require('get-port');
+import {Channel} from '@grpc/grpc-js';
+import {createChannel, createClient, createServer, Metadata, Server} from '..';
 import {TestService} from '../../fixtures/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../fixtures/test_pb';
-import {createChannel} from '../client/channel';
-import {createClient} from '../client/ClientFactory';
-import {createServer, Server} from '../server/Server';
 import {throwUnimplemented} from './utils/throwUnimplemented';
 
 let server: Server;
@@ -15,7 +13,7 @@ beforeEach(async () => {
 
   server.add(TestService, {
     async testUnary(request: TestRequest, context) {
-      const metadataValue = context.metadata.get('test')[0].toString();
+      const metadataValue = context.metadata.get('test') ?? '';
       return new TestResponse().setId(metadataValue);
     },
     testServerStream: throwUnimplemented,
@@ -37,7 +35,7 @@ afterEach(async () => {
 });
 
 test('all methods', async () => {
-  const metadata = new Metadata();
+  const metadata = Metadata();
   metadata.set('test', 'test-value');
 
   const client = createClient(TestService, channel, {
@@ -55,10 +53,10 @@ test('all methods', async () => {
 });
 
 test('particular method', async () => {
-  const defaultMetadata = new Metadata();
+  const defaultMetadata = Metadata();
   defaultMetadata.set('test', 'test-default-value');
 
-  const metadata = new Metadata();
+  const metadata = Metadata();
   metadata.set('test', 'test-value');
 
   const client = createClient(TestService, channel, {
