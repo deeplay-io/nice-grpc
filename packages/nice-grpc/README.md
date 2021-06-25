@@ -29,7 +29,6 @@ A Node.js gRPC library that is nice to you. Built on top of
     - [Metadata](#metadata-1)
     - [Errors](#errors-1)
     - [Cancelling calls](#cancelling-calls-1)
-    - [Deadlines](#deadlines)
     - [Server streaming](#server-streaming-1)
     - [Client streaming](#client-streaming-1)
     - [Middleware](#middleware-1)
@@ -228,8 +227,8 @@ const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
 
 A server receives
 [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)
-that gets aborted once the call is cancelled by the client, or due to a
-deadline. You can use it to cancel any inner requests.
+that gets aborted once the call is cancelled by the client. You can use it to
+cancel any inner requests.
 
 ```ts
 import fetch from 'node-fetch';
@@ -708,10 +707,6 @@ client
 
 abortController.abort();
 ```
-
-#### Deadlines
-
-See [Deadline middleware](/packages/nice-grpc-client-middleware-deadline).
 
 #### Server streaming
 
