@@ -1546,7 +1546,7 @@ abbrev@1:
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
   integrity sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==
 
-abort-controller-x@^0.2.4:
+abort-controller-x@^0.2.4, abort-controller-x@^0.2.6:
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/abort-controller-x/-/abort-controller-x-0.2.6.tgz#708d5fc50a9bccfdf04ec70e562c925cc6f5b4ad"
   integrity sha512-U8MmmcfIzl7qnzoog1woxKX/eYkQin3WR7k/S2dtpGLlSlsndXnvOYQEq8y1VnHC3+ofNFAT0GRgHq1lBbXlDQ==
