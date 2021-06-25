@@ -9,19 +9,19 @@ import {MethodRequestIn, MethodResponseOut} from '../utils/methodTypes';
 
 export type Client<
   Service extends CompatServiceDefinition,
-  CallOptionsExt = {}
+  CallOptionsExt = {},
 > = RawClient<NormalizedServiceDefinition<Service>, CallOptionsExt>;
 
 export type RawClient<
   Service extends ServiceDefinition,
-  CallOptionsExt = {}
+  CallOptionsExt = {},
 > = {
   [Method in keyof Service]: ClientMethod<Service[Method], CallOptionsExt>;
 };
 
 export type ClientMethod<
   Definition extends MethodDefinition<any, any, any, any>,
-  CallOptionsExt = {}
+  CallOptionsExt = {},
 > = Definition['requestStream'] extends false
   ? Definition['responseStream'] extends false
     ? UnaryClientMethod<
@@ -52,34 +52,34 @@ export type ClientMethod<
     : never
   : never;
 
-export type UnaryClientMethod<RequestIn, ResponseOut, CallOptionsExt = {}> = (
-  request: RequestIn,
+export type UnaryClientMethod<Request, Response, CallOptionsExt = {}> = (
+  request: Request,
   options?: CallOptions & CallOptionsExt,
-) => Promise<ResponseOut>;
+) => Promise<Response>;
 
 export type ServerStreamingClientMethod<
-  RequestIn,
-  ResponseOut,
-  CallOptionsExt = {}
+  Request,
+  Response,
+  CallOptionsExt = {},
 > = (
-  request: RequestIn,
+  request: Request,
   options?: CallOptions & CallOptionsExt,
-) => AsyncIterable<ResponseOut>;
+) => AsyncIterable<Response>;
 
 export type ClientStreamingClientMethod<
-  RequestIn,
-  ResponseOut,
-  CallOptionsExt = {}
+  Request,
+  Response,
+  CallOptionsExt = {},
 > = (
-  request: AsyncIterable<RequestIn>,
+  request: AsyncIterable<Request>,
   options?: CallOptions & CallOptionsExt,
-) => Promise<ResponseOut>;
+) => Promise<Response>;
 
 export type BidiStreamingClientMethod<
-  RequestIn,
-  ResponseOut,
-  CallOptionsExt = {}
+  Request,
+  Response,
+  CallOptionsExt = {},
 > = (
-  request: AsyncIterable<RequestIn>,
+  request: AsyncIterable<Request>,
   options?: CallOptions & CallOptionsExt,
-) => AsyncIterable<ResponseOut>;
+) => AsyncIterable<Response>;
