@@ -1,7 +1,9 @@
 # nice-grpc-client-middleware-deadline [![npm version][npm-image]][npm-url]
 
-Deadline client middleware for
-[nice-grpc](https://github.com/deeplay-io/nice-grpc).
+Client middleware for [nice-grpc](https://github.com/deeplay-io/nice-grpc) that
+adds support for setting deadline for a call, after which the call will get
+cancelled, and a `ClientError` with status code `DEADLINE_EXCEEDED` will be
+thrown.
 
 ## Installation
 
