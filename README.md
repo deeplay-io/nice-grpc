@@ -15,3 +15,5 @@ A gRPC library that is nice to you.
 
 - [nice-grpc](/packages/nice-grpc) — server and client library for Node.js.
 - nice-grpc-web (coming soon) — client library for the Browser.
+- [nice-grpc-common](/packages/nice-grpc-web) — a package containing common data
+  structures and types for `nice-grpc` and `nice-grpc-web`.
