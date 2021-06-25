@@ -60,7 +60,7 @@ export type UnaryClientMethod<Request, Response, CallOptionsExt = {}> = (
 export type ServerStreamingClientMethod<
   Request,
   Response,
-  CallOptionsExt = {},
+  CallOptionsExt = {}
 > = (
   request: Request,
   options?: CallOptions & CallOptionsExt,
@@ -69,7 +69,7 @@ export type ServerStreamingClientMethod<
 export type ClientStreamingClientMethod<
   Request,
   Response,
-  CallOptionsExt = {},
+  CallOptionsExt = {}
 > = (
   request: AsyncIterable<Request>,
   options?: CallOptions & CallOptionsExt,
@@ -78,7 +78,7 @@ export type ClientStreamingClientMethod<
 export type BidiStreamingClientMethod<
   Request,
   Response,
-  CallOptionsExt = {},
+  CallOptionsExt = {}
 > = (
   request: AsyncIterable<Request>,
   options?: CallOptions & CallOptionsExt,
