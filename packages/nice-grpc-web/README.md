@@ -10,6 +10,7 @@ A Browser gRPC client library that is nice to you. Built on top of
     - [Using `google-protobuf`](#using-google-protobuf)
   - [Preparing the server](#preparing-the-server)
   - [Client](#client)
+    - [Call options](#call-options)
     - [Channels](#channels)
     - [Metadata](#metadata)
     - [Errors](#errors)
@@ -109,6 +110,34 @@ Call the method:
 ```ts
 const response = await client.exampleUnaryMethod(request);
 ```
+
+#### Call options
+
+Each client method accepts `CallOptions` as an optional second argument, that
+has type:
+
+```ts
+type CallOptions = {
+  /**
+   * Request metadata.
+   */
+  metadata?: Metadata;
+  /**
+   * Signal that cancels the call once aborted.
+   */
+  signal?: AbortSignal;
+  /**
+   * Called when header is received.
+   */
+  onHeader?(header: Metadata): void;
+  /**
+   * Called when trailer is received.
+   */
+  onTrailer?(trailer: Metadata): void;
+};
+```
+
+Call options may be augmented by [Middleware](#middleware).
 
 #### Channels
 
