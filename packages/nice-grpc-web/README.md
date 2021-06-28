@@ -139,6 +139,21 @@ type CallOptions = {
 
 Call options may be augmented by [Middleware](#middleware).
 
+When creating a client, you may specify default call options per method, or for
+all methods. This doesn't make much sense for built-in options, but may do for
+middleware.
+
+```ts
+const client = createClient(ExampleService, channel, {
+  '*': {
+    // applies for all methods
+  },
+  exampleUnaryMethod: {
+    // applies for single method
+  },
+});
+```
+
 #### Channels
 
 A channel is constructed from an address and optional transport. The following
