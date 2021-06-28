@@ -7,7 +7,6 @@ A Browser gRPC client library that is nice to you. Built on top of
 - [Installation](#installation)
 - [Usage](#usage)
   - [Compiling Protobuf files](#compiling-protobuf-files)
-    - [Using `ts-proto`](#using-ts-proto)
     - [Using `google-protobuf`](#using-google-protobuf)
   - [Preparing the server](#preparing-the-server)
   - [Client](#client)
@@ -38,35 +37,13 @@ npm install nice-grpc-web
 
 ### Compiling Protobuf files
 
-The recommended way is to use
-[`ts-proto`](https://github.com/stephenh/ts-proto).
-
-#### Using `ts-proto`
-
-Install necessary tools:
-
-```
-npm install protobufjs long
-npm install --save-dev grpc-tools ts-proto
-```
-
-Given a Protobuf file `./proto/example.proto`, generate TypeScript code into
-directory `./compiled_proto`:
-
-```
-./node_modules/.bin/grpc_tools_node_protoc \
-  --ts_proto_out=./compiled_proto \
-  --ts_proto_opt=outputServices=grpc-js \
-  ./proto/example.proto
-```
-
 #### Using `google-protobuf`
 
 Install necessary tools:
 
 ```
 npm install google-protobuf
-npm install --save-dev grpc-tools grpc_tools_node_protoc_ts @types/google-protobuf
+npm install --save-dev grpc-tools ts-protoc-gen @types/google-protobuf
 ```
 
 Given a Protobuf file `./proto/example.proto`, generate JS code and TypeScript
@@ -75,8 +52,7 @@ definitions into directory `./compiled_proto`:
 ```
 ./node_modules/.bin/grpc_tools_node_protoc \
   --js_out=import_style=commonjs,binary:./compiled_proto \
-  --ts_out=grpc_js:./compiled_proto \
-  --grpc_out=grpc_js:./compiled_proto \
+  --ts_out=service=grpc-web:./compiled_proto \
   ./proto/example.proto
 ```
 
@@ -131,11 +107,7 @@ const client = createClient(ExampleService, channel);
 Call the method:
 
 ```ts
-import {ExampleRequest, ExampleResponse} from './compiled_proto/example';
-
-const response: ExampleResponse = await client.exampleUnaryMethod(
-  ExampleRequest.fromPartial({}),
-);
+const response = await client.exampleUnaryMethod(request);
 ```
 
 #### Channels
@@ -151,8 +123,7 @@ createChannel('https://example.com:8080');
 createChannel('https://example.com:8080', grpc.CrossBrowserHttpTransport());
 ```
 
-If the port is omitted, it defaults to `80` for insecure connections, and `443`
-for secure connections.
+If the port is omitted, it defaults to `80` for `http`, and `443` for `https`.
 
 #### Metadata
 
@@ -161,21 +132,15 @@ Client can send request metadata and receive response header and trailer:
 ```ts
 import {Metadata} from 'nice-grpc-web';
 
-const metadata = Metadata();
-metadata.set('key', 'value');
-
-const response = await client.exampleUnaryMethod(
-  ExampleRequest.fromPartial({}),
-  {
-    metadata,
-    onHeader(header: Metadata) {
-      // ...
-    },
-    onTrailer(trailer: Metadata) {
-      // ...
-    },
+const response = await client.exampleUnaryMethod(request, {
+  metadata: Metadata({key: 'value'}),
+  onHeader(header: Metadata) {
+    // ...
   },
-);
+  onTrailer(trailer: Metadata) {
+    // ...
+  },
+});
 ```
 
 #### Errors
@@ -185,11 +150,12 @@ status code and description.
 
 ```ts
 import {ClientError, Status} from 'nice-grpc-web';
+import {ExampleResponse} from './compiled_proto/example';
 
 let response: ExampleResponse | null;
 
 try {
-  response = await client.exampleUnaryMethod(ExampleRequest.fromPartial({}));
+  response = await client.exampleUnaryMethod(request);
 } catch (error: unknown) {
   if (error instanceof ClientError && error.code === Status.NOT_FOUND) {
     response = null;
@@ -211,7 +177,7 @@ import {isAbortError} from 'abort-controller-x';
 const abortController = new AbortController();
 
 client
-  .exampleUnaryMethod(ExampleRequest.fromPartial({}), {
+  .exampleUnaryMethod(request, {
     signal: abortController.signal,
   })
   .catch(error => {
@@ -239,9 +205,7 @@ service ExampleService {
 Client method returns an Async Iterable:
 
 ```ts
-for await (const response of client.exampleStreamingMethod(
-  ExampleRequest.fromPartial({}),
-)) {
+for await (const response of client.exampleStreamingMethod(request)) {
   // ...
 }
 ```
@@ -260,9 +224,11 @@ service ExampleService {
 Client method expects an Async Iterable as its first argument:
 
 ```ts
+import {ExampleRequest} from './compiled_proto/example';
+
 async function* createRequest(): AsyncIterable<ExampleRequest> {
   for (let i = 0; i < 10; i++) {
-    yield ExampleRequest.fromPartial({});
+    yield request;
   }
 }
 
