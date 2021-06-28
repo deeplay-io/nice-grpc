@@ -1,4 +1,18 @@
-export * from 'nice-grpc-common';
+export {
+  CallOptions,
+  ClientError,
+  ClientMiddleware,
+  ClientMiddlewareCall,
+  ClientMiddlewareCallRequest,
+  ClientMiddlewareCallResponse,
+  composeClientMiddleware,
+  Metadata,
+  MetadataConstructor,
+  MetadataInit,
+  MetadataValue,
+  MethodDescriptor,
+  Status,
+} from 'nice-grpc-common';
 
 export * from './service-definitions';
 
