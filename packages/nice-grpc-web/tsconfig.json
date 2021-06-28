@@ -1,0 +1,16 @@
+{
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2018",
+    "lib": ["ES2018", "DOM"],
+    "outDir": "lib",
+    "sourceMap": true,
+    "declaration": true,
+    "stripInternal": true
+  },
+  "files": ["src/index.ts"],
+  "include": [
+    "src/**/__tests__/**/*.ts",
+    "src/**/*.test.ts"
+  ]
+}
