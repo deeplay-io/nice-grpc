@@ -9,7 +9,7 @@ this allows you to build an isomorphic client middleware (working on both
 Node.js and the Browser).
 
 For application code, use `nice-grpc` or `nice-grpc-web` directly. Both
-re-export all names from `nice-grpc-common`.
+re-export names from `nice-grpc-common`.
 
 ## Installation
 
