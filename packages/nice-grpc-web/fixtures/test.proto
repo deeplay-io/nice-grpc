@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package nice_grpc.test;
+
+service Test {
+  rpc TestUnary(TestRequest) returns(TestResponse){};
+  rpc TestServerStream(TestRequest) returns(stream TestResponse){};
+  rpc TestClientStream(stream TestRequest) returns(TestResponse){};
+  rpc TestBidiStream(stream TestRequest) returns(stream TestResponse){};
+}
+
+service Test2 {
+  rpc TestUnary(TestRequest) returns(TestResponse){};
+}
+
+message TestRequest {
+  string id = 1;
+}
+message TestResponse {
+  string id = 1;
+}
