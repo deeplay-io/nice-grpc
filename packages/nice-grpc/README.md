@@ -142,6 +142,22 @@ const exampleServiceImpl: ServiceImplementation<
 };
 ```
 
+Alternatively, you can use classes:
+
+```ts
+class ExampleServiceImpl
+  implements ServiceImplementation<typeof ExampleServiceDefinition>
+{
+  async exampleUnaryMethod(
+    request: ExampleRequest,
+  ): Promise<DeepPartial<ExampleResponse>> {
+    // ... method logic
+
+    return response;
+  }
+}
+```
+
 With `ts-proto`, response is automatically wrapped with `fromPartial`.
 
 When compiling Protobufs using `google-protobuf`:
@@ -161,22 +177,6 @@ const exampleServiceImpl: ServiceImplementation<IExampleService> = {
 ```
 
 Further examples use `ts-proto`.
-
-Alternatively, you can use classes:
-
-```ts
-class ExampleServiceImpl
-  implements ServiceImplementation<typeof ExampleServiceDefinition>
-{
-  async exampleUnaryMethod(
-    request: ExampleRequest,
-  ): Promise<DeepPartial<ExampleResponse>> {
-    // ... method logic
-
-    return response;
-  }
-}
-```
 
 Now we can create and start a server that exposes our service:
 
