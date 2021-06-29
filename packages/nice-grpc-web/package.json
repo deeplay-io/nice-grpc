@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-web",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Browser gRPC library that is nice to you",
   "keywords": [
     "grpc",
@@ -52,7 +52,7 @@
     "abort-controller-x": "^0.2.6",
     "ix": "^4.4.0",
     "js-base64": "^3.6.1",
-    "nice-grpc-common": "^1.0.0",
+    "nice-grpc-common": "^1.0.1",
     "node-abort-controller": "^2.0.0"
   }
 }
