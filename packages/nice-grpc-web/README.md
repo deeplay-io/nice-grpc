@@ -7,6 +7,7 @@ A Browser gRPC client library that is nice to you. Built on top of
 - [Installation](#installation)
 - [Usage](#usage)
   - [Compiling Protobuf files](#compiling-protobuf-files)
+    - [Using `ts-proto`](#using-ts-proto)
     - [Using `google-protobuf`](#using-google-protobuf)
   - [Preparing the server](#preparing-the-server)
   - [Client](#client)
@@ -37,6 +38,28 @@ npm install nice-grpc-web
 ## Usage
 
 ### Compiling Protobuf files
+
+The recommended way is to use
+[`ts-proto`](https://github.com/stephenh/ts-proto).
+
+#### Using `ts-proto`
+
+Install necessary tools:
+
+```
+npm install protobufjs long
+npm install --save-dev grpc-tools ts-proto
+```
+
+Given a Protobuf file `./proto/example.proto`, generate TypeScript code into
+directory `./compiled_proto`:
+
+```
+./node_modules/.bin/grpc_tools_node_protoc \
+  --ts_proto_out=./compiled_proto \
+  --ts_proto_opt=outputServices=generic-definitions,outputJsonMethods=false \
+  ./proto/example.proto
+```
 
 #### Using `google-protobuf`
 
@@ -96,20 +119,43 @@ message ExampleResponse {
 
 After compiling Protobuf file, we can create the client:
 
+When compiling Protobufs using `ts-proto`:
+
 ```ts
 import {createChannel, createClient} from 'nice-grpc-web';
-import {ExampleService} from './compiled_proto/example';
+import {ExampleServiceDefinition} from './compiled_proto/example';
 
 const channel = createChannel('http://localhost:8080');
 
-const client = createClient(ExampleService, channel);
+const client: Client<typeof ExampleServiceDefinition> = createClient(
+  ExampleServiceDefinition,
+  channel,
+);
 ```
+
+When compiling Protobufs using `google-protobuf`:
+
+```ts
+import {createChannel, createClient, Client} from 'nice-grpc';
+import {
+  ExampleService,
+  IExampleService,
+} from './compiled_proto/example_grpc_pb';
+
+const channel = createChannel('http://localhost:8080');
+
+const client: Client<IExampleService> = createClient(ExampleService, channel);
+```
+
+Further examples use `ts-proto`.
 
 Call the method:
 
 ```ts
 const response = await client.exampleUnaryMethod(request);
 ```
+
+With `ts-proto`, request is automatically wrapped with `fromPartial`.
 
 #### Call options
 
@@ -144,7 +190,7 @@ all methods. This doesn't make much sense for built-in options, but may do for
 middleware.
 
 ```ts
-const client = createClient(ExampleService, channel, {
+const client = createClient(ExampleServiceDefinition, channel, {
   '*': {
     // applies for all methods
   },
@@ -268,9 +314,9 @@ service ExampleService {
 Client method expects an Async Iterable as its first argument:
 
 ```ts
-import {ExampleRequest} from './compiled_proto/example';
+import {ExampleRequest, DeepPartial} from './compiled_proto/example';
 
-async function* createRequest(): AsyncIterable<ExampleRequest> {
+async function* createRequest(): AsyncIterable<DeepPartial<ExampleRequest>> {
   for (let i = 0; i < 10; i++) {
     yield request;
   }

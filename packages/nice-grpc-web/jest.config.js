@@ -1,5 +1,10 @@
 module.exports = {
-  testPathIgnorePatterns: ['/node_modules/', '/lib/', '/src/__tests__/utils/'],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/lib/',
+    '/src/__tests__/utils/',
+    '/fixtures/',
+  ],
   snapshotSerializers: ['./src/__tests__/utils/snapshotSerializer'],
   preset: 'ts-jest',
   testEnvironment: 'node',
