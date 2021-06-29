@@ -22,7 +22,6 @@ A Node.js gRPC library that is nice to you. Built on top of
       - [Example: Logging](#example-logging)
       - [Example: Error handling](#example-error-handling)
       - [Example: Authentication](#example-authentication)
-    - [Server Reflection](#server-reflection)
   - [Client](#client)
     - [Call options](#call-options)
     - [Channels](#channels)
@@ -635,11 +634,6 @@ const exampleServiceImpl: ServiceImplementation<
   },
 };
 ```
-
-#### Server Reflection
-
-See
-[deeplay-io/nice-grpc-server-reflection](https://github.com/deeplay-io/nice-grpc-server-reflection).
 
 ### Client
 
