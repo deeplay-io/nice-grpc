@@ -25,7 +25,7 @@ Add `ServerReflection` service implementation to gRPC server:
 ```ts
 import {createServer} from 'nice-grpc';
 import {
-  ServerReflectionDefinition,
+  ServerReflectionService,
   ServerReflection,
 } from 'nice-grpc-server-reflection';
 import * as fs from 'fs';
@@ -37,7 +37,7 @@ server.add(MyService, myServiceImpl);
 
 // add server reflection service
 server.add(
-  ServerReflectionDefinition,
+  ServerReflectionService,
   ServerReflection(
     fs.readFileSync(path.join('path', 'to', 'protoset.bin')),
     // specify fully-qualified names of exposed services

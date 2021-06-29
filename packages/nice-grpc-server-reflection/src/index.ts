@@ -6,115 +6,83 @@ import {
   FileDescriptorSet,
   MethodDescriptorProto,
   ServiceDescriptorProto,
-} from 'ts-proto-descriptors';
+} from 'google-protobuf/google/protobuf/descriptor_pb';
+import {IServerReflectionService} from './proto/grpc/reflection/v1alpha/reflection_grpc_pb';
 import {
-  DeepPartial,
-  ServerReflectionDefinition,
+  ErrorResponse,
+  FileDescriptorResponse,
+  ListServiceResponse,
   ServerReflectionRequest,
   ServerReflectionResponse,
-} from './proto/grpc/reflection/v1alpha/reflection';
+  ServiceResponse,
+} from './proto/grpc/reflection/v1alpha/reflection_pb';
 
-export {ServerReflectionDefinition};
-
-type FileDescriptor = {type: 'file'; value: FileDescriptorProto};
-type MessageDescriptor = {type: 'message'; value: DescriptorProto};
-type EnumDescriptor = {type: 'enum'; value: EnumDescriptorProto};
-type ServiceDescriptor = {type: 'service'; value: ServiceDescriptorProto};
-type MethodDescriptor = {type: 'method'; value: MethodDescriptorProto};
+export {ServerReflectionService} from './proto/grpc/reflection/v1alpha/reflection_grpc_pb';
 
 export function ServerReflection(
   protoset: Uint8Array,
   serviceNames: string[],
-): ServiceImplementation<typeof ServerReflectionDefinition> {
-  const fileDescriptorSet = FileDescriptorSet.decode(protoset);
+): ServiceImplementation<IServerReflectionService> {
+  const fileDescriptorSet = FileDescriptorSet.deserializeBinary(protoset);
 
   function findSymbol(
     symbol: string,
     descriptor:
-      | FileDescriptor
-      | MessageDescriptor
-      | EnumDescriptor
-      | ServiceDescriptor
-      | MethodDescriptor,
+      | FileDescriptorProto
+      | DescriptorProto
+      | EnumDescriptorProto
+      | ServiceDescriptorProto
+      | MethodDescriptorProto,
     prefix: string = '',
   ):
-    | MessageDescriptor
-    | EnumDescriptor
-    | ServiceDescriptor
-    | MethodDescriptor
+    | DescriptorProto
+    | EnumDescriptorProto
+    | ServiceDescriptorProto
+    | MethodDescriptorProto
     | undefined {
-    if (descriptor.type === 'file') {
-      const packageName = descriptor.value.package;
+    if (descriptor instanceof FileDescriptorProto) {
+      const packageName = descriptor.getPackage();
 
       const packagePrefix = packageName == null ? '' : `${packageName}.`;
 
-      const messageValue = descriptor.value.messageType.find(value =>
-        findSymbol(symbol, {type: 'message', value}, packagePrefix),
+      return (
+        descriptor
+          .getMessageTypeList()
+          .find(type => findSymbol(symbol, type, packagePrefix)) ||
+        descriptor
+          .getEnumTypeList()
+          .find(type => findSymbol(symbol, type, packagePrefix)) ||
+        descriptor
+          .getServiceList()
+          .find(type => findSymbol(symbol, type, packagePrefix))
       );
-
-      if (messageValue != null) {
-        return {type: 'message', value: messageValue};
-      }
-
-      const enumValue = descriptor.value.enumType.find(value =>
-        findSymbol(symbol, {type: 'enum', value}, packagePrefix),
-      );
-
-      if (enumValue != null) {
-        return {type: 'enum', value: enumValue};
-      }
-
-      const serviceValue = descriptor.value.service.find(value =>
-        findSymbol(symbol, {type: 'service', value}, packagePrefix),
-      );
-
-      if (serviceValue != null) {
-        return {type: 'service', value: serviceValue};
-      }
-
-      return undefined;
     }
 
-    const fullName = prefix + descriptor.value.name;
+    const fullName = prefix + descriptor.getName();
 
     if (symbol === fullName) {
       return descriptor;
     }
 
-    if (descriptor.type === 'message') {
+    if (descriptor instanceof DescriptorProto) {
       const messagePrefix = `${fullName}.`;
 
-      const messageValue = descriptor.value.nestedType.find(value =>
-        findSymbol(symbol, {type: 'message', value}, messagePrefix),
+      return (
+        descriptor
+          .getNestedTypeList()
+          .find(type => findSymbol(symbol, type, messagePrefix)) ||
+        descriptor
+          .getEnumTypeList()
+          .find(type => findSymbol(symbol, type, messagePrefix))
       );
-
-      if (messageValue != null) {
-        return {type: 'message', value: messageValue};
-      }
-
-      const enumValue = descriptor.value.enumType.find(value =>
-        findSymbol(symbol, {type: 'enum', value}, messagePrefix),
-      );
-
-      if (enumValue != null) {
-        return {type: 'enum', value: enumValue};
-      }
-
-      return undefined;
     }
 
-    if (descriptor.type === 'service') {
+    if (descriptor instanceof ServiceDescriptorProto) {
       const servicePrefix = `${fullName}`;
 
-      const methodValue = descriptor.value.method.find(value =>
-        findSymbol(symbol, {type: 'method', value}, servicePrefix),
-      );
-
-      if (methodValue != null) {
-        return {type: 'method', value: methodValue};
-      }
-
-      return undefined;
+      return descriptor
+        .getMethodList()
+        .find(method => findSymbol(symbol, method, servicePrefix));
     }
 
     return undefined;
@@ -122,144 +90,118 @@ export function ServerReflection(
 
   function handleRequest(
     request: ServerReflectionRequest,
-  ): DeepPartial<ServerReflectionResponse> {
-    switch (request.messageRequest?.$case) {
-      case 'fileByFilename': {
-        const filename = request.messageRequest.fileByFilename;
+  ): ServerReflectionResponse {
+    switch (request.getMessageRequestCase()) {
+      case ServerReflectionRequest.MessageRequestCase.FILE_BY_FILENAME: {
+        const filename = request.getFileByFilename();
 
-        const fileDescriptorProto = fileDescriptorSet.file.find(
-          file => file.name === filename,
-        );
-
-        if (fileDescriptorProto == null) {
-          return {
-            originalRequest: request,
-            messageResponse: {
-              $case: 'errorResponse',
-              errorResponse: {
-                errorCode: Status.NOT_FOUND,
-                errorMessage: `File not found: ${filename}`,
-              },
-            },
-          };
-        }
-
-        return {
-          originalRequest: request,
-          messageResponse: {
-            $case: 'fileDescriptorResponse',
-            fileDescriptorResponse: {
-              fileDescriptorProto: [
-                FileDescriptorProto.encode(fileDescriptorProto).finish(),
-              ],
-            },
-          },
-        };
-      }
-
-      case 'fileContainingSymbol': {
-        const symbol = request.messageRequest.fileContainingSymbol;
-
-        const fileDescriptorProto = fileDescriptorSet.file.find(
-          value => findSymbol(symbol, {type: 'file', value}) != null,
-        );
+        const fileDescriptorProto = fileDescriptorSet
+          .getFileList()
+          .find(file => file.getName() === filename);
 
         if (fileDescriptorProto == null) {
-          return {
-            originalRequest: request,
-            messageResponse: {
-              $case: 'errorResponse',
-              errorResponse: {
-                errorCode: Status.NOT_FOUND,
-                errorMessage: `Symbol not found: ${symbol}`,
-              },
-            },
-          };
-        }
-
-        return {
-          originalRequest: request,
-          messageResponse: {
-            $case: 'fileDescriptorResponse',
-            fileDescriptorResponse: {
-              fileDescriptorProto: [
-                FileDescriptorProto.encode(fileDescriptorProto).finish(),
-              ],
-            },
-          },
-        };
-      }
-
-      case 'fileContainingExtension': {
-        const {containingType, extensionNumber} =
-          request.messageRequest.fileContainingExtension;
-
-        const fileDescriptorProto = fileDescriptorSet.file.find(value => {
-          const descriptor = findSymbol(containingType, {type: 'file', value});
-
-          return (
-            descriptor?.type === 'message' &&
-            descriptor.value.extension.some(
-              extension => extensionNumber === extension.number,
-            )
+          return new ServerReflectionResponse().setErrorResponse(
+            new ErrorResponse()
+              .setErrorCode(Status.NOT_FOUND)
+              .setErrorMessage(`File not found: ${filename}`),
           );
-        });
-
-        if (fileDescriptorProto == null) {
-          return {
-            originalRequest: request,
-            messageResponse: {
-              $case: 'errorResponse',
-              errorResponse: {
-                errorCode: Status.NOT_FOUND,
-                errorMessage: `Extension not found: ${containingType}(${extensionNumber})`,
-              },
-            },
-          };
         }
 
-        return {
-          originalRequest: request,
-          messageResponse: {
-            $case: 'fileDescriptorResponse',
-            fileDescriptorResponse: {
-              fileDescriptorProto: [
-                FileDescriptorProto.encode(fileDescriptorProto).finish(),
-              ],
-            },
-          },
-        };
+        return new ServerReflectionResponse()
+          .setOriginalRequest(request)
+          .setFileDescriptorResponse(
+            new FileDescriptorResponse().setFileDescriptorProtoList([
+              fileDescriptorProto.serializeBinary(),
+            ]),
+          );
       }
 
-      case 'listServices': {
-        return {
-          originalRequest: request,
-          messageResponse: {
-            $case: 'listServicesResponse',
-            listServicesResponse: {
-              service: serviceNames.map(serviceName => ({name: serviceName})),
-            },
-          },
-        };
+      case ServerReflectionRequest.MessageRequestCase.FILE_CONTAINING_SYMBOL: {
+        const symbol = request.getFileContainingSymbol();
+
+        const fileDescriptorProto = fileDescriptorSet
+          .getFileList()
+          .find(file => findSymbol(symbol, file) != null);
+
+        if (fileDescriptorProto == null) {
+          return new ServerReflectionResponse().setErrorResponse(
+            new ErrorResponse()
+              .setErrorCode(Status.NOT_FOUND)
+              .setErrorMessage(`Symbol not found: ${symbol}`),
+          );
+        }
+
+        return new ServerReflectionResponse()
+          .setOriginalRequest(request)
+          .setFileDescriptorResponse(
+            new FileDescriptorResponse().setFileDescriptorProtoList([
+              fileDescriptorProto.serializeBinary(),
+            ]),
+          );
+      }
+
+      case ServerReflectionRequest.MessageRequestCase
+        .FILE_CONTAINING_EXTENSION: {
+        const extensionRequest = request.getFileContainingExtension()!;
+        const containingType = extensionRequest.getContainingType();
+        const extensionNumber = extensionRequest.getExtensionNumber();
+
+        const fileDescriptorProto = fileDescriptorSet
+          .getFileList()
+          .find(file => {
+            const descriptor = findSymbol(containingType, file);
+
+            return (
+              descriptor instanceof DescriptorProto &&
+              descriptor
+                .getExtensionList()
+                .some(extension => extensionNumber === extension.getNumber())
+            );
+          });
+
+        if (fileDescriptorProto == null) {
+          return new ServerReflectionResponse().setErrorResponse(
+            new ErrorResponse()
+              .setErrorCode(Status.NOT_FOUND)
+              .setErrorMessage(
+                `Extension not found: ${containingType}(${extensionNumber})`,
+              ),
+          );
+        }
+
+        return new ServerReflectionResponse()
+          .setOriginalRequest(request)
+          .setFileDescriptorResponse(
+            new FileDescriptorResponse().setFileDescriptorProtoList([
+              fileDescriptorProto.serializeBinary(),
+            ]),
+          );
+      }
+
+      case ServerReflectionRequest.MessageRequestCase.LIST_SERVICES: {
+        return new ServerReflectionResponse()
+          .setOriginalRequest(request)
+          .setListServicesResponse(
+            new ListServiceResponse().setServiceList(
+              serviceNames.map(serviceName =>
+                new ServiceResponse().setName(serviceName),
+              ),
+            ),
+          );
       }
     }
 
-    return {
-      originalRequest: request,
-      messageResponse: {
-        $case: 'errorResponse',
-        errorResponse: {
-          errorCode: Status.UNIMPLEMENTED,
-          errorMessage: 'Not implemented',
-        },
-      },
-    };
+    return new ServerReflectionResponse().setErrorResponse(
+      new ErrorResponse()
+        .setErrorCode(Status.UNIMPLEMENTED)
+        .setErrorMessage('Not implemented'),
+    );
   }
 
   return {
     async *serverReflectionInfo(
       requests: AsyncIterable<ServerReflectionRequest>,
-    ): AsyncIterable<DeepPartial<ServerReflectionResponse>> {
+    ): AsyncIterable<ServerReflectionResponse> {
       for await (const request of requests) {
         yield handleRequest(request);
       }
