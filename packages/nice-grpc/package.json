@@ -21,7 +21,9 @@
     "test": "jest",
     "build": "tsc -P tsconfig.build.json",
     "prepublishOnly": "npm run clean && npm run build && npm test",
-    "prepare:proto": "grpc_tools_node_protoc --plugin=protoc-gen-grpc=./node_modules/.bin/grpc_tools_node_protoc_plugin --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./fixtures --ts_out=grpc_js:./fixtures --grpc_out=grpc_js:./fixtures -I fixtures fixtures/*.proto",
+    "prepare:proto:grpc-js": "mkdirp ./fixtures/grpc-js && grpc_tools_node_protoc --plugin=protoc-gen-grpc=./node_modules/.bin/grpc_tools_node_protoc_plugin --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./fixtures/grpc-js --ts_out=grpc_js:./fixtures/grpc-js --grpc_out=grpc_js:./fixtures/grpc-js -I fixtures fixtures/*.proto",
+    "prepare:proto:ts-proto": "mkdirp ./fixtures/ts-proto && grpc_tools_node_protoc --ts_proto_out=./fixtures/ts-proto --ts_proto_opt=outputServices=generic-definitions,esModuleInterop=true -I fixtures fixtures/*.proto",
+    "prepare:proto": "npm run prepare:proto:grpc-js && npm run prepare:proto:ts-proto",
     "prepare": "npm run prepare:proto"
   },
   "author": "Daniel Lytkin <aikoven@deeplay.io>",
@@ -36,7 +38,9 @@
     "google-protobuf": "^3.14.0",
     "grpc-tools": "^1.10.0",
     "grpc_tools_node_protoc_ts": "^5.0.1",
-    "rimraf": "^2.6.3"
+    "mkdirp": "^1.0.4",
+    "rimraf": "^2.6.3",
+    "ts-proto": "^1.82.0"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.2.6",

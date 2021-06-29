@@ -71,7 +71,7 @@ directory `./compiled_proto`:
 ```
 ./node_modules/.bin/grpc_tools_node_protoc \
   --ts_proto_out=./compiled_proto \
-  --ts_proto_opt=outputServices=grpc-js \
+  --ts_proto_opt=outputServices=generic-definitions \
   ./proto/example.proto
 ```
 
@@ -118,15 +118,40 @@ message ExampleResponse {
 
 After compiling Protobuf file, we can write service implementation:
 
+When compiling Protobufs using `ts-proto`:
+
 ```ts
 import {ServiceImplementation} from 'nice-grpc';
 import {
-  ExampleService,
+  ExampleServiceDefinition,
   ExampleRequest,
   ExampleResponse,
+  DeepPartial,
 } from './compiled_proto/example';
 
-const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
+const exampleServiceImpl: ServiceImplementation<
+  typeof ExampleServiceDefinition
+> = {
+  async exampleUnaryMethod(
+    request: ExampleRequest,
+  ): Promise<DeepPartial<ExampleResponse>> {
+    // ... method logic
+
+    return response;
+  },
+};
+```
+
+With `ts-proto`, response is automatically wrapped with `fromPartial`.
+
+When compiling Protobufs using `google-protobuf`:
+
+```ts
+import {ServiceImplementation} from 'nice-grpc';
+import {ExampleRequest, ExampleResponse} from './compiled_proto/example_pb';
+import {IExampleService} from './compiled_proto/example_grpc_pb';
+
+const exampleServiceImpl: ServiceImplementation<IExampleService> = {
   async exampleUnaryMethod(request: ExampleRequest): Promise<ExampleResponse> {
     // ... method logic
 
@@ -135,13 +160,17 @@ const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
 };
 ```
 
+Further examples use `ts-proto`.
+
 Alternatively, you can use classes:
 
 ```ts
 class ExampleServiceImpl
-  implements ServiceImplementation<typeof ExampleService>
+  implements ServiceImplementation<typeof ExampleServiceDefinition>
 {
-  async exampleUnaryMethod(request: ExampleRequest): Promise<ExampleResponse> {
+  async exampleUnaryMethod(
+    request: ExampleRequest,
+  ): Promise<DeepPartial<ExampleResponse>> {
     // ... method logic
 
     return response;
@@ -153,11 +182,11 @@ Now we can create and start a server that exposes our service:
 
 ```ts
 import {createServer} from 'nice-grpc';
-import {ExampleService} from './compiled_proto/example';
+import {ExampleServiceDefinition} from './compiled_proto/example';
 
 const server = createServer();
 
-server.add(ExampleService, exampleServiceImpl);
+server.add(ExampleServiceDefinition, exampleServiceImpl);
 
 await server.listen('0.0.0.0:8080');
 ```
@@ -219,8 +248,12 @@ the correct usage of status codes.
 ```ts
 import {ServerError, Status} from 'nice-grpc';
 
-const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
-  async exampleUnaryMethod(request: ExampleRequest): Promise<ExampleResponse> {
+const exampleServiceImpl: ServiceImplementation<
+  typeof ExampleServiceDefinition
+> = {
+  async exampleUnaryMethod(
+    request: ExampleRequest,
+  ): Promise<DeepPartial<ExampleResponse>> {
     // ... method logic
 
     throw new ServerError(Status.NOT_FOUND, 'Requested data does not exist');
@@ -234,11 +267,13 @@ A server receives client metadata along with request, and can send response
 metadata in header and trailer.
 
 ```ts
-const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
+const exampleServiceImpl: ServiceImplementation<
+  typeof ExampleServiceDefinition
+> = {
   async exampleUnaryMethod(
     request: ExampleRequest,
     context: CallContext,
-  ): Promise<ExampleResponse> {
+  ): Promise<DeepPartial<ExampleResponse>> {
     // read client metadata
     const someValue = context.metadata.get('some-key');
 
@@ -265,11 +300,13 @@ cancel any inner requests.
 ```ts
 import fetch from 'node-fetch';
 
-const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
+const exampleServiceImpl: ServiceImplementation<
+  typeof ExampleServiceDefinition
+> = {
   async exampleUnaryMethod(
     request: ExampleRequest,
     context: CallContext,
-  ): Promise<ExampleResponse> {
+  ): Promise<DeepPartial<ExampleResponse>> {
     const response = await fetch('http://example.com', {
       signal: context.signal,
     });
@@ -295,11 +332,13 @@ Service implementation defines this method as an Async Generator:
 ```ts
 import {delay} from 'abort-controller-x';
 
-const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
+const exampleServiceImpl: ServiceImplementation<
+  typeof ExampleServiceDefinition
+> = {
   async *exampleStreamingMethod(
     request: ExampleRequest,
     context: CallContext,
-  ): AsyncIterable<ExampleResponse> {
+  ): AsyncIterable<DeepPartial<ExampleResponse>> {
     for (let i = 0; i < 10; i++) {
       await delay(context.signal, 1000);
 
@@ -315,11 +354,13 @@ const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
 import {range} from 'ix/asynciterable';
 import {withAbort, map} from 'ix/asynciterable/operators';
 
-const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
+const exampleServiceImpl: ServiceImplementation<
+  typeof ExampleServiceDefinition
+> = {
   async *exampleStreamingMethod(
     request: ExampleRequest,
     context: CallContext,
-  ): AsyncIterable<ExampleResponse> {
+  ): AsyncIterable<DeepPartial<ExampleResponse>> {
     yield* range(0, 10).pipe(
       withAbort(context.signal),
       map(() => response),
@@ -335,12 +376,14 @@ import {Observable} from 'rxjs';
 import {from} from 'ix/asynciterable';
 import {withAbort} from 'ix/asynciterable/operators';
 
-const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
+const exampleServiceImpl: ServiceImplementation<
+  typeof ExampleServiceDefinition
+> = {
   async *exampleStreamingMethod(
     request: ExampleRequest,
     context: CallContext,
-  ): AsyncIterable<ExampleResponse> {
-    const observable: Observable<ExampleResponse>;
+  ): AsyncIterable<DeepPartial<ExampleResponse>> {
+    const observable: Observable<DeepPartial<ExampleResponse>>;
 
     yield* from(observable).pipe(withAbort(context.signal));
   },
@@ -361,10 +404,12 @@ service ExampleService {
 Service implementation method receives request as an Async Iterable:
 
 ```ts
-const exampleServiceImpl: ServiceImplementation<typeof ExampleService> = {
+const exampleServiceImpl: ServiceImplementation<
+  typeof ExampleServiceDefinition
+> = {
   async exampleUnaryMethod(
     request: AsyncIterable<ExampleRequest>,
-  ): Promise<ExampleResponse> {
+  ): Promise<DeepPartial<ExampleResponse>> {
     for await (const item of request) {
       // ...
     }
@@ -577,13 +622,13 @@ Service implementation can then access JWT claims via call context:
 
 ```ts
 const exampleServiceImpl: ServiceImplementation<
-  typeof ExampleService,
+  typeof ExampleServiceDefinition,
   AuthCallContextExt
 > = {
   async exampleUnaryMethod(
     request: ExampleRequest,
     context: CallContext & AuthCallContextExt,
-  ): Promise<ExampleResponse> {
+  ): Promise<DeepPartial<ExampleResponse>> {
     const userId = context.auth.sub;
 
     // ...
@@ -619,20 +664,43 @@ message ExampleResponse {
 
 After compiling Protobuf file, we can create the client:
 
+When compiling Protobufs using `ts-proto`:
+
 ```ts
-import {createChannel, createClient} from 'nice-grpc';
-import {ExampleService} from './compiled_proto/example';
+import {createChannel, createClient, Client} from 'nice-grpc';
+import {ExampleServiceDefinition} from './compiled_proto/example';
 
 const channel = createChannel('localhost:8080');
 
-const client = createClient(ExampleService, channel);
+const client: Client<typeof ExampleServiceDefinition> = createClient(
+  ExampleServiceDefinition,
+  channel,
+);
 ```
+
+When compiling Protobufs using `google-protobuf`:
+
+```ts
+import {createChannel, createClient, Client} from 'nice-grpc';
+import {
+  ExampleService,
+  IExampleService,
+} from './compiled_proto/example_grpc_pb';
+
+const channel = createChannel('localhost:8080');
+
+const client: Client<IExampleService> = createClient(ExampleService, channel);
+```
+
+Further examples use `ts-proto`.
 
 Call the method:
 
 ```ts
 const response = await client.exampleUnaryMethod(request);
 ```
+
+With `ts-proto`, request is automatically wrapped with `fromPartial`.
 
 Once we've done with the client, close the channel:
 
@@ -673,7 +741,7 @@ all methods. This doesn't make much sense for built-in options, but may do for
 middleware.
 
 ```ts
-const client = createClient(ExampleService, channel, {
+const client = createClient(ExampleServiceDefinition, channel, {
   '*': {
     // applies for all methods
   },
@@ -804,9 +872,9 @@ service ExampleService {
 Client method expects an Async Iterable as its first argument:
 
 ```ts
-import {ExampleRequest} from './compiled_proto/example';
+import {ExampleRequest, DeepPartial} from './compiled_proto/example';
 
-async function* createRequest(): AsyncIterable<ExampleRequest> {
+async function* createRequest(): AsyncIterable<DeepPartial<ExampleRequest>> {
   for (let i = 0; i < 10; i++) {
     yield request;
   }

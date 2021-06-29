@@ -7,8 +7,8 @@ import {
   ServiceImplementation,
   Status,
 } from '..';
-import {ITestService, TestService} from '../../fixtures/test_grpc_pb';
-import {TestRequest, TestResponse} from '../../fixtures/test_pb';
+import {ITestService, TestService} from '../../fixtures/grpc-js/test_grpc_pb';
+import {TestRequest, TestResponse} from '../../fixtures/grpc-js/test_pb';
 
 test('server class', async () => {
   const server = createServer();
