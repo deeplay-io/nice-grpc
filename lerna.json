@@ -1,13 +1,17 @@
 {
-  "packages": [
-    "packages/*"
-  ],
+  "packages": ["packages/*"],
   "version": "independent",
   "npmClient": "yarn",
   "useWorkspaces": true,
   "command": {
     "version": {
       "allowBranch": "master",
+      "ignoreChanges": [
+        "**/fixtures/**",
+        "**/__tests__/**",
+        "**/*.test.ts",
+        "**/*.md"
+      ],
       "conventionalCommits": true,
       "createRelease": "github",
       "message": "chore(release): publish"
