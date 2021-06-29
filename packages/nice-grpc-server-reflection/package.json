@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-server-reflection",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Server reflection for nice-grpc",
   "keywords": [
     "grpc",
