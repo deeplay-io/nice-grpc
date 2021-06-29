@@ -4,6 +4,12 @@ import {
   FromGrpcJsServiceDefinition,
   isGrpcJsServiceDefinition,
 } from './grpc-js';
+import {
+  fromTsProtoServiceDefinition,
+  FromTsProtoServiceDefinition,
+  isTsProtoServiceDefinition,
+  TsProtoServiceDefinition,
+} from './ts-proto';
 
 export type ServiceDefinition = {
   [method: string]: AnyMethodDefinition;
@@ -33,7 +39,8 @@ export type AnyMethodDefinition = MethodDefinition<any, any, any, any>;
 
 export type CompatServiceDefinition =
   | ServiceDefinition
-  | grpc.ServiceDefinition;
+  | grpc.ServiceDefinition
+  | TsProtoServiceDefinition;
 
 export type NormalizedServiceDefinition<
   Service extends CompatServiceDefinition,
@@ -41,6 +48,8 @@ export type NormalizedServiceDefinition<
   ? Service
   : Service extends grpc.ServiceDefinition
   ? FromGrpcJsServiceDefinition<Service>
+  : Service extends TsProtoServiceDefinition
+  ? FromTsProtoServiceDefinition<Service>
   : never;
 
 /** @internal */
@@ -49,6 +58,8 @@ export function normalizeServiceDefinition(
 ): ServiceDefinition {
   if (isGrpcJsServiceDefinition(definition)) {
     return fromGrpcJsServiceDefinition(definition);
+  } else if (isTsProtoServiceDefinition(definition)) {
+    return fromTsProtoServiceDefinition(definition);
   } else {
     return definition;
   }

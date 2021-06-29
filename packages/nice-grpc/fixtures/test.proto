@@ -10,7 +10,9 @@ service Test {
 }
 
 service Test2 {
-  rpc TestUnary(TestRequest) returns(TestResponse){};
+  rpc TestUnary(TestRequest) returns(TestResponse){
+    option idempotency_level = IDEMPOTENT;
+  };
 }
 
 message TestRequest {
