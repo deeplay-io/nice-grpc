@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-common",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Common stuff for nice-grpc and nice-grpc-web",
   "repository": "deeplay-io/nice-grpc",
   "main": "lib/index.js",
@@ -20,7 +20,7 @@
   "author": "Daniel Lytkin <aikoven@deeplay.io>",
   "license": "MIT",
   "devDependencies": {
-    "@tsconfig/recommended": "^1.0.1"    
+    "@tsconfig/recommended": "^1.0.1"
   },
   "dependencies": {
     "node-abort-controller": "^2.0.0"
