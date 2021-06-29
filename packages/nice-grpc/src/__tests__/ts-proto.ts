@@ -75,23 +75,25 @@ test('middleware', async () => {
           }
         `);
   expect(middlewareCalls).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "method": Object {
-          "options": Object {
-            "idempotencyLevel": "IDEMPOTENT",
-          },
-          "path": "/nice_grpc.test.Test2/TestUnary",
-        },
-        "next": [Function],
-        "request": Object {
-          "id": "test",
-        },
-        "requestStream": false,
-        "responseStream": false,
+Array [
+  Object {
+    "method": Object {
+      "options": Object {
+        "idempotencyLevel": "IDEMPOTENT",
       },
-    ]
-  `);
+      "path": "/nice_grpc.test.Test2/TestUnary",
+      "requestStream": false,
+      "responseStream": false,
+    },
+    "next": [Function],
+    "request": Object {
+      "id": "test",
+    },
+    "requestStream": false,
+    "responseStream": false,
+  },
+]
+`);
 
   channel.close();
 

@@ -32,6 +32,8 @@ export function createUnaryMethod<Request, Response>(
 
   const methodDescriptor: MethodDescriptor = {
     path: definition.path,
+    requestStream: definition.requestStream,
+    responseStream: definition.responseStream,
     options: definition.options,
   };
 
