@@ -4,6 +4,12 @@ import {
   FromGrpcWebServiceDefinition,
   isGrpcWebServiceDefinition,
 } from './grpc-web';
+import {
+  fromTsProtoServiceDefinition,
+  FromTsProtoServiceDefinition,
+  isTsProtoServiceDefinition,
+  TsProtoServiceDefinition,
+} from './ts-proto';
 
 export type ServiceDefinition = {
   [method: string]: AnyMethodDefinition;
@@ -15,7 +21,7 @@ export type MethodDefinition<
   ResponseIn,
   ResponseOut,
   RequestStream extends boolean = boolean,
-  ResponseStream extends boolean = boolean,
+  ResponseStream extends boolean = boolean
 > = {
   path: string;
   requestStream: RequestStream;
@@ -33,14 +39,17 @@ export type AnyMethodDefinition = MethodDefinition<any, any, any, any>;
 
 export type CompatServiceDefinition =
   | ServiceDefinition
-  | grpc.ServiceDefinition;
+  | grpc.ServiceDefinition
+  | TsProtoServiceDefinition;
 
 export type NormalizedServiceDefinition<
-  Service extends CompatServiceDefinition,
+  Service extends CompatServiceDefinition
 > = Service extends ServiceDefinition
   ? Service
   : Service extends grpc.ServiceDefinition
   ? FromGrpcWebServiceDefinition<Service>
+  : Service extends TsProtoServiceDefinition
+  ? FromTsProtoServiceDefinition<Service>
   : never;
 
 /** @internal */
@@ -49,6 +58,8 @@ export function normalizeServiceDefinition(
 ): ServiceDefinition {
   if (isGrpcWebServiceDefinition(definition)) {
     return fromGrpcWebServiceDefinition(definition);
+  } else if (isTsProtoServiceDefinition(definition)) {
+    return fromTsProtoServiceDefinition(definition);
   } else {
     return definition;
   }
