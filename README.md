@@ -19,3 +19,6 @@ A gRPC library that is nice to you.
   data structures and types for `nice-grpc` and `nice-grpc-web`.
 - [nice-grpc-client-middleware-deadline](/packages/nice-grpc-client-middleware-deadline)
   — client middleware that adds support for setting call deadline.
+- [nice-grpc-server-reflection](/packages/nice-grpc-server-reflection) —
+  [Server Reflection](https://github.com/grpc/grpc/blob/master/doc/server-reflection.md)
+  support.

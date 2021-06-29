@@ -1,0 +1,13 @@
+{
+  "extends": "@tsconfig/node12/tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2018",
+    "outDir": "lib",
+    "sourceMap": true,
+    "declaration": true,
+    "stripInternal": true,
+    "esModuleInterop": false
+  },
+  "files": ["src/index.ts"],
+  "include": ["src/**/*.test.ts", "src/**/__tests__/**/*.ts"]
+}
