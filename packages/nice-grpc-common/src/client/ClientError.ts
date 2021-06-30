@@ -13,7 +13,9 @@ export class ClientError extends Error {
       value: true,
     });
 
-    Error.captureStackTrace(this, this.constructor);
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
   }
 
   static [Symbol.hasInstance](instance: unknown) {
