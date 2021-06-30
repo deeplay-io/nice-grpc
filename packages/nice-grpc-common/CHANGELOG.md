@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-common@1.0.1...nice-grpc-common@1.0.2) (2021-06-30)
+
+
+### Bug Fixes
+
+* **nice-grpc-common:** check availability of Error.captureStackTrace before using it ([#17](https://github.com/deeplay-io/nice-grpc/issues/17)) ([358d18d](https://github.com/deeplay-io/nice-grpc/commit/358d18d7c6c8ee564a6035554b7cd131561e61e9))
+
+
+
+
+
 ## [1.0.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-common@1.0.0...nice-grpc-common@1.0.1) (2021-06-29)
 
 
