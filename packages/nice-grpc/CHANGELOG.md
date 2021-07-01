@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.3](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@1.0.2...nice-grpc@1.0.3) (2021-07-01)
+
+
+### Bug Fixes
+
+* **nice-grpc:** add missing re-exports of Channel and ChannelOptions from `@grpc/grpc-js` ([d7c1ac1](https://github.com/deeplay-io/nice-grpc/commit/d7c1ac19b5f2a3c56515157e35a01b63469ea7cf))
+
+
+
+
+
 ## [1.0.2](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@1.0.1...nice-grpc@1.0.2) (2021-06-30)
 
 **Note:** Version bump only for package nice-grpc
