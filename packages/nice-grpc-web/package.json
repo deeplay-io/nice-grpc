@@ -5,7 +5,10 @@
   "keywords": [
     "grpc",
     "promise",
-    "async-iterable"
+    "async-iterable",
+    "abort-controller",
+    "abort-signal",
+    "typescript"
   ],
   "repository": "deeplay-io/nice-grpc",
   "main": "lib/index.js",
