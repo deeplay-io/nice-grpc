@@ -9,7 +9,7 @@ the returned promise only resolves once all inflight requests finish. If you
 have a long-running call like an infinite stream, the shutdown will block until
 the client cancels the call. With this middleware, service implementation
 methods can alter this behavior, so that on shutdown the call would be aborted
-and clients would receive status code `UNAVAILABLE`.
+and clients would receive gRPC error `UNAVAILABLE: Server shutting down`.
 
 ## Installation
 
@@ -48,11 +48,8 @@ const exampleServiceImpl: ServiceImplementation<
     context: CallContext & TerminatorContext,
   ): AsyncIterable<DeepPartial<ExampleResponse>> {
     // When `terminatorMiddleware.terminate()` is called, `context.signal` will
-    // be aborted and the client would receive gRPC error
-    // `UNAVAILABLE: Server shutting down`.
-    //
-    // Note that the method is still responsible for aborting all the work once
-    // `context.signal` is aborted.
+    // be aborted. Note that the method is still responsible for aborting all
+    // the work once `context.signal` is aborted.
     context.abortOnTerminate();
 
     while (true) {
