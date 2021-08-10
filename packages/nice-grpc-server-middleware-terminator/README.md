@@ -6,10 +6,10 @@ shutdown.
 
 When `server.shutdown()` is called, the server stops accepting new calls, but
 the returned promise only resolves once all inflight requests finish. If you
-have a long-running call like an infinite stream, the shutdown will block
-forever. With this middleware, service implementation methods can alter this
-behavior, so that on shutdown the call would be aborted and clients would
-receive status code `UNAVAILABLE`.
+have a long-running call like an infinite stream, the shutdown will block until
+the client cancels the call. With this middleware, service implementation
+methods can alter this behavior, so that on shutdown the call would be aborted
+and clients would receive status code `UNAVAILABLE`.
 
 ## Installation
 
