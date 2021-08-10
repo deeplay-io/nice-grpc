@@ -1,6 +1,7 @@
 import {forever, isAbortError} from 'abort-controller-x';
 import defer from 'defer-promise';
 import {createChannel, createClient, createServer} from 'nice-grpc';
+import AbortController from 'node-abort-controller';
 import {TerminatorMiddleware} from '.';
 import {TestDefinition} from '../fixtures/test';
 
