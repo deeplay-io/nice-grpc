@@ -1,0 +1,37 @@
+{
+  "name": "nice-grpc-server-middleware-terminator",
+  "version": "1.0.0",
+  "description": "Server middleware for nice-grpc to terminate long-running calls on shutdown",
+  "repository": "deeplay-io/nice-grpc",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "src",
+    "!src/**/*.test.ts",
+    "!src/**/__tests__"
+  ],
+  "scripts": {
+    "clean": "rimraf lib",
+    "test": "jest",
+    "build": "tsc -P tsconfig.build.json",
+    "prepublishOnly": "npm run clean && npm run build && npm test",
+    "build:proto": "grpc_tools_node_protoc --ts_proto_out=./fixtures --ts_proto_opt=outputServices=generic-definitions,esModuleInterop=true -I fixtures fixtures/*.proto",
+    "prepare": "npm run build:proto"
+  },
+  "author": "Daniel Lytkin <aikoven@deeplay.io>",
+  "license": "MIT",
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.1",
+    "@types/defer-promise": "^1.0.0",
+    "abort-controller-x": "^0.2.6",
+    "defer-promise": "^2.0.1",
+    "grpc-tools": "^1.10.0",
+    "nice-grpc": "^1.0.3",
+    "ts-proto": "^1.82.0"
+  },
+  "dependencies": {
+    "nice-grpc-common": "^1.0.2",
+    "node-abort-controller": "^2.0.0"
+  }
+}
