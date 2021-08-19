@@ -73,6 +73,8 @@ export function HealthServiceImpl(
           };
         }
 
+        lastStatus = status;
+
         await waitForEvent<HealthStatusChangeEvent>(
           context.signal,
           healthState,
