@@ -20,7 +20,7 @@ A gRPC library that is nice to you.
 - [nice-grpc-client-middleware-deadline](/packages/nice-grpc-client-middleware-deadline)
   — client middleware that adds support for setting call deadline.
 - [nice-grpc-server-middleware-terminator](/packages/nice-grpc-server-middleware-terminator)
-  — server middleware makes it possible to prevent long-running calls from
+  — server middleware that makes it possible to prevent long-running calls from
   blocking server graceful shutdown.
 - [nice-grpc-server-health](/packages/nice-grpc-server-health) —
   [Health Checking Protocol](https://github.com/grpc/grpc/blob/master/doc/health-checking.md)
