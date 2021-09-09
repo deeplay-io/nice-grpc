@@ -19,7 +19,7 @@ import {
 
 export type MaybeTerminatorContext = {
   abortOnTerminate?(): void;
-};
+} & object;
 
 export type HealthServiceImpl = ServiceImplementation<
   typeof HealthDefinition,
