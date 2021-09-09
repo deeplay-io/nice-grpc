@@ -19,7 +19,7 @@ import {
 
 export type MaybeTerminatorContext = {
   abortOnTerminate?(): void;
-} & object;
+} & object; // hack to fix TypeScript errors "Type 'MyContext' has no properties in common with type 'MaybeTerminatorContext'"
 
 export type HealthServiceImpl = ServiceImplementation<
   typeof HealthDefinition,
