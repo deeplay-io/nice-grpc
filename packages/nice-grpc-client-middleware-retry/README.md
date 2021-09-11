@@ -77,7 +77,7 @@ You can also set `retryMaxAttempts` to `Infinity` and use `AbortSignal` to
 the retried call:
 
 ```ts
-import {AbortController} from 'node-abort-controller';
+import AbortController from 'node-abort-controller';
 
 const abortController = new AbortController();
 

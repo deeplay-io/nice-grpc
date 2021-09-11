@@ -1,5 +1,6 @@
-import {rethrowAbortError, delay} from 'abort-controller-x';
+import {delay, rethrowAbortError} from 'abort-controller-x';
 import {ClientError, ClientMiddleware, Status} from 'nice-grpc-common';
+import AbortController from 'node-abort-controller';
 
 /**
  * These options are added to `CallOptions` by
