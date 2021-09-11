@@ -1,0 +1,36 @@
+{
+  "name": "nice-grpc-client-middleware-retry",
+  "version": "1.0.0",
+  "description": "Retry client middleware for nice-grpc",
+  "repository": "deeplay-io/nice-grpc",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "src",
+    "!src/**/*.test.ts",
+    "!src/**/__tests__"
+  ],
+  "scripts": {
+    "clean": "rimraf lib",
+    "test": "jest",
+    "build": "tsc -P tsconfig.build.json",
+    "prepublishOnly": "npm run clean && npm run build && npm test",
+    "build:proto": "grpc_tools_node_protoc --ts_proto_out=./fixtures --ts_proto_opt=outputServices=generic-definitions,esModuleInterop=true -I fixtures fixtures/*.proto",
+    "prepare": "npm run build:proto"
+  },
+  "author": "Daniel Lytkin <aikoven@deeplay.io>",
+  "license": "MIT",
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.1",
+    "grpc-tools": "^1.10.0",
+    "jest-mock-random": "^1.1.1",
+    "nice-grpc": "^1.0.3",
+    "ts-proto": "^1.82.5"
+  },
+  "dependencies": {
+    "abort-controller-x": "^0.2.6",
+    "nice-grpc-common": "^1.0.2",
+    "node-abort-controller": "^2.0.0"
+  }
+}
