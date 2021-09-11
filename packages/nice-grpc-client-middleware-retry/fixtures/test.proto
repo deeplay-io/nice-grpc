@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package nice_grpc.test;
+
+service Test {
+  rpc Test(TestRequest) returns (TestResponse);
+  rpc TestIdempotent(TestRequest) returns (TestResponse) {
+    option idempotency_level = IDEMPOTENT;
+  };
+}
+
+message TestRequest { string id = 1; }
+message TestResponse { string id = 1; }

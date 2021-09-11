@@ -1,0 +1,5 @@
+node_modules
+lib
+es
+coverage
+.DS_Store
