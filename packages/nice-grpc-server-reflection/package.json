@@ -19,7 +19,7 @@
   "scripts": {
     "clean": "rimraf lib",
     "test": "jest --passWithNoTests",
-    "build": "tsc -P tsconfig.build.json && cpr src/proto lib/proto",
+    "build": "tsc -P tsconfig.build.json && rimraf lib/proto && cpr src/proto lib/proto",
     "prepublishOnly": "npm test && npm run clean && npm run build",
     "prepare:proto": "mkdirp ./src/proto && grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./src/proto --grpc_out=grpc_js:./src/proto --ts_out=grpc_js:./src/proto -I ./proto proto/grpc/reflection/v1alpha/reflection.proto",
     "prepare": "npm run prepare:proto"
