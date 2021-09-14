@@ -69,10 +69,15 @@ directory `./compiled_proto`:
 
 ```
 ./node_modules/.bin/grpc_tools_node_protoc \
+  --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto \
   --ts_proto_out=./compiled_proto \
   --ts_proto_opt=outputServices=generic-definitions \
+  --proto_path=./proto \
   ./proto/example.proto
 ```
+
+> You can omit the `--plugin` flag if you invoke this command via
+> [npm script](https://docs.npmjs.com/cli/v7/using-npm/scripts).
 
 #### Using `google-protobuf`
 
@@ -88,9 +93,12 @@ definitions into directory `./compiled_proto`:
 
 ```
 ./node_modules/.bin/grpc_tools_node_protoc \
+  --plugin=protoc-gen-grpc=./node_modules/.bin/grpc_tools_node_protoc_plugin \
+  --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts \
   --js_out=import_style=commonjs,binary:./compiled_proto \
   --ts_out=grpc_js:./compiled_proto \
   --grpc_out=grpc_js:./compiled_proto \
+  --proto_path=./proto \
   ./proto/example.proto
 ```
 
