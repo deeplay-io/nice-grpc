@@ -1,12 +1,30 @@
 import {Status} from '../Status';
 
+/**
+ * Represents gRPC errors returned from client calls.
+ */
 export class ClientError extends Error {
-  constructor(
-    public path: string,
-    public code: Status,
-    public details: string,
-  ) {
+  /**
+   * Path of the client call.
+   * 
+   * Has format `/package.Service/Method`.
+   */
+  path: string;
+  /**
+   * Status code reported by the server.
+   */
+  code: Status;
+  /**
+   * Status message reported by the server.
+   */
+  details: string;
+
+  constructor(path: string, code: Status, details: string) {
     super(`${path} ${Status[code]}: ${details}`);
+
+    this.path = path;  
+    this.code = code;  
+    this.details = details;  
 
     this.name = 'ClientError';
     Object.defineProperty(this, '@@nice-grpc', {

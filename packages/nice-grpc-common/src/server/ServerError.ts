@@ -1,8 +1,24 @@
 import {Status} from '../Status';
 
+/**
+ * Service implementations may throw this error to report gRPC errors to
+ * clients.
+ */
 export class ServerError extends Error {
-  constructor(public code: Status, public details: string) {
+  /**
+   * Status code to report to the client.
+   */
+  code: Status;
+  /**
+   * Status message to report to the client.
+   */
+  details: string;
+
+  constructor(code: Status, details: string) {
     super(`${Status[code]}: ${details}`);
+
+    this.code = code;
+    this.details = details;
 
     this.name = 'ServerError';
     Object.defineProperty(this, '@@nice-grpc', {
