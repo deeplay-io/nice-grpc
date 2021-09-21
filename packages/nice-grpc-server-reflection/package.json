@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-server-reflection",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Server reflection for nice-grpc",
   "keywords": [
     "grpc",
@@ -37,6 +37,6 @@
   "dependencies": {
     "@types/google-protobuf": "^3.7.4",
     "google-protobuf": "^3.15.6",
-    "nice-grpc": "^1.0.3"
+    "nice-grpc": "^1.0.4"
   }
 }
