@@ -9,7 +9,7 @@ import {
 import {grpc} from '@improbable-eng/grpc-web';
 import {AbortError, isAbortError, throwIfAborted} from 'abort-controller-x';
 import AbortController from 'node-abort-controller';
-import {AsyncSink} from 'ix/asynciterable/asyncsink';
+import {AsyncSink} from '../utils/AsyncSink';
 import {
   AnyMethodDefinition,
   MethodDefinition,

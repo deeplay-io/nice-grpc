@@ -1,6 +1,6 @@
 import {grpc} from '@improbable-eng/grpc-web';
 import {AbortError, throwIfAborted} from 'abort-controller-x';
-import {AsyncSink} from 'ix/asynciterable/asyncsink';
+import {AsyncSink} from '../utils/AsyncSink';
 import {
   CallOptions,
   ClientError,
