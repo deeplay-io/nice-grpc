@@ -10,6 +10,7 @@ import {
 import {IServerReflectionService} from './proto/grpc/reflection/v1alpha/reflection_grpc_pb';
 import {
   ErrorResponse,
+  ExtensionNumberResponse,
   FileDescriptorResponse,
   ListServiceResponse,
   ServerReflectionRequest,
@@ -188,6 +189,15 @@ export function ServerReflection(
               ),
             ),
           );
+      }
+
+      case ServerReflectionRequest.MessageRequestCase
+        .ALL_EXTENSION_NUMBERS_OF_TYPE: {
+        const type = request.getAllExtensionNumbersOfType();
+
+        return new ServerReflectionResponse().setAllExtensionNumbersResponse(
+          new ExtensionNumberResponse().setBaseTypeName(type),
+        );
       }
     }
 
