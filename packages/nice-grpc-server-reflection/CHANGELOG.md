@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.5](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-reflection@1.0.4...nice-grpc-server-reflection@1.0.5) (2021-11-03)
+
+
+### Bug Fixes
+
+* **nice-grpc-server-reflection:** fix error when using custom options ([9412a04](https://github.com/deeplay-io/nice-grpc/commit/9412a04283ff7b3bfe5c8befa82f936036d53aee))
+
+
+
+
+
 ## [1.0.4](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-reflection@1.0.3...nice-grpc-server-reflection@1.0.4) (2021-09-21)
 
 **Note:** Version bump only for package nice-grpc-server-reflection
