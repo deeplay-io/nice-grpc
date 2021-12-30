@@ -17,7 +17,7 @@
     "build": "tsc -P tsconfig.build.json",
     "prepublishOnly": "npm run clean && npm run build && npm test",
     "prepare:grpc-health-probe": "path-exists grpc-health-probe || node scripts/download_grpc_health_probe.js",
-    "prepare:proto": "mkdirp ./src/proto && grpc_tools_node_protoc --ts_proto_out=./src/proto --ts_proto_opt=outputJsonMethods=false,outputPartialMethods=false,outputServices=generic-definitions -I ./proto proto/grpc/health/v1/health.proto",
+    "prepare:proto": "mkdirp ./src/proto && grpc_tools_node_protoc --ts_proto_out=./src/proto --ts_proto_opt=outputJsonMethods=false,outputPartialMethods=false,outputServices=generic-definitions,useExactTypes=false -I ./proto proto/grpc/health/v1/health.proto",
     "prepare": "npm run prepare:grpc-health-probe && npm run prepare:proto"
   },
   "author": "Daniel Lytkin <aikoven@deeplay.io>",
@@ -31,7 +31,7 @@
     "nice-grpc-server-middleware-terminator": "^1.0.1",
     "request": "^2.88.2",
     "rimraf": "^3.0.2",
-    "ts-proto": "^1.82.0"
+    "ts-proto": "^1.97.0"
   },
   "dependencies": {
     "abort-controller-x": "^0.2.6",
