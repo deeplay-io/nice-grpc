@@ -27,7 +27,7 @@
     "prepare:grpcwebproxy": "path-exists grpcwebproxy || node scripts/download_grpcwebproxy.js",
     "prepare:proto:grpc-js": "mkdirp ./fixtures/grpc-js && grpc_tools_node_protoc --plugin=protoc-gen-grpc=./node_modules/.bin/grpc_tools_node_protoc_plugin --plugin=protoc-gen-ts=../../node_modules/grpc_tools_node_protoc_ts/bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./fixtures/grpc-js --ts_out=grpc_js:./fixtures/grpc-js --grpc_out=grpc_js:./fixtures/grpc-js -I fixtures fixtures/*.proto",
     "prepare:proto:grpc-web": "mkdirp ./fixtures/grpc-web && grpc_tools_node_protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./fixtures/grpc-web --ts_out=service=grpc-web:./fixtures/grpc-web -I fixtures fixtures/*.proto",
-    "prepare:proto:ts-proto": "mkdirp ./fixtures/ts-proto && grpc_tools_node_protoc --ts_proto_out=./fixtures/ts-proto --ts_proto_opt=outputServices=generic-definitions,outputJsonMethods=false,esModuleInterop=true -I fixtures fixtures/*.proto",
+    "prepare:proto:ts-proto": "mkdirp ./fixtures/ts-proto && grpc_tools_node_protoc --ts_proto_out=./fixtures/ts-proto --ts_proto_opt=outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false,esModuleInterop=true -I fixtures fixtures/*.proto",
     "prepare:proto": "npm run prepare:proto:grpc-js && npm run prepare:proto:grpc-web && npm run prepare:proto:ts-proto",
     "prepare": "npm run prepare:grpcwebproxy && npm run prepare:proto"
   },
@@ -45,7 +45,7 @@
     "path-exists-cli": "^1.0.0",
     "request": "^2.88.2",
     "tcp-port-used": "^1.0.2",
-    "ts-proto": "^1.82.0",
+    "ts-proto": "^1.97.0",
     "ts-protoc-gen": "^0.15.0",
     "unzipper": "^0.10.11",
     "ws": "^7.5.0"

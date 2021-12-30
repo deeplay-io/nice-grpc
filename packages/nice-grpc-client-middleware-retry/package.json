@@ -16,7 +16,7 @@
     "test": "jest",
     "build": "tsc -P tsconfig.build.json",
     "prepublishOnly": "npm run clean && npm run build && npm test",
-    "build:proto": "grpc_tools_node_protoc --ts_proto_out=./fixtures --ts_proto_opt=outputServices=generic-definitions,esModuleInterop=true -I fixtures fixtures/*.proto",
+    "build:proto": "grpc_tools_node_protoc --ts_proto_out=./fixtures --ts_proto_opt=outputServices=generic-definitions,useExactTypes=false,esModuleInterop=true -I fixtures fixtures/*.proto",
     "prepare": "npm run build:proto"
   },
   "author": "Daniel Lytkin <aikoven@deeplay.io>",
@@ -26,7 +26,7 @@
     "grpc-tools": "^1.10.0",
     "jest-mock-random": "^1.1.1",
     "nice-grpc": "^1.0.4",
-    "ts-proto": "^1.82.5"
+    "ts-proto": "^1.97.0"
   },
   "dependencies": {
     "abort-controller-x": "^0.2.6",
