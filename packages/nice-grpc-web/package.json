@@ -48,7 +48,7 @@
     "ts-proto": "^1.97.0",
     "ts-protoc-gen": "^0.15.0",
     "unzipper": "^0.10.11",
-    "ws": "^7.5.0"
+    "ws": "^8.4.2"
   },
   "dependencies": {
     "@improbable-eng/grpc-web": "^0.14.0",
