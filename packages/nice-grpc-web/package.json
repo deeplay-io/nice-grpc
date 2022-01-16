@@ -37,7 +37,7 @@
     "@tsconfig/recommended": "^1.0.1",
     "@types/google-protobuf": "^3.15.2",
     "@types/tcp-port-used": "^1.0.0",
-    "@types/ws": "^7.4.4",
+    "@types/ws": "^8.2.2",
     "google-protobuf": "^3.17.3",
     "grpc-tools": "^1.11.2",
     "grpc_tools_node_protoc_ts": "^5.3.0",
