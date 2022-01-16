@@ -6,7 +6,7 @@ import {Status} from '../Status';
 export class ClientError extends Error {
   /**
    * Path of the client call.
-   * 
+   *
    * Has format `/package.Service/Method`.
    */
   path: string;
@@ -22,9 +22,11 @@ export class ClientError extends Error {
   constructor(path: string, code: Status, details: string) {
     super(`${path} ${Status[code]}: ${details}`);
 
-    this.path = path;  
-    this.code = code;  
-    this.details = details;  
+    Object.setPrototypeOf(this, ClientError.prototype);
+
+    this.path = path;
+    this.code = code;
+    this.details = details;
 
     this.name = 'ClientError';
     Object.defineProperty(this, '@@nice-grpc', {
