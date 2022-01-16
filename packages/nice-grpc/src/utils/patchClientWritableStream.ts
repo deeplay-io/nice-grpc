@@ -15,8 +15,7 @@ export function patchClientWritableStream(
   const origAttachHttp2Stream = http2CallStream.attachHttp2Stream;
   http2CallStream.attachHttp2Stream = function patchAttachHttp2Stream(
     stream,
-    subchannel,
-    extraFilterFactory,
+    ...rest
   ) {
     const origWrite = stream.write;
 
@@ -31,11 +30,6 @@ export function patchClientWritableStream(
       return origWrite.apply(this, args);
     };
 
-    return origAttachHttp2Stream.call(
-      this,
-      stream,
-      subchannel,
-      extraFilterFactory,
-    );
+    return origAttachHttp2Stream.call(this, stream, ...rest);
   };
 }

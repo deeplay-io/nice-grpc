@@ -46,7 +46,7 @@
     "ts-proto": "^1.97.0"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.2.6",
+    "@grpc/grpc-js": "^1.5.1",
     "abort-controller-x": "^0.2.4",
     "nice-grpc-common": "^1.0.4",
     "node-abort-controller": "^1.2.1"
