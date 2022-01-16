@@ -14,7 +14,7 @@
     "prepare": "lerna run prepare"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.23",
+    "@types/jest": "^27.4.0",
     "jest": "^27.0.4",
     "lerna": "^4.0.0",
     "prettier": "^2.3.1",
