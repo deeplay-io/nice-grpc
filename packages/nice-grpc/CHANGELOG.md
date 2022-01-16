@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.5](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@1.0.4...nice-grpc@1.0.5) (2022-01-16)
+
+
+### Bug Fixes
+
+* **nice-grpc:** fix import of `ConnectivityState` from `grpc-js` ([#33](https://github.com/deeplay-io/nice-grpc/issues/33)) ([380bb7f](https://github.com/deeplay-io/nice-grpc/commit/380bb7fd31265dcef7e01dfb1715a6ccb1bd363e))
+
+
+
+
+
 ## [1.0.4](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@1.0.3...nice-grpc@1.0.4) (2021-09-21)
 
 **Note:** Version bump only for package nice-grpc
