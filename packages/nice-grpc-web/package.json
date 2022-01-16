@@ -42,7 +42,7 @@
     "grpc-tools": "^1.11.2",
     "grpc_tools_node_protoc_ts": "^5.3.0",
     "mkdirp": "^1.0.4",
-    "path-exists-cli": "^1.0.0",
+    "path-exists-cli": "^2.0.0",
     "request": "^2.88.2",
     "tcp-port-used": "^1.0.2",
     "ts-proto": "^1.97.0",
