@@ -1,5 +1,9 @@
-import {Channel, ChannelCredentials, ChannelOptions} from '@grpc/grpc-js';
-import {ConnectivityState} from '@grpc/grpc-js/build/src/channel';
+import {
+  Channel,
+  ChannelCredentials,
+  ChannelOptions,
+  connectivityState,
+} from '@grpc/grpc-js';
 
 export function createChannel(
   address: string,
@@ -12,12 +16,8 @@ export function createChannel(
     throw new Error(`Invalid address: '${address}'`);
   }
 
-  const [
-    ,
-    protocol = 'http',
-    host,
-    port = protocol === 'http' ? '80' : '443',
-  ] = match;
+  const [, protocol = 'http', host, port = protocol === 'http' ? '80' : '443'] =
+    match;
 
   if (protocol === 'http') {
     credentials ??= ChannelCredentials.createInsecure();
@@ -39,7 +39,7 @@ export async function waitForChannelReady(
   while (true) {
     const state = channel.getConnectivityState(true);
 
-    if (state === ConnectivityState.READY) {
+    if (state === connectivityState.READY) {
       return;
     }
 
