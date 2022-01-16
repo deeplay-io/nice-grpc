@@ -17,6 +17,8 @@ export class ServerError extends Error {
   constructor(code: Status, details: string) {
     super(`${Status[code]}: ${details}`);
 
+    Object.setPrototypeOf(this, ServerError.prototype);
+
     this.code = code;
     this.details = details;
 
