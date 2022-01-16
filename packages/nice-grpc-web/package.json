@@ -51,7 +51,7 @@
     "ws": "^8.4.2"
   },
   "dependencies": {
-    "@improbable-eng/grpc-web": "^0.14.0",
+    "@improbable-eng/grpc-web": "^0.15.0",
     "abort-controller-x": "^0.2.6",
     "js-base64": "^3.7.2",
     "nice-grpc-common": "^1.0.4",
