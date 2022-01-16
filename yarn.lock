@@ -6440,9 +6440,9 @@ ts-proto-descriptors@^1.2.1:
     protobufjs "^6.8.8"
 
 ts-proto@^1.97.0:
-  version "1.97.0"
-  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.97.0.tgz#df302eb7df48859df25325a614d2e871318ad21c"
-  integrity sha512-GrECiLTy5POpIZehd7r8lsnrBz1QqG9Sfr3x4ytbz7YRjSjMZeBIG3LI2gW0KtIL1VrUTJic3wV61PR5i7AaQQ==
+  version "1.101.0"
+  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-1.101.0.tgz#f8ce4523a0cb32ff224ff8a5759c2c046bf96244"
+  integrity sha512-XUV0WKQ3icHMToOOpUjf0RCKF9md+Lu9TV00LQlZ6ailJhbBqLh0BXQJ1PFUGxEW8YV65Wc/N8vAir152OE2Sg==
   dependencies:
     "@types/object-hash" "^1.3.0"
     dataloader "^1.4.0"
