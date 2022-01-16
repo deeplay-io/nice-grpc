@@ -55,6 +55,6 @@
     "abort-controller-x": "^0.2.6",
     "js-base64": "^3.7.2",
     "nice-grpc-common": "^1.0.4",
-    "node-abort-controller": "^2.0.0"
+    "node-abort-controller": "^3.0.1"
   }
 }
