@@ -53,8 +53,10 @@ export type ServerAddBuilder<CallContextExt> = {
   ): void;
 };
 
-export function createServer(options: ChannelOptions = {}): Server {
-  return createServerWithMiddleware(options);
+export function createServer<CallContextExt = {}>(
+  options: ChannelOptions = {},
+): Server<CallContextExt> {
+  return createServerWithMiddleware<CallContextExt>(options);
 }
 
 function createServerWithMiddleware<CallContextExt = {}>(
