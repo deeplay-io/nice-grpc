@@ -1,9 +1,10 @@
+import ExtendableError from 'ts-error';
 import {Status} from '../Status';
 
 /**
  * Represents gRPC errors returned from client calls.
  */
-export class ClientError extends Error {
+export class ClientError extends ExtendableError {
   /**
    * Path of the client call.
    *
@@ -22,8 +23,6 @@ export class ClientError extends Error {
   constructor(path: string, code: Status, details: string) {
     super(`${path} ${Status[code]}: ${details}`);
 
-    Object.setPrototypeOf(this, ClientError.prototype);
-
     this.path = path;
     this.code = code;
     this.details = details;
@@ -32,10 +31,6 @@ export class ClientError extends Error {
     Object.defineProperty(this, '@@nice-grpc', {
       value: true,
     });
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, this.constructor);
-    }
   }
 
   static [Symbol.hasInstance](instance: unknown) {

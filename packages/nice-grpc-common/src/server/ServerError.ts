@@ -1,10 +1,11 @@
+import ExtendableError from 'ts-error';
 import {Status} from '../Status';
 
 /**
  * Service implementations may throw this error to report gRPC errors to
  * clients.
  */
-export class ServerError extends Error {
+export class ServerError extends ExtendableError {
   /**
    * Status code to report to the client.
    */
@@ -17,8 +18,6 @@ export class ServerError extends Error {
   constructor(code: Status, details: string) {
     super(`${Status[code]}: ${details}`);
 
-    Object.setPrototypeOf(this, ServerError.prototype);
-
     this.code = code;
     this.details = details;
 
@@ -26,10 +25,6 @@ export class ServerError extends Error {
     Object.defineProperty(this, '@@nice-grpc', {
       value: true,
     });
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, this.constructor);
-    }
   }
 
   static [Symbol.hasInstance](instance: unknown) {
