@@ -1,4 +1,4 @@
-import ExtendableError from 'ts-error';
+import {ExtendableError} from 'ts-error';
 import {Status} from '../Status';
 
 /**
@@ -39,8 +39,9 @@ export class ClientError extends ExtendableError {
     return (
       typeof instance === 'object' &&
       instance !== null &&
-      (instance as any).name === 'ClientError' &&
-      (instance as any)['@@nice-grpc'] === true
+      (instance.constructor === ClientError ||
+        ((instance as any).name === 'ClientError' &&
+          (instance as any)['@@nice-grpc'] === true))
     );
   }
 }
