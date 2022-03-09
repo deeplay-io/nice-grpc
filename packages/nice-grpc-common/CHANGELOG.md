@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.6](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-common@1.0.5...nice-grpc-common@1.0.6) (2022-03-09)
+
+
+### Bug Fixes
+
+* **nice-grpc-common:** fix issues with `ServerError` and `ClientError` when transpiling to older environments ([#92](https://github.com/deeplay-io/nice-grpc/issues/92)) ([8875aa8](https://github.com/deeplay-io/nice-grpc/commit/8875aa86bc505dfe0e347b4851e30114fa7dadc8))
+
+
+
+
+
 ## [1.0.5](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-common@1.0.4...nice-grpc-common@1.0.5) (2022-03-05)
 
 
