@@ -1,5 +1,5 @@
 import getPort = require('get-port');
-import {randomUUID} from 'crypto'
+import {randomBytes} from 'crypto'
 import {createChannel, createServer, waitForChannelReady} from '..';
 
 test('implicit protocol', async () => {
@@ -51,7 +51,7 @@ test('invalid protocol', () => {
 });
 
 test('waitForChannelReady deadline', async () => {
-  const address = `${randomUUID()}:80`;
+  const address = `${randomBytes(16).toString('hex')}:80`;
 
   const channel = createChannel(address);
   await expect(
