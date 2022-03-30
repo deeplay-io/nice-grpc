@@ -164,82 +164,86 @@ test('watch', async () => {
   await server.shutdown();
 });
 
-test.skipWindows('grpc-health-probe', async () => {
-  const server = createServer();
+test.skipWindows(
+  'grpc-health-probe',
+  async () => {
+    const server = createServer();
 
-  const healthState = HealthState();
+    const healthState = HealthState();
 
-  server.add(HealthDefinition, HealthServiceImpl(healthState));
+    server.add(HealthDefinition, HealthServiceImpl(healthState));
 
-  const port = await server.listen('localhost:0');
+    const port = await server.listen('localhost:0');
 
-  const execProbe = (...args: string[]) =>
-    new Promise<{stderr: string; code: number | null}>(resolve => {
-      const child = spawn(
-        `${path.join(
-          __dirname,
-          '..',
-          'grpc-health-probe',
-          'grpc-health-probe',
-        )}`,
-        ['-addr', `localhost:${port}`, ...args],
-      );
+    const execProbe = (...args: string[]) =>
+      new Promise<{stderr: string; code: number | null}>(resolve => {
+        const child = spawn(
+          `${path.join(
+            __dirname,
+            '..',
+            'grpc-health-probe',
+            'grpc-health-probe',
+          )}`,
+          ['-addr', `localhost:${port}`, ...args],
+        );
 
-      let stderr = '';
+        let stderr = '';
 
-      child.stderr.on('data', chunk => {
-        stderr += chunk.toString();
+        child.stderr.on('data', chunk => {
+          stderr += chunk.toString();
+        });
+
+        child.on('exit', code => {
+          resolve({stderr: stderr.trim(), code});
+        });
       });
 
-      child.on('exit', code => {
-        resolve({stderr: stderr.trim(), code});
-      });
-    });
-
-  await expect(execProbe()).resolves.toMatchInlineSnapshot(`
+    await expect(execProbe()).resolves.toMatchInlineSnapshot(`
           Object {
             "code": 0,
             "stderr": "status: SERVING",
           }
         `);
 
-  await expect(execProbe('-service', 'MyService')).resolves
-    .toMatchInlineSnapshot(`
+    await expect(execProbe('-service', 'MyService')).resolves
+      .toMatchInlineSnapshot(`
           Object {
             "code": 3,
             "stderr": "error: health rpc failed: rpc error: code = NotFound desc = Unknown service: 'MyService'",
           }
         `);
 
-  healthState.setStatus('unhealthy', 'MyService');
+    healthState.setStatus('unhealthy', 'MyService');
 
-  await expect(execProbe('-service', 'MyService')).resolves
-    .toMatchInlineSnapshot(`
+    await expect(execProbe('-service', 'MyService')).resolves
+      .toMatchInlineSnapshot(`
           Object {
             "code": 4,
             "stderr": "service unhealthy (responded with \\"NOT_SERVING\\")",
           }
         `);
 
-  healthState.setStatus('healthy', 'MyService');
+    healthState.setStatus('healthy', 'MyService');
 
-  await expect(execProbe('-service', 'MyService')).resolves
-    .toMatchInlineSnapshot(`
+    await expect(execProbe('-service', 'MyService')).resolves
+      .toMatchInlineSnapshot(`
           Object {
             "code": 0,
             "stderr": "status: SERVING",
           }
         `);
 
-  healthState.setStatus('unknown', 'MyService');
+    healthState.setStatus('unknown', 'MyService');
 
-  await expect(execProbe('-service', 'MyService')).resolves
-    .toMatchInlineSnapshot(`
+    await expect(execProbe('-service', 'MyService')).resolves
+      .toMatchInlineSnapshot(`
           Object {
             "code": 3,
             "stderr": "error: health rpc failed: rpc error: code = NotFound desc = Unknown service: 'MyService'",
           }
         `);
 
-  await server.shutdown();
-});
+    await server.shutdown();
+  },
+  10_000,
+);
