@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@1.0.8...nice-grpc@1.1.0) (2022-04-04)
+
+
+### Features
+
+* **nice-grpc:** upgrade `grpc-js` to `1.6.1` ([#111](https://github.com/deeplay-io/nice-grpc/issues/111)) ([f8a25f8](https://github.com/deeplay-io/nice-grpc/commit/f8a25f899fe94150533c298a825e995ddea824f6))
+
+
+
+
+
 ## [1.0.8](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@1.0.7...nice-grpc@1.0.8) (2022-03-09)
 
 **Note:** Version bump only for package nice-grpc
