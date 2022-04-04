@@ -25,7 +25,7 @@
     "@tsconfig/recommended": "^1.0.1",
     "@types/defer-promise": "^1.0.0",
     "abort-controller-x": "^0.2.6",
-    "defer-promise": "^2.0.1",
+    "defer-promise": "^3.0.0",
     "grpc-tools": "^1.10.0",
     "nice-grpc": "^1.1.0",
     "ts-proto": "^1.97.0"

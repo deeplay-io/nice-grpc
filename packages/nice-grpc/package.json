@@ -36,7 +36,7 @@
     "@types/defer-promise": "^1.0.0",
     "@types/get-port": "^4.2.0",
     "@types/google-protobuf": "^3.7.4",
-    "defer-promise": "^2.0.1",
+    "defer-promise": "^3.0.0",
     "get-port": "^5.1.1",
     "google-protobuf": "^3.14.0",
     "grpc-tools": "^1.10.0",

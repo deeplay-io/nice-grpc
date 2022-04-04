@@ -2770,10 +2770,10 @@ defaults@^1.0.3:
   dependencies:
     clone "^1.0.2"
 
-defer-promise@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/defer-promise/-/defer-promise-2.0.1.tgz#7e6c67a55a17a9a7079fbd524cf2c1dadae3590b"
-  integrity sha512-zoKtBNZZQSv+45zx6Bjx5+N2DSloiTlTdAZt7COAG103Ulesn2I5GHG2nBcl/uKGp6atDWa/6Z99cfTCzPNopg==
+defer-promise@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/defer-promise/-/defer-promise-3.0.0.tgz#6dc55a40aa28d408b9b8914f27910cae928ff4d8"
+  integrity sha512-GkmLfjdHisLJpzYWreon6j8s8d1EGGNF2Q1uniozoCO53BPXRD55Gs/huNhZDAgbsbL1xoTmxzTBDTSllMfKTQ==
 
 define-properties@^1.1.3:
   version "1.1.3"
