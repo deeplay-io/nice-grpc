@@ -31,17 +31,25 @@ export class ClientError extends ExtendableError {
     Object.defineProperty(this, '@@nice-grpc', {
       value: true,
     });
+    Object.defineProperty(this, '@@nice-grpc:ClientError', {
+      value: true,
+    });
   }
 
-  static [Symbol.hasInstance](instance: unknown) {
+  static [Symbol.hasInstance](instance: any) {
     // allow instances of ClientError from different versions of nice-grpc
     // to work with `instanceof ClientError`
+
+    if (this !== ClientError) {
+      return this.prototype.isPrototypeOf(instance);
+    }
+
     return (
       typeof instance === 'object' &&
       instance !== null &&
       (instance.constructor === ClientError ||
-        ((instance as any).name === 'ClientError' &&
-          (instance as any)['@@nice-grpc'] === true))
+        instance['@@nice-grpc:ClientError'] === true ||
+        (instance.name === 'ClientError' && instance['@@nice-grpc'] === true))
     );
   }
 }
