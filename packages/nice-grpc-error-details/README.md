@@ -56,9 +56,9 @@ const exampleServiceImpl: ServiceImplementation<
           }),
         ],
       );
-  },
 
-  // ... method logic
+    // ... method logic
+  },
 };
 ```
 
