@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-common",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "Common stuff for nice-grpc and nice-grpc-web",
   "repository": "deeplay-io/nice-grpc",
   "main": "lib/index.js",
