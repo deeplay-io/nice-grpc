@@ -1,0 +1,37 @@
+{
+  "name": "nice-grpc-error-details",
+  "version": "0.0.1",
+  "description": "gRPC rich error model implementation for nice-grpc",
+  "repository": "deeplay-io/nice-grpc",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "src",
+    "!src/**/*.test.ts",
+    "!src/**/__tests__"
+  ],
+  "scripts": {
+    "clean": "rimraf lib",
+    "test": "jest",
+    "build": "tsc -P tsconfig.build.json",
+    "prepublishOnly": "npm run clean && npm run build && npm test",
+    "build:proto": "grpc_tools_node_protoc --ts_proto_out=./fixtures --ts_proto_opt=outputServices=generic-definitions,useExactTypes=false,outputTypeRegistry=true -I fixtures fixtures/*.proto",
+    "prepare:proto": "mkdirp ./src/proto && grpc_tools_node_protoc --ts_proto_out=./src/proto --ts_proto_opt=outputJsonMethods=false,useExactTypes=false,outputTypeRegistry=true -I ./proto proto/google/rpc/error_details.proto proto/google/rpc/status.proto",
+    "prepare": "npm run prepare:proto && npm run build:proto"
+  },
+  "author": "Daniel Lytkin <aikoven@deeplay.io>",
+  "license": "MIT",
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.1",
+    "grpc-tools": "^1.10.0",
+    "mkdirp": "^1.0.4",
+    "nice-grpc": "^1.1.0",
+    "rimraf": "^3.0.2",
+    "ts-proto": "^1.97.0"
+  },
+  "dependencies": {
+    "nice-grpc-common": "1.0.6",
+    "protobufjs": "^6.11.2"
+  }
+}

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package nice_grpc.test;
+
+service Test {
+  rpc TestUnary(TestRequest) returns (TestResponse) {};
+}
+
+message TestRequest {}
+message TestResponse {}
+
+message CustomErrorDetail {
+  string test = 1;
+}
