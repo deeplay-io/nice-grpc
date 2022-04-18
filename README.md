@@ -30,3 +30,6 @@ A gRPC library that is nice to you.
 - [nice-grpc-server-reflection](/packages/nice-grpc-server-reflection) —
   [Server Reflection](https://github.com/grpc/grpc/blob/master/doc/server-reflection.md)
   support.
+- [nice-grpc-error-details](/packages/nice-grpc-error-details) — experimental
+  [Rich Error Model](https://grpc.io/docs/guides/error/#richer-error-model)
+  support.
