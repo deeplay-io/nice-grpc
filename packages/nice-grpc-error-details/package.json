@@ -28,7 +28,7 @@
     "mkdirp": "^1.0.4",
     "nice-grpc": "^1.1.1",
     "rimraf": "^3.0.2",
-    "ts-proto": "^1.97.0"
+    "ts-proto": "^1.112.0"
   },
   "dependencies": {
     "nice-grpc-common": "^1.1.0",

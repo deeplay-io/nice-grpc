@@ -31,7 +31,7 @@
     "nice-grpc-server-middleware-terminator": "^1.0.7",
     "request": "^2.88.2",
     "rimraf": "^3.0.2",
-    "ts-proto": "^1.97.0"
+    "ts-proto": "^1.112.0"
   },
   "dependencies": {
     "abort-controller-x": "^0.2.6",

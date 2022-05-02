@@ -3,6 +3,7 @@ import {createServer} from 'nice-grpc';
 import {createChannel, createClient} from '..';
 import {
   DeepPartial,
+  TestClient,
   TestDefinition,
   TestRequest,
   TestResponse,
@@ -36,7 +37,7 @@ test('basic', async () => {
     `http://localhost:${proxyPort}`,
     WebsocketTransport(),
   );
-  const client = createClient(TestDefinition, channel);
+  const client: TestClient = createClient(TestDefinition, channel);
 
   await expect(client.testUnary({id: 'test'})).resolves.toMatchInlineSnapshot(`
           Object {

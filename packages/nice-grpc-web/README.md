@@ -51,6 +51,8 @@ npm install protobufjs long
 npm install --save-dev grpc-tools ts-proto
 ```
 
+> Use `ts-proto` version not older than `1.112.0`.
+
 Given a Protobuf file `./proto/example.proto`, generate TypeScript code into
 directory `./compiled_proto`:
 
@@ -58,7 +60,7 @@ directory `./compiled_proto`:
 ./node_modules/.bin/grpc_tools_node_protoc \
   --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto \
   --ts_proto_out=./compiled_proto \
-  --ts_proto_opt=env=browser,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false \
+  --ts_proto_opt=env=browser,outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false \
   --proto_path=./proto \
   ./proto/example.proto
 ```
@@ -130,11 +132,14 @@ When compiling Protobufs using `ts-proto`:
 
 ```ts
 import {createChannel, createClient} from 'nice-grpc-web';
-import {ExampleServiceDefinition} from './compiled_proto/example';
+import {
+  ExampleServiceClient,
+  ExampleServiceDefinition,
+} from './compiled_proto/example';
 
 const channel = createChannel('http://localhost:8080');
 
-const client: Client<typeof ExampleServiceDefinition> = createClient(
+const client: ExampleServiceClient = createClient(
   ExampleServiceDefinition,
   channel,
 );

@@ -64,6 +64,8 @@ npm install protobufjs long
 npm install --save-dev grpc-tools ts-proto
 ```
 
+> Use `ts-proto` version not older than `1.112.0`.
+
 Given a Protobuf file `./proto/example.proto`, generate TypeScript code into
 directory `./compiled_proto`:
 
@@ -71,7 +73,7 @@ directory `./compiled_proto`:
 ./node_modules/.bin/grpc_tools_node_protoc \
   --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto \
   --ts_proto_out=./compiled_proto \
-  --ts_proto_opt=outputServices=generic-definitions,useExactTypes=false \
+  --ts_proto_opt=outputServices=nice-grpc,outputServices=generic-definitions,useExactTypes=false \
   --proto_path=./proto \
   ./proto/example.proto
 ```
@@ -128,17 +130,14 @@ After compiling Protobuf file, we can write service implementation:
 When compiling Protobufs using `ts-proto`:
 
 ```ts
-import {ServiceImplementation} from 'nice-grpc';
 import {
-  ExampleServiceDefinition,
+  ExampleServiceImplementation,
   ExampleRequest,
   ExampleResponse,
   DeepPartial,
 } from './compiled_proto/example';
 
-const exampleServiceImpl: ServiceImplementation<
-  typeof ExampleServiceDefinition
-> = {
+const exampleServiceImpl: ExampleServiceImplementation = {
   async exampleUnaryMethod(
     request: ExampleRequest,
   ): Promise<DeepPartial<ExampleResponse>> {
@@ -152,9 +151,7 @@ const exampleServiceImpl: ServiceImplementation<
 Alternatively, you can use classes:
 
 ```ts
-class ExampleServiceImpl
-  implements ServiceImplementation<typeof ExampleServiceDefinition>
-{
+class ExampleServiceImpl implements ExampleServiceImplementation {
   async exampleUnaryMethod(
     request: ExampleRequest,
   ): Promise<DeepPartial<ExampleResponse>> {
@@ -255,9 +252,7 @@ the correct usage of status codes.
 ```ts
 import {ServerError, Status} from 'nice-grpc';
 
-const exampleServiceImpl: ServiceImplementation<
-  typeof ExampleServiceDefinition
-> = {
+const exampleServiceImpl: ExampleServiceImplementation = {
   async exampleUnaryMethod(
     request: ExampleRequest,
   ): Promise<DeepPartial<ExampleResponse>> {
@@ -274,9 +269,7 @@ A server receives client metadata along with request, and can send response
 metadata in header and trailer.
 
 ```ts
-const exampleServiceImpl: ServiceImplementation<
-  typeof ExampleServiceDefinition
-> = {
+const exampleServiceImpl: ExampleServiceImplementation = {
   async exampleUnaryMethod(
     request: ExampleRequest,
     context: CallContext,
@@ -307,9 +300,7 @@ cancel any inner requests.
 ```ts
 import fetch from 'node-fetch';
 
-const exampleServiceImpl: ServiceImplementation<
-  typeof ExampleServiceDefinition
-> = {
+const exampleServiceImpl: ExampleServiceImplementation = {
   async exampleUnaryMethod(
     request: ExampleRequest,
     context: CallContext,
@@ -339,9 +330,7 @@ Service implementation defines this method as an Async Generator:
 ```ts
 import {delay} from 'abort-controller-x';
 
-const exampleServiceImpl: ServiceImplementation<
-  typeof ExampleServiceDefinition
-> = {
+const exampleServiceImpl: ExampleServiceImplementation = {
   async *exampleStreamingMethod(
     request: ExampleRequest,
     context: CallContext,
@@ -361,9 +350,7 @@ const exampleServiceImpl: ServiceImplementation<
 import {range} from 'ix/asynciterable';
 import {withAbort, map} from 'ix/asynciterable/operators';
 
-const exampleServiceImpl: ServiceImplementation<
-  typeof ExampleServiceDefinition
-> = {
+const exampleServiceImpl: ExampleServiceImplementation = {
   async *exampleStreamingMethod(
     request: ExampleRequest,
     context: CallContext,
@@ -383,9 +370,7 @@ import {Observable} from 'rxjs';
 import {from} from 'ix/asynciterable';
 import {withAbort} from 'ix/asynciterable/operators';
 
-const exampleServiceImpl: ServiceImplementation<
-  typeof ExampleServiceDefinition
-> = {
+const exampleServiceImpl: ExampleServiceImplementation = {
   async *exampleStreamingMethod(
     request: ExampleRequest,
     context: CallContext,
@@ -411,9 +396,7 @@ service ExampleService {
 Service implementation method receives request as an Async Iterable:
 
 ```ts
-const exampleServiceImpl: ServiceImplementation<
-  typeof ExampleServiceDefinition
-> = {
+const exampleServiceImpl: ExampleServiceImplementation = {
   async exampleUnaryMethod(
     request: AsyncIterable<ExampleRequest>,
   ): Promise<DeepPartial<ExampleResponse>> {
@@ -628,10 +611,7 @@ async function* authMiddleware<Request, Response>(
 Service implementation can then access JWT claims via call context:
 
 ```ts
-const exampleServiceImpl: ServiceImplementation<
-  typeof ExampleServiceDefinition,
-  AuthCallContextExt
-> = {
+const exampleServiceImpl: ExampleServiceImplementation<AuthCallContextExt> = {
   async exampleUnaryMethod(
     request: ExampleRequest,
     context: CallContext & AuthCallContextExt,
@@ -669,12 +649,15 @@ After compiling Protobuf file, we can create the client:
 When compiling Protobufs using `ts-proto`:
 
 ```ts
-import {createChannel, createClient, Client} from 'nice-grpc';
-import {ExampleServiceDefinition} from './compiled_proto/example';
+import {createChannel, createClient} from 'nice-grpc';
+import {
+  ExampleServiceClient,
+  ExampleServiceDefinition,
+} from './compiled_proto/example';
 
 const channel = createChannel('localhost:8080');
 
-const client: Client<typeof ExampleServiceDefinition> = createClient(
+const client: ExampleServiceClient = createClient(
   ExampleServiceDefinition,
   channel,
 );
