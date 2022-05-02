@@ -28,7 +28,7 @@
     "defer-promise": "^2.0.1",
     "grpc-tools": "^1.10.0",
     "nice-grpc": "^1.1.1",
-    "ts-proto": "^1.97.0"
+    "ts-proto": "^1.112.0"
   },
   "dependencies": {
     "nice-grpc-common": "^1.1.0",

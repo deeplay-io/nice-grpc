@@ -1,18 +1,24 @@
 import getPort = require('get-port');
+import {ClientMiddleware, ServerMiddleware} from 'nice-grpc-common';
 import {createChannel, createClient, createServer} from '..';
 import {
   DeepPartial,
+  TestClient,
   TestDefinition,
   Test2Definition,
   TestRequest,
   TestResponse,
+  TestServiceImplementation,
+  Test2ServiceImplementation,
+  Test2Client,
 } from '../../fixtures/ts-proto/test';
+import {createClientFactory} from '../client/ClientFactory';
 import {throwUnimplemented} from './utils/throwUnimplemented';
 
 test('basic', async () => {
   const server = createServer();
 
-  server.add(TestDefinition, {
+  const impl: TestServiceImplementation = {
     async testUnary(request: TestRequest): Promise<DeepPartial<TestResponse>> {
       return {
         id: request.id,
@@ -21,14 +27,16 @@ test('basic', async () => {
     testServerStream: throwUnimplemented,
     testClientStream: throwUnimplemented,
     testBidiStream: throwUnimplemented,
-  });
+  };
+
+  server.add(TestDefinition, impl);
 
   const address = `localhost:${await getPort()}`;
 
   await server.listen(address);
 
   const channel = createChannel(address);
-  const client = createClient(TestDefinition, channel);
+  const client: TestClient = createClient(TestDefinition, channel);
 
   await expect(client.testUnary({id: 'test'})).resolves.toMatchInlineSnapshot(`
           Object {
@@ -44,56 +52,101 @@ test('basic', async () => {
 test('middleware', async () => {
   const server = createServer();
 
-  const middlewareCalls: any[] = [];
+  const serverMiddlewareCalls: any[] = [];
 
-  server
-    .with(async function* (call, context) {
-      middlewareCalls.push(call);
+  const serverMiddleware: ServerMiddleware<{foo: 'bar'}> = async function* (
+    call,
+    context,
+  ) {
+    serverMiddlewareCalls.push(call);
 
-      return yield* call.next(call.request, context);
-    })
-    .add(Test2Definition, {
-      async testUnary(
-        request: TestRequest,
-      ): Promise<DeepPartial<TestResponse>> {
-        return {
-          id: request.id,
-        };
-      },
+    return yield* call.next(call.request, {
+      ...context,
+      foo: 'bar',
     });
+  };
+
+  const impl: Test2ServiceImplementation<{foo: 'bar'}> = {
+    async testUnary(request: TestRequest): Promise<DeepPartial<TestResponse>> {
+      return {
+        id: request.id,
+      };
+    },
+  };
+
+  server.with(serverMiddleware).add(Test2Definition, impl);
 
   const address = `localhost:${await getPort()}`;
 
   await server.listen(address);
 
-  const channel = createChannel(address);
-  const client = createClient(Test2Definition, channel);
+  const clientMiddlewareCalls: any[] = [];
 
-  await expect(client.testUnary({id: 'test'})).resolves.toMatchInlineSnapshot(`
+  const clientMiddleware: ClientMiddleware<{bar: 'baz'}> = async function* (
+    call,
+    options,
+  ) {
+    const {bar, ...rest} = options;
+    clientMiddlewareCalls.push({call, bar});
+
+    return yield* call.next(call.request, rest);
+  };
+
+  const channel = createChannel(address);
+  const client: Test2Client<{bar: 'baz'}> = createClientFactory()
+    .use(clientMiddleware)
+    .create(Test2Definition, channel);
+
+  await expect(client.testUnary({id: 'test'}, {bar: 'baz'})).resolves
+    .toMatchInlineSnapshot(`
           Object {
             "id": "test",
           }
         `);
-  expect(middlewareCalls).toMatchInlineSnapshot(`
-Array [
-  Object {
-    "method": Object {
-      "options": Object {
-        "idempotencyLevel": "IDEMPOTENT",
+  expect(serverMiddlewareCalls).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "method": Object {
+          "options": Object {
+            "idempotencyLevel": "IDEMPOTENT",
+          },
+          "path": "/nice_grpc.test.Test2/TestUnary",
+          "requestStream": false,
+          "responseStream": false,
+        },
+        "next": [Function],
+        "request": Object {
+          "id": "test",
+        },
+        "requestStream": false,
+        "responseStream": false,
       },
-      "path": "/nice_grpc.test.Test2/TestUnary",
-      "requestStream": false,
-      "responseStream": false,
-    },
-    "next": [Function],
-    "request": Object {
-      "id": "test",
-    },
-    "requestStream": false,
-    "responseStream": false,
-  },
-]
-`);
+    ]
+  `);
+
+  expect(clientMiddlewareCalls).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "bar": "baz",
+        "call": Object {
+          "method": Object {
+            "options": Object {
+              "idempotencyLevel": "IDEMPOTENT",
+            },
+            "path": "/nice_grpc.test.Test2/TestUnary",
+            "requestStream": false,
+            "responseStream": false,
+          },
+          "next": [Function],
+          "request": Object {
+            "id": "test",
+          },
+          "requestStream": false,
+          "responseStream": false,
+        },
+      },
+    ]
+  `);
 
   channel.close();
 
