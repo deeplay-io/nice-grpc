@@ -4,6 +4,7 @@ import {
   createClient,
   createClientFactory,
   createServer,
+  Metadata,
   Status,
 } from 'nice-grpc';
 import {
@@ -71,9 +72,21 @@ test('server and client', async () => {
   const clientWithMiddleware = createClientFactory()
     .use(errorDetailsClientMiddleware)
     .create(TestDefinition, channel);
+
+  let trailer: Metadata | undefined;
+
   const richClientError = await clientWithMiddleware
-    .testUnary({})
+    .testUnary(
+      {},
+      {
+        onTrailer(trailer_) {
+          trailer = trailer_;
+        },
+      },
+    )
     .catch(err => err);
+
+  expect(trailer?.has('grpc-status-details-bin')).toBe(true);
 
   expect(richClientError).toBeInstanceOf(ClientError);
   expect(richClientError).toBeInstanceOf(RichClientError);

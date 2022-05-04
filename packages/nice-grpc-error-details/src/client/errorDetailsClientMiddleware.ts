@@ -16,6 +16,8 @@ export const errorDetailsClientMiddleware: ClientMiddleware =
           if (detailsBuffer != null) {
             status = Status.decode(detailsBuffer);
           }
+
+          options.onTrailer?.(trailer);
         },
       });
     } catch (err) {
