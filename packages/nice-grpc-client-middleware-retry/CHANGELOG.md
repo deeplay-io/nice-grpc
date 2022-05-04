@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-retry@1.0.7...nice-grpc-client-middleware-retry@1.1.0) (2022-05-04)
+
+
+### Features
+
+* add support for `ts-proto` server and client interfaces ([#126](https://github.com/deeplay-io/nice-grpc/issues/126)) ([67f7eb6](https://github.com/deeplay-io/nice-grpc/commit/67f7eb613455426d6b63a4027132060a8a572f65)), closes [#115](https://github.com/deeplay-io/nice-grpc/issues/115)
+
+
+
+
+
 ## [1.0.7](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-retry@1.0.6...nice-grpc-client-middleware-retry@1.0.7) (2022-04-18)
 
 **Note:** Version bump only for package nice-grpc-client-middleware-retry
