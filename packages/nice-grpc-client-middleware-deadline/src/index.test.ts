@@ -248,3 +248,47 @@ test('bidirectional streaming', async () => {
 
   await server.shutdown();
 });
+
+test('absolute deadline', async () => {
+  const server = createServer();
+
+  const serverAbortDeferred = defer<void>();
+
+  server.add(TestService, {
+    async testUnary(request: TestRequest, {signal}) {
+      try {
+        return await forever(signal);
+      } catch (err) {
+        if (isAbortError(err)) {
+          serverAbortDeferred.resolve();
+        }
+
+        throw err;
+      }
+    },
+    testServerStream: throwUnimplemented,
+    testClientStream: throwUnimplemented,
+    testBidiStream: throwUnimplemented,
+  });
+
+  const port = await server.listen('localhost:0');
+
+  const channel = createChannel(`localhost:${port}`);
+  const client = createClientFactory()
+    .use(deadlineMiddleware)
+    .create(TestService, channel);
+
+  const promise = client.testUnary(new TestRequest(), {
+    deadline: 100,
+  });
+
+  await expect(promise).rejects.toMatchInlineSnapshot(
+    `[ClientError: /nice_grpc.test.Test/TestUnary DEADLINE_EXCEEDED: Deadline exceeded]`,
+  );
+
+  await serverAbortDeferred.promise;
+
+  channel.close();
+
+  await server.shutdown();
+});

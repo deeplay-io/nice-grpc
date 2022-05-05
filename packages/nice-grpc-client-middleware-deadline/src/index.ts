@@ -2,7 +2,7 @@ import {ClientError, ClientMiddleware, Status} from 'nice-grpc-common';
 import AbortController from 'node-abort-controller';
 
 export type DeadlineOptions = {
-  deadline?: Date;
+  deadline?: Date | number;
 };
 
 export const deadlineMiddleware: ClientMiddleware<DeadlineOptions> =
@@ -22,11 +22,12 @@ export const deadlineMiddleware: ClientMiddleware<DeadlineOptions> =
     origSignal?.addEventListener('abort', abortListener);
 
     let timedOut = false;
-
+    
+    const offset = deadline instanceof Date ? deadline.getTime() - Date.now() : deadline;
     const timer = setTimeout(() => {
       timedOut = true;
       abortController.abort();      
-    }, deadline.getTime() - Date.now());
+    }, offset);
 
     try {
       return yield* call.next(call.request, {
