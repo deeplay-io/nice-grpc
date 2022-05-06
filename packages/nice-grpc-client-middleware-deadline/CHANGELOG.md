@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.1.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-deadline@1.0.11...nice-grpc-client-middleware-deadline@1.1.0) (2022-05-06)
+
+
+### Features
+
+* **nice-grpc-client-middleware-deadline:** allow deadline as relative offset ([#130](https://github.com/deeplay-io/nice-grpc/issues/130)) ([7332b29](https://github.com/deeplay-io/nice-grpc/commit/7332b29869785abebc0217aa9426cabc55d0ad37))
+
+
+
+
+
 ## [1.0.11](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-deadline@1.0.10...nice-grpc-client-middleware-deadline@1.0.11) (2022-05-04)
 
 **Note:** Version bump only for package nice-grpc-client-middleware-deadline
