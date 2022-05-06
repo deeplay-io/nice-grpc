@@ -41,5 +41,15 @@ try {
 }
 ```
 
+Alternatively, you can specify deadline as a relative offset in milliseconds:
+
+```ts
+import ms from 'ms';
+
+const response = await client.exampleMethod(request, {
+  deadline: ms('15s'),
+});
+```
+
 [npm-image]: https://badge.fury.io/js/nice-grpc-client-middleware-deadline.svg
 [npm-url]: https://badge.fury.io/js/nice-grpc-client-middleware-deadline
