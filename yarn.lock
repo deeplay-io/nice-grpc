@@ -1831,9 +1831,9 @@ abbrev@1:
   integrity sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==
 
 abort-controller-x@^0.2.4, abort-controller-x@^0.2.6:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/abort-controller-x/-/abort-controller-x-0.2.6.tgz#708d5fc50a9bccfdf04ec70e562c925cc6f5b4ad"
-  integrity sha512-U8MmmcfIzl7qnzoog1woxKX/eYkQin3WR7k/S2dtpGLlSlsndXnvOYQEq8y1VnHC3+ofNFAT0GRgHq1lBbXlDQ==
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/abort-controller-x/-/abort-controller-x-0.2.7.tgz#6fa9be5b278b9c533d4d078d0ba660d40683907e"
+  integrity sha512-hq/lt8yODKrwuZa69GhSTl2l2kcrus2khZ7OjD6Bmqmx6tbW6dnV8cVGnkkdLCWnjXpgSx8zjQo+HUc9mvoQ/w==
   dependencies:
     node-abort-controller "^1.2.1 || ^2.0.0"
 
