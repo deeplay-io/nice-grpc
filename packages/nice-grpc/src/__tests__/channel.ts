@@ -1,6 +1,6 @@
 import getPort = require('get-port');
-import {randomBytes} from 'crypto'
-import {createChannel, createServer, waitForChannelReady} from '..';
+import {randomBytes} from 'crypto';
+import {createChannel, createServer, waitForChannelReady, Channel} from '..';
 
 test('implicit protocol', async () => {
   const address = `localhost:${await getPort()}`;
@@ -42,12 +42,12 @@ test('default port', async () => {
   secureChannel.close();
 });
 
-test('invalid protocol', () => {
-  expect(() =>
-    createChannel('htttp://localhost:123'),
-  ).toThrowErrorMatchingInlineSnapshot(
-    `"Unsupported protocol: 'htttp'. Expected one of 'http', 'https'"`,
-  );
+test('unknown protocol', () => {
+  const address = 'consul://server';
+  const channel = createChannel(address);
+
+  expect(channel).toBeInstanceOf(Channel);
+  expect(channel.getTarget()).toMatchInlineSnapshot(`"dns:${address}"`);
 });
 
 test('waitForChannelReady deadline', async () => {
