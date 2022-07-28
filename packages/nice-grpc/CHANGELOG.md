@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@1.2.0...nice-grpc@1.2.1) (2022-07-28)
+
+
+### Bug Fixes
+
+* **nice-grpc:** create `grpc-js` clients via `makeClientConstructor` for opentelemetry instrumentation ([bbcf52c](https://github.com/deeplay-io/nice-grpc/commit/bbcf52c9806eb2a46cd2ec14af770caa33c38e6f))
+
+
+
+
+
 # [1.2.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@1.1.1...nice-grpc@1.2.0) (2022-05-04)
 
 

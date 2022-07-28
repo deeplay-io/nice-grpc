@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-server-reflection",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Server reflection for nice-grpc",
   "keywords": [
     "grpc",
@@ -38,6 +38,6 @@
     "@grpc/grpc-js": "^1.6.1",
     "@types/google-protobuf": "^3.7.4",
     "google-protobuf": "^3.15.6",
-    "nice-grpc": "^1.2.0"
+    "nice-grpc": "^1.2.1"
   }
 }
