@@ -1,4 +1,4 @@
-import {Channel, Client as GrpcClient} from '@grpc/grpc-js';
+import {Channel, makeClientConstructor} from '@grpc/grpc-js';
 import {
   CallOptions,
   ClientMiddleware,
@@ -34,7 +34,7 @@ export type ClientFactory<CallOptionsExt = {}> = {
 
 export type DefaultCallOptions<
   Service extends ServiceDefinition,
-  CallOptionsExt = {}
+  CallOptionsExt = {},
 > = {
   [K in keyof Service | '*']?: CallOptions & Partial<CallOptionsExt>;
 };
@@ -71,7 +71,8 @@ function createClientFactoryWithMiddleware<CallOptionsExt = {}>(
         CallOptionsExt
       > = {},
     ) {
-      const grpcClient = new GrpcClient('', null!, {
+      const constructor = makeClientConstructor({}, '');
+      const grpcClient = new constructor('', null!, {
         channelOverride: channel,
       });
 
