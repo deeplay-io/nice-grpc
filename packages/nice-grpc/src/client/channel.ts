@@ -24,9 +24,9 @@ export function createChannel(
   } else if (protocol === 'https') {
     credentials ??= ChannelCredentials.createSsl();
   } else {
-    throw new Error(
-      `Unsupported protocol: '${protocol}'. Expected one of 'http', 'https'`,
-    );
+    credentials ??= ChannelCredentials.createInsecure();
+
+    return new Channel(address, credentials, options);
   }
 
   return new Channel(`${host}:${port}`, credentials, options);
