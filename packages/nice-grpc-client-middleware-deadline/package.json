@@ -16,7 +16,7 @@
     "test": "jest",
     "build": "tsc -P tsconfig.build.json",
     "prepublishOnly": "npm run clean && npm run build && npm test",
-    "build:proto": "grpc_tools_node_protoc --plugin=protoc-gen-grpc=./node_modules/.bin/grpc_tools_node_protoc_plugin --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./fixtures --ts_out=grpc_js:./fixtures --grpc_out=grpc_js:./fixtures -I fixtures fixtures/*.proto",
+    "build:proto": "grpc_tools_node_protoc --plugin=protoc-gen-grpc=../../node_modules/.bin/grpc_tools_node_protoc_plugin --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./fixtures --ts_out=grpc_js:./fixtures --grpc_out=grpc_js:./fixtures -I fixtures fixtures/*.proto",
     "prepare": "npm run build:proto"
   },
   "author": "Daniel Lytkin <aikoven@deeplay.io>",
@@ -26,9 +26,7 @@
     "@types/google-protobuf": "^3.7.4",
     "abort-controller-x": "^0.2.6",
     "google-protobuf": "^3.14.0",
-    "grpc-tools": "^1.10.0",
-    "grpc_tools_node_protoc_ts": "^5.0.1",
-    "nice-grpc": "^1.2.2"
+    "grpc_tools_node_protoc_ts": "^5.0.1"
   },
   "dependencies": {
     "nice-grpc-common": "^1.1.0",

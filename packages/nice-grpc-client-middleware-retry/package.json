@@ -23,10 +23,7 @@
   "license": "MIT",
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
-    "grpc-tools": "^1.10.0",
-    "jest-mock-random": "^1.1.1",
-    "nice-grpc": "^1.2.2",
-    "ts-proto": "^1.112.0"
+    "jest-mock-random": "^1.1.1"
   },
   "dependencies": {
     "abort-controller-x": "^0.2.6",
