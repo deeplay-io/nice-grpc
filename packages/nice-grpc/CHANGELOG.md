@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.2.2](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@1.2.1...nice-grpc@1.2.2) (2022-08-01)
+
+
+### Bug Fixes
+
+* **nice-grpc:** no longer reject unknown protocols in `createChannel` ([#168](https://github.com/deeplay-io/nice-grpc/issues/168)) ([4d618fd](https://github.com/deeplay-io/nice-grpc/commit/4d618fdd349381318234f38ed69af49c64628b52)), closes [#167](https://github.com/deeplay-io/nice-grpc/issues/167)
+
+
+
+
+
 ## [1.2.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@1.2.0...nice-grpc@1.2.1) (2022-07-28)
 
 
