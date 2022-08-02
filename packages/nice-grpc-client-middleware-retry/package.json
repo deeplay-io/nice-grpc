@@ -29,7 +29,7 @@
     "ts-proto": "^1.112.0"
   },
   "dependencies": {
-    "abort-controller-x": "^0.2.6",
+    "abort-controller-x": "^0.3.0",
     "nice-grpc-common": "^1.1.0",
     "node-abort-controller": "^2.0.0"
   }

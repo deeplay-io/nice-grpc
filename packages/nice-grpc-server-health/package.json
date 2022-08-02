@@ -34,7 +34,7 @@
     "ts-proto": "^1.112.0"
   },
   "dependencies": {
-    "abort-controller-x": "^0.2.6",
+    "abort-controller-x": "^0.3.0",
     "nice-grpc": "^1.2.2",
     "protobufjs": "^6.11.2",
     "typed-emitter": "^2.0.0"

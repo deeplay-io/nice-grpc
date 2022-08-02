@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "@improbable-eng/grpc-web": "^0.15.0",
-    "abort-controller-x": "^0.2.6",
+    "abort-controller-x": "^0.3.0",
     "js-base64": "^3.7.2",
     "nice-grpc-common": "^1.1.0",
     "node-abort-controller": "^2.0.0"

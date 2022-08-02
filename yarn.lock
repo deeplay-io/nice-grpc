@@ -1830,12 +1830,10 @@ abbrev@1:
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
   integrity sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==
 
-abort-controller-x@^0.2.4, abort-controller-x@^0.2.6:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/abort-controller-x/-/abort-controller-x-0.2.7.tgz#6fa9be5b278b9c533d4d078d0ba660d40683907e"
-  integrity sha512-hq/lt8yODKrwuZa69GhSTl2l2kcrus2khZ7OjD6Bmqmx6tbW6dnV8cVGnkkdLCWnjXpgSx8zjQo+HUc9mvoQ/w==
-  dependencies:
-    node-abort-controller "^1.2.1 || ^2.0.0"
+abort-controller-x@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/abort-controller-x/-/abort-controller-x-0.3.0.tgz#f11f7523c15b84b7669b8871714182535ec35c9d"
+  integrity sha512-XBxLdp1gOdnwPE48J/VUAb7Ldk8UuzksHXf/G9TAEZ101L87vxFiYdgWH3iUKt2En1qx1JFfBCe3NAO+XMK/iw==
 
 acorn-globals@^6.0.0:
   version "6.0.0"
@@ -5020,7 +5018,7 @@ node-abort-controller@^1.2.1:
   resolved "https://registry.yarnpkg.com/node-abort-controller/-/node-abort-controller-1.2.1.tgz#1eddb57eb8fea734198b11b28857596dc6165708"
   integrity sha512-79PYeJuj6S9+yOHirR0JBLFOgjB6sQCir10uN6xRx25iD+ZD4ULqgRn3MwWBRaQGB0vEgReJzWwJo42T1R6YbQ==
 
-"node-abort-controller@^1.2.1 || ^2.0.0", node-abort-controller@^2.0.0:
+node-abort-controller@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/node-abort-controller/-/node-abort-controller-2.0.0.tgz#800e0d250d3b977175e48df4f74c2d3960076a79"
   integrity sha512-L8RfEgjBTHAISTuagw51PprVAqNZoG6KSB6LQ6H1bskMVkFs5E71IyjauLBv3XbuomJlguWF/VnRHdJ1gqiAqA==
