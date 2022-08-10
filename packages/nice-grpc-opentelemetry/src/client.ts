@@ -16,15 +16,8 @@ import {
   Status,
 } from 'nice-grpc-common';
 import {getMethodAttributes, getStatusAttributes} from './attributes';
-import {
-  clientActiveRpcsMetric,
-  clientDurationMetric,
-  clientRequestsPerRpcMetric,
-  clientResponsesPerRpcMetric,
-  countMessagesPerRpc,
-} from './metrics';
 import {metadataSetter} from './propagation';
-import {emitSpanEvent, emitSpanEvents, getSpanName, tracer} from './traces';
+import {emitSpanEvents, getSpanName, tracer} from './traces';
 import {bindAsyncGenerator} from './utils/bindAsyncGenerator';
 
 export function openTelemetryClientMiddleware(): ClientMiddleware {
@@ -58,46 +51,26 @@ async function* openTelemetryClientMiddlewareGenerator<Request, Response>(
   const attributes = getMethodAttributes(call.method.path);
 
   span.setAttributes(attributes);
-  const startTimeMs = performance.now();
-  clientActiveRpcsMetric.add(1, attributes);
 
   let status: Status = Status.OK;
-  let message: string | undefined;
+  let errorMessage: string | undefined;
 
   try {
     let request;
 
     if (!call.requestStream) {
       request = call.request;
-
-      emitSpanEvent(span, MessageTypeValues.RECEIVED);
-      clientRequestsPerRpcMetric.record(1, attributes);
     } else {
-      request = countMessagesPerRpc(
-        emitSpanEvents(call.request, span, MessageTypeValues.RECEIVED),
-        count => {
-          clientRequestsPerRpcMetric.record(count, attributes);
-        },
-      );
+      request = emitSpanEvents(call.request, span, MessageTypeValues.SENT);
     }
 
     if (!call.responseStream) {
-      const response = yield* call.next(request, options);
-
-      emitSpanEvent(span, MessageTypeValues.SENT);
-      clientResponsesPerRpcMetric.record(1, attributes);
-
-      return response;
+      return yield* call.next(request, options);
     } else {
-      yield* countMessagesPerRpc(
-        emitSpanEvents(
-          call.next(request, options),
-          span,
-          MessageTypeValues.SENT,
-        ),
-        count => {
-          clientResponsesPerRpcMetric.record(count, attributes);
-        },
+      yield* emitSpanEvents(
+        call.next(request, options),
+        span,
+        MessageTypeValues.RECEIVED,
       );
 
       return;
@@ -105,30 +78,29 @@ async function* openTelemetryClientMiddlewareGenerator<Request, Response>(
   } catch (err: unknown) {
     if (err instanceof ClientError) {
       status = err.code;
-      message = err.details;
+      errorMessage = err.details;
     } else if (isAbortError(err)) {
       status = Status.CANCELLED;
+      errorMessage = 'The operation was cancelled';
     } else {
       status = Status.UNKNOWN;
+      errorMessage = 'Unknown server error occurred';
 
       span.recordException(err as any);
     }
 
     throw err;
   } finally {
-    clientActiveRpcsMetric.add(-1, attributes);
-    const durationMs = performance.now() - startTimeMs;
-
     const statusAttributes = getStatusAttributes(status);
 
-    clientDurationMetric.record(durationMs, {
-      ...attributes,
-      ...statusAttributes,
-    });
     span.setAttributes(statusAttributes);
 
+    // https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/rpc/#grpc-status
     if (status !== Status.OK) {
-      span.setStatus({code: SpanStatusCode.ERROR, message});
+      span.setStatus({
+        code: SpanStatusCode.ERROR,
+        message: `${Status[status]}: ${errorMessage}`,
+      });
     }
 
     span.end();
