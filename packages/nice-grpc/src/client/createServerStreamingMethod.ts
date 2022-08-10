@@ -10,6 +10,7 @@ import {
   MethodDefinition,
   toGrpcJsMethodDefinition,
 } from '../service-definitions';
+import {CompatAbortSignal} from '../utils/compatAbortSignal';
 import {
   convertMetadataFromGrpcJs,
   convertMetadataToGrpcJs,
@@ -45,12 +46,10 @@ export function createServerStreamingMethod<Request, Response>(
       );
     }
 
-    const {
-      metadata = Metadata(),
-      signal = new AbortController().signal,
-      onHeader,
-      onTrailer,
-    } = options;
+    const {metadata = Metadata(), onHeader, onTrailer} = options;
+
+    const signal = (options.signal ??
+      new AbortController().signal) as CompatAbortSignal;
 
     const call = client.makeServerStreamRequest(
       grpcMethodDefinition.path,
