@@ -1,5 +1,4 @@
 import {ClientError, ClientMiddleware, Status} from 'nice-grpc-common';
-import AbortController from 'node-abort-controller';
 
 export type DeadlineOptions = {
   deadline?: Date | number;

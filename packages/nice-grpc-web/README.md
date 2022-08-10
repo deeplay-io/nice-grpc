@@ -273,7 +273,6 @@ A client call can be cancelled using
 [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal).
 
 ```ts
-import AbortController from 'node-abort-controller';
 import {isAbortError} from 'abort-controller-x';
 
 const abortController = new AbortController();

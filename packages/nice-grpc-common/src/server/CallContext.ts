@@ -1,5 +1,3 @@
-import {AbortSignal} from 'node-abort-controller';
-
 import {Metadata} from '../Metadata';
 
 /**

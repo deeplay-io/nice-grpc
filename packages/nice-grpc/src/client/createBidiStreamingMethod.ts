@@ -6,7 +6,6 @@ import {
   MethodDescriptor,
 } from 'nice-grpc-common';
 import {isAbortError, throwIfAborted, waitForEvent} from 'abort-controller-x';
-import AbortController, {AbortSignal} from 'node-abort-controller';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
 import {patchClientWritableStream} from '../utils/patchClientWritableStream';
 import {readableToAsyncIterable} from '../utils/readableToAsyncIterable';
