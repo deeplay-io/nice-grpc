@@ -1,6 +1,5 @@
 import {SpanKind} from '@opentelemetry/api';
 import {NodeSDK, tracing} from '@opentelemetry/sdk-node';
-import {forever} from 'abort-controller-x';
 import {
   createChannel,
   createClientFactory,
@@ -9,7 +8,7 @@ import {
   Status,
 } from 'nice-grpc';
 import {openTelemetryClientMiddleware, openTelemetryServerMiddleware} from '..';
-import {TestDefinition} from '../../fixtures/test';
+import {DeepPartial, TestDefinition, TestRequest} from '../../fixtures/test';
 import {dumpSpan} from './utils/dumpSpan';
 import {throwUnimplemented} from './utils/throwUnimplemented';
 
@@ -37,11 +36,13 @@ test('basic', async () => {
 
   server.add(TestDefinition, {
     testUnary: throwUnimplemented,
-    async *testServerStream() {
-      yield {};
-      yield {};
+    testServerStream: throwUnimplemented,
+    async testClientStream(request) {
+      for await (const item of request) {
+      }
+
+      return {};
     },
-    testClientStream: throwUnimplemented,
     testBidiStream: throwUnimplemented,
   });
 
@@ -52,8 +53,12 @@ test('basic', async () => {
     .use(openTelemetryClientMiddleware())
     .create(TestDefinition, channel);
 
-  for await (const response of client.testServerStream({})) {
+  async function* createRequest(): AsyncIterable<DeepPartial<TestRequest>> {
+    yield {};
+    yield {};
   }
+
+  await client.testClientStream(createRequest());
 
   const finishedSpans = traceExporter.getFinishedSpans();
   expect(finishedSpans).toHaveLength(2);
@@ -65,7 +70,7 @@ test('basic', async () => {
       "attributes": Object {
         "rpc.grpc.status_code": 0,
         "rpc.grpc.status_text": "OK",
-        "rpc.method": "TestServerStream",
+        "rpc.method": "TestClientStream",
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
@@ -73,20 +78,20 @@ test('basic', async () => {
         Object {
           "attributes": Object {
             "message.id": 1,
-            "message.type": "RECEIVED",
+            "message.type": "SENT",
           },
           "name": "message",
         },
         Object {
           "attributes": Object {
             "message.id": 2,
-            "message.type": "RECEIVED",
+            "message.type": "SENT",
           },
           "name": "message",
         },
       ],
       "kind": "CLIENT",
-      "name": "nice_grpc.test.Test/TestServerStream",
+      "name": "nice_grpc.test.Test/TestClientStream",
       "status": Object {
         "code": "UNSET",
         "message": undefined,
@@ -103,7 +108,7 @@ test('basic', async () => {
         "net.peer.ip": "::1",
         "rpc.grpc.status_code": 0,
         "rpc.grpc.status_text": "OK",
-        "rpc.method": "TestServerStream",
+        "rpc.method": "TestClientStream",
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
@@ -111,20 +116,20 @@ test('basic', async () => {
         Object {
           "attributes": Object {
             "message.id": 1,
-            "message.type": "SENT",
+            "message.type": "RECEIVED",
           },
           "name": "message",
         },
         Object {
           "attributes": Object {
             "message.id": 2,
-            "message.type": "SENT",
+            "message.type": "RECEIVED",
           },
           "name": "message",
         },
       ],
       "kind": "SERVER",
-      "name": "nice_grpc.test.Test/TestServerStream",
+      "name": "nice_grpc.test.Test/TestClientStream",
       "status": Object {
         "code": "UNSET",
         "message": undefined,
@@ -142,11 +147,13 @@ test('error', async () => {
 
   server.add(TestDefinition, {
     testUnary: throwUnimplemented,
-    async *testServerStream() {
-      yield {};
+    testServerStream: throwUnimplemented,
+    async testClientStream(request) {
+      for await (const item of request) {
+      }
+
       throw new ServerError(Status.NOT_FOUND, 'test error message');
     },
-    testClientStream: throwUnimplemented,
     testBidiStream: throwUnimplemented,
   });
 
@@ -157,106 +164,12 @@ test('error', async () => {
     .use(openTelemetryClientMiddleware())
     .create(TestDefinition, channel);
 
-  await Promise.resolve()
-    .then(async () => {
-      for await (const response of client.testServerStream({})) {
-      }
-    })
-    .catch(() => {});
-
-  const finishedSpans = traceExporter.getFinishedSpans();
-  expect(finishedSpans).toHaveLength(2);
-  const serverSpan = finishedSpans.find(span => span.kind === SpanKind.SERVER)!;
-  const clientSpan = finishedSpans.find(span => span.kind === SpanKind.CLIENT)!;
-
-  expect(dumpSpan(clientSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
-        "rpc.grpc.status_code": 5,
-        "rpc.grpc.status_text": "NOT_FOUND",
-        "rpc.method": "TestServerStream",
-        "rpc.service": "nice_grpc.test.Test",
-        "rpc.system": "grpc",
-      },
-      "events": Array [
-        Object {
-          "attributes": Object {
-            "message.id": 1,
-            "message.type": "RECEIVED",
-          },
-          "name": "message",
-        },
-      ],
-      "kind": "CLIENT",
-      "name": "nice_grpc.test.Test/TestServerStream",
-      "status": Object {
-        "code": "ERROR",
-        "message": "NOT_FOUND: test error message",
-      },
-    }
-  `);
-
-  expect('net.peer.port' in serverSpan.attributes).toBe(true);
-  delete serverSpan.attributes['net.peer.port'];
-
-  expect(dumpSpan(serverSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
-        "net.peer.ip": "::1",
-        "rpc.grpc.status_code": 5,
-        "rpc.grpc.status_text": "NOT_FOUND",
-        "rpc.method": "TestServerStream",
-        "rpc.service": "nice_grpc.test.Test",
-        "rpc.system": "grpc",
-      },
-      "events": Array [
-        Object {
-          "attributes": Object {
-            "message.id": 1,
-            "message.type": "SENT",
-          },
-          "name": "message",
-        },
-      ],
-      "kind": "SERVER",
-      "name": "nice_grpc.test.Test/TestServerStream",
-      "status": Object {
-        "code": "ERROR",
-        "message": "NOT_FOUND: test error message",
-      },
-    }
-  `);
-
-  channel.close();
-
-  await server.shutdown();
-});
-
-test('aborted iteration on client', async () => {
-  const server = createServer().use(openTelemetryServerMiddleware());
-
-  server.add(TestDefinition, {
-    testUnary: throwUnimplemented,
-    async *testServerStream(request, {signal}) {
-      yield {};
-      return await forever(signal);
-    },
-    testClientStream: throwUnimplemented,
-    testBidiStream: throwUnimplemented,
-  });
-
-  const port = await server.listen('localhost:0');
-
-  const channel = createChannel(`localhost:${port}`);
-  const client = createClientFactory()
-    .use(openTelemetryClientMiddleware())
-    .create(TestDefinition, channel);
-
-  for await (const response of client.testServerStream({})) {
-    break;
+  async function* createRequest(): AsyncIterable<DeepPartial<TestRequest>> {
+    yield {};
+    yield {};
   }
 
-  await new Promise(resolve => setTimeout(resolve, 100));
+  await client.testClientStream(createRequest()).catch(() => {});
 
   const finishedSpans = traceExporter.getFinishedSpans();
   expect(finishedSpans).toHaveLength(2);
@@ -266,40 +179,9 @@ test('aborted iteration on client', async () => {
   expect(dumpSpan(clientSpan)).toMatchInlineSnapshot(`
     Object {
       "attributes": Object {
-        "rpc.grpc.status_code": 1,
-        "rpc.grpc.status_text": "CANCELLED",
-        "rpc.method": "TestServerStream",
-        "rpc.service": "nice_grpc.test.Test",
-        "rpc.system": "grpc",
-      },
-      "events": Array [
-        Object {
-          "attributes": Object {
-            "message.id": 1,
-            "message.type": "RECEIVED",
-          },
-          "name": "message",
-        },
-      ],
-      "kind": "CLIENT",
-      "name": "nice_grpc.test.Test/TestServerStream",
-      "status": Object {
-        "code": "ERROR",
-        "message": "CANCELLED: Stream iteration was aborted by client, e.g. by breaking from the for .. of loop",
-      },
-    }
-  `);
-
-  expect('net.peer.port' in serverSpan.attributes).toBe(true);
-  delete serverSpan.attributes['net.peer.port'];
-
-  expect(dumpSpan(serverSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
-        "net.peer.ip": "::1",
-        "rpc.grpc.status_code": 1,
-        "rpc.grpc.status_text": "CANCELLED",
-        "rpc.method": "TestServerStream",
+        "rpc.grpc.status_code": 5,
+        "rpc.grpc.status_text": "NOT_FOUND",
+        "rpc.method": "TestClientStream",
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
@@ -311,12 +193,57 @@ test('aborted iteration on client', async () => {
           },
           "name": "message",
         },
+        Object {
+          "attributes": Object {
+            "message.id": 2,
+            "message.type": "SENT",
+          },
+          "name": "message",
+        },
       ],
-      "kind": "SERVER",
-      "name": "nice_grpc.test.Test/TestServerStream",
+      "kind": "CLIENT",
+      "name": "nice_grpc.test.Test/TestClientStream",
       "status": Object {
         "code": "ERROR",
-        "message": "CANCELLED: The operation was cancelled",
+        "message": "NOT_FOUND: test error message",
+      },
+    }
+  `);
+
+  expect('net.peer.port' in serverSpan.attributes).toBe(true);
+  delete serverSpan.attributes['net.peer.port'];
+
+  expect(dumpSpan(serverSpan)).toMatchInlineSnapshot(`
+    Object {
+      "attributes": Object {
+        "net.peer.ip": "::1",
+        "rpc.grpc.status_code": 5,
+        "rpc.grpc.status_text": "NOT_FOUND",
+        "rpc.method": "TestClientStream",
+        "rpc.service": "nice_grpc.test.Test",
+        "rpc.system": "grpc",
+      },
+      "events": Array [
+        Object {
+          "attributes": Object {
+            "message.id": 1,
+            "message.type": "RECEIVED",
+          },
+          "name": "message",
+        },
+        Object {
+          "attributes": Object {
+            "message.id": 2,
+            "message.type": "RECEIVED",
+          },
+          "name": "message",
+        },
+      ],
+      "kind": "SERVER",
+      "name": "nice_grpc.test.Test/TestClientStream",
+      "status": Object {
+        "code": "ERROR",
+        "message": "NOT_FOUND: test error message",
       },
     }
   `);

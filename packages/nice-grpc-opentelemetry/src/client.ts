@@ -52,6 +52,7 @@ async function* openTelemetryClientMiddlewareGenerator<Request, Response>(
 
   span.setAttributes(attributes);
 
+  let settled = false;
   let status: Status = Status.OK;
   let errorMessage: string | undefined;
 
@@ -65,7 +66,11 @@ async function* openTelemetryClientMiddlewareGenerator<Request, Response>(
     }
 
     if (!call.responseStream) {
-      return yield* call.next(request, options);
+      const response = yield* call.next(request, options);
+
+      settled = true;
+
+      return response;
     } else {
       yield* emitSpanEvents(
         call.next(request, options),
@@ -73,9 +78,13 @@ async function* openTelemetryClientMiddlewareGenerator<Request, Response>(
         MessageTypeValues.RECEIVED,
       );
 
+      settled = true;
+
       return;
     }
   } catch (err: unknown) {
+    settled = true;
+
     if (err instanceof ClientError) {
       status = err.code;
       errorMessage = err.details;
@@ -91,6 +100,12 @@ async function* openTelemetryClientMiddlewareGenerator<Request, Response>(
 
     throw err;
   } finally {
+    if (!settled) {
+      status = Status.CANCELLED;
+      errorMessage =
+        'Stream iteration was aborted by client, e.g. by breaking from the for .. of loop';
+    }
+
     const statusAttributes = getStatusAttributes(status);
 
     span.setAttributes(statusAttributes);

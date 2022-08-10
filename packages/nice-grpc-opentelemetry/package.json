@@ -2,6 +2,12 @@
   "name": "nice-grpc-opentelemetry",
   "version": "0.0.0",
   "description": "OpenTelemetry instrumentation for nice-grpc",
+  "keywords": [
+    "grpc",
+    "nice-grpc",
+    "opentelemetry",
+    "tracing"
+  ],
   "repository": "deeplay-io/nice-grpc",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
