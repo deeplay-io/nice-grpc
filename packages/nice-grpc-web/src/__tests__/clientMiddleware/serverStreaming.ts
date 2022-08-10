@@ -198,3 +198,88 @@ test('error', async () => {
   proxy.stop();
   await server.shutdown();
 });
+
+test('aborted iteration on client', async () => {
+  const actions: any[] = [];
+
+  const server = createServer();
+
+  server.add(TestService, {
+    testUnary: throwUnimplemented,
+    async *testServerStream(request: TestRequest) {
+      yield new TestResponse().setId(`${request.getId()}-0`);
+      yield new TestResponse().setId(`${request.getId()}-1`);
+    },
+    testClientStream: throwUnimplemented,
+    testBidiStream: throwUnimplemented,
+  });
+
+  const address = `localhost:${await getPort()}`;
+
+  await server.listen(address);
+
+  const proxyPort = await getPort();
+  const proxy = await startProxy(proxyPort, address);
+
+  const channel = createChannel(
+    `http://localhost:${proxyPort}`,
+    WebsocketTransport(),
+  );
+
+  const client = createClientFactory()
+    .use(createTestClientMiddleware('testOption', actions))
+    .create(Test, channel);
+
+  const responses: any[] = [];
+
+  for await (const response of client.testServerStream(
+    new TestRequest().setId('test'),
+    {
+      testOption: 'test-value',
+    },
+  )) {
+    responses.push(response);
+
+    break;
+  }
+
+  expect(responses).toMatchInlineSnapshot(`
+    Array [
+      nice_grpc.test.TestResponse {
+        "id": "test-0",
+      },
+    ]
+  `);
+
+  expect(actions).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "options": Object {
+          "testOption": "test-value",
+        },
+        "requestStream": false,
+        "responseStream": true,
+        "type": "start",
+      },
+      Object {
+        "request": nice_grpc.test.TestRequest {
+          "id": "test",
+        },
+        "type": "request",
+      },
+      Object {
+        "response": nice_grpc.test.TestResponse {
+          "id": "test-0",
+        },
+        "type": "response",
+      },
+      Object {
+        "error": [ClientError: /nice_grpc.test.Test/TestServerStream CANCELLED: Stream iteration was aborted by client],
+        "type": "error",
+      },
+    ]
+  `);
+
+  proxy.stop();
+  await server.shutdown();
+});

@@ -159,8 +159,26 @@ export function createBidiStreamingMethod<Request, Response>(
 
             return result;
           },
-          return() {
-            return iterator.return();
+          async return() {
+            // if the iteration was aborted by `break` or `return` or `throw`
+            // inside the for .. of loop, let the middleware know by throwing
+            // an error to the generator
+
+            const error = new ClientError(
+              definition.path,
+              Status.CANCELLED,
+              'Stream iteration was aborted by client',
+            );
+
+            try {
+              return await iterator.throw(error);
+            } catch (err) {
+              if (err === error) {
+                return {done: true, value: undefined};
+              }
+
+              throw err;
+            }
           },
           throw(err) {
             return iterator.throw(err);

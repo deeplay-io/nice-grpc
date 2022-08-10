@@ -196,3 +196,91 @@ test('error', async () => {
 
   await server.shutdown();
 });
+
+test('aborted iteration on client', async () => {
+  const actions: any[] = [];
+
+  const server = createServer();
+
+  server.add(TestService, {
+    testUnary: throwUnimplemented,
+    testServerStream: throwUnimplemented,
+    testClientStream: throwUnimplemented,
+    async *testBidiStream(request: AsyncIterable<TestRequest>) {
+      for await (const req of request) {
+        yield new TestResponse().setId(req.getId());
+      }
+    },
+  });
+
+  const address = `localhost:${await getPort()}`;
+
+  await server.listen(address);
+
+  const channel = createChannel(address);
+  const client = createClientFactory()
+    .use(createTestClientMiddleware('testOption', actions))
+    .create(TestService, channel);
+
+  async function* createRequest() {
+    yield new TestRequest().setId('test-1');
+    yield new TestRequest().setId('test-2');
+  }
+
+  const responses: any[] = [];
+
+  for await (const response of client.testBidiStream(createRequest(), {
+    testOption: 'test-value',
+  })) {
+    responses.push(response);
+
+    break;
+  }
+
+  expect(responses).toMatchInlineSnapshot(`
+    Array [
+      nice_grpc.test.TestResponse {
+        "id": "test-1",
+      },
+    ]
+  `);
+
+  expect(actions).toMatchInlineSnapshot(`
+    Array [
+      Object {
+        "options": Object {
+          "testOption": "test-value",
+        },
+        "requestStream": true,
+        "responseStream": true,
+        "type": "start",
+      },
+      Object {
+        "request": nice_grpc.test.TestRequest {
+          "id": "test-1",
+        },
+        "type": "request",
+      },
+      Object {
+        "request": nice_grpc.test.TestRequest {
+          "id": "test-2",
+        },
+        "type": "request",
+      },
+      Object {
+        "response": nice_grpc.test.TestResponse {
+          "id": "test-1",
+        },
+        "type": "response",
+      },
+      Object {
+        "error": [ClientError: /nice_grpc.test.Test/TestBidiStream CANCELLED: Stream iteration was aborted by client],
+        "type": "error",
+      },
+    ]
+  `);
+
+  channel.close();
+
+  await server.shutdown();
+});
