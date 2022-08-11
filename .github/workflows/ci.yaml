@@ -30,4 +30,4 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: yarn --frozen-lockfile
       - run: yarn build
-      - run: yarn test
+      - run: cd packages/nice-grpc-web && yarn test
