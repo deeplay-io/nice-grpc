@@ -25,9 +25,9 @@ export async function startProxy(
       `--use_websockets=true`,
       `--allow_all_origins=true`
     ],
-    // {
-    //   stdio: 'inherit',
-    // },
+    {
+      stdio: 'inherit',
+    },
   );
 
   await waitUntilUsed(listenPort);
