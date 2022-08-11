@@ -19,7 +19,7 @@ export function WebsocketTransport(): TransportFactory {
 }
 
 function websocketRequest(options: TransportOptions): Transport {
-  console.log('websocketRequest', options);
+  // console.log('websocketRequest', options);
 
   let webSocketAddress = constructWebSocketAddress(options.url);
 
@@ -59,7 +59,7 @@ function websocketRequest(options: TransportOptions): Transport {
       ws = new WebSocket(webSocketAddress, ['grpc-websockets']);
       ws.binaryType = 'arraybuffer';
       ws.onopen = function () {
-        console.log('websocketRequest.onopen');
+        // console.log('websocketRequest.onopen');
         ws.send(headersToBytes(metadata));
 
         // send any messages that were passed to sendMessage before the connection was ready
@@ -69,12 +69,12 @@ function websocketRequest(options: TransportOptions): Transport {
       };
 
       ws.onclose = function (closeEvent) {
-        console.log('websocketRequest.onclose', closeEvent);
+        // console.log('websocketRequest.onclose', closeEvent);
         options.onEnd();
       };
 
       ws.onerror = function (error) {
-        console.log('websocketRequest.onerror', error);
+        // console.log('websocketRequest.onerror', error);
       };
 
       ws.onmessage = function (e) {
@@ -82,7 +82,7 @@ function websocketRequest(options: TransportOptions): Transport {
       };
     },
     cancel: () => {
-      console.log('websocket.abort');
+      // console.log('websocket.abort');
       ws.close();
     },
   };
