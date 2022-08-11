@@ -24,7 +24,7 @@ test.only('basic', async () => {
     },
   });
 
-  const address = `localhost:${await getPort()}`;
+  const address = `127.0.0.1:${await getPort()}`;
 
   await server.listen(address);
 
@@ -32,7 +32,7 @@ test.only('basic', async () => {
   const proxy = await startProxy(proxyPort, address);
 
   const channel = createChannel(
-    `http://localhost:${proxyPort}`,
+    `http://127.0.0.1:${proxyPort}`,
     WebsocketTransport(),
   );
   const client = createClient(Test, channel);
