@@ -30,7 +30,7 @@ export type RetryOptions = {
   /**
    * Maximum delay between attempts in milliseconds.
    *
-   * Defaults to 15 seconds.
+   * Defaults to 30 seconds.
    *
    * Example: if `retryBaseDelayMs` is 1000 and `retryMaxDelayMs` is 3000, then
    * retries will be attempted in 1000ms, 2000ms, 3000ms, 3000ms etc (not
@@ -80,7 +80,7 @@ export const retryMiddleware: ClientMiddleware<RetryOptions> =
     const {
       retry = isIdempotent,
       retryBaseDelayMs = 1000,
-      retryMaxDelayMs = 15000,
+      retryMaxDelayMs = 30000,
       retryMaxAttempts = 1,
       onRetryableError,
       retryableStatuses = defaultRetryableStatuses,
