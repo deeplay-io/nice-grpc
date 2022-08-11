@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         environment:
-          - node-version: '14.0'
+          - node-version: '14.15'
             node-options: --require "abort-controller/polyfill"
           - node-version: '14.17'
             node-options: --experimental-abortcontroller
