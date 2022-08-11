@@ -9,7 +9,6 @@ import {
   MethodDescriptor,
   Status,
 } from 'nice-grpc-common';
-import AbortController from 'node-abort-controller';
 import {
   MethodDefinition,
   toGrpcWebMethodDefinition,

@@ -23,7 +23,6 @@
     "@tsconfig/recommended": "^1.0.1"
   },
   "dependencies": {
-    "node-abort-controller": "^2.0.0",
     "ts-error": "^1.0.6"
   }
 }

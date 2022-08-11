@@ -18,7 +18,7 @@ export async function startProxy(
   const childProcess = spawn(
     executablePath,
     [
-      `--server_bind_address=localhost`,
+      `--server_bind_address=0.0.0.0`,
       `--server_http_debug_port=${listenPort}`,
       `--run_tls_server=false`,
       `--backend_addr=${backendAddress}`,

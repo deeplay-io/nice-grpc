@@ -8,7 +8,6 @@ import {
 } from 'nice-grpc-common';
 import {grpc} from '@improbable-eng/grpc-web';
 import {execute} from 'abort-controller-x';
-import AbortController from 'node-abort-controller';
 import {
   MethodDefinition,
   toGrpcWebMethodDefinition,

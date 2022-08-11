@@ -1,25 +1,25 @@
 import {Client, ClientWritableStream} from '@grpc/grpc-js';
+import {isAbortError, throwIfAborted, waitForEvent} from 'abort-controller-x';
 import {
-  Metadata,
   CallOptions,
   ClientMiddleware,
+  Metadata,
   MethodDescriptor,
 } from 'nice-grpc-common';
-import {isAbortError, throwIfAborted, waitForEvent} from 'abort-controller-x';
-import AbortController, {AbortSignal} from 'node-abort-controller';
-import {isAsyncIterable} from '../utils/isAsyncIterable';
-import {patchClientWritableStream} from '../utils/patchClientWritableStream';
-import {readableToAsyncIterable} from '../utils/readableToAsyncIterable';
-import {
-  convertMetadataFromGrpcJs,
-  convertMetadataToGrpcJs,
-} from '../utils/convertMetadata';
-import {BidiStreamingClientMethod} from './Client';
-import {wrapClientError} from './wrapClientError';
 import {
   MethodDefinition,
   toGrpcJsMethodDefinition,
 } from '../service-definitions';
+import {CompatAbortSignal} from '../utils/compatAbortSignal';
+import {
+  convertMetadataFromGrpcJs,
+  convertMetadataToGrpcJs,
+} from '../utils/convertMetadata';
+import {isAsyncIterable} from '../utils/isAsyncIterable';
+import {patchClientWritableStream} from '../utils/patchClientWritableStream';
+import {readableToAsyncIterable} from '../utils/readableToAsyncIterable';
+import {BidiStreamingClientMethod} from './Client';
+import {wrapClientError} from './wrapClientError';
 
 /** @internal */
 export function createBidiStreamingMethod<Request, Response>(
@@ -47,12 +47,10 @@ export function createBidiStreamingMethod<Request, Response>(
       );
     }
 
-    const {
-      metadata = Metadata(),
-      signal = new AbortController().signal,
-      onHeader,
-      onTrailer,
-    } = options;
+    const {metadata = Metadata(), onHeader, onTrailer} = options;
+
+    const signal = (options.signal ??
+      new AbortController().signal) as CompatAbortSignal;
 
     const pipeAbortController = new AbortController();
 

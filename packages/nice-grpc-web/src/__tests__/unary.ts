@@ -2,7 +2,6 @@ import getPort = require('get-port');
 import defer = require('defer-promise');
 import {forever, isAbortError} from 'abort-controller-x';
 import {createServer, ServerError} from 'nice-grpc';
-import AbortController from 'node-abort-controller';
 import {createChannel, createClient, Metadata, Status} from '..';
 import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../fixtures/grpc-js/test_pb';

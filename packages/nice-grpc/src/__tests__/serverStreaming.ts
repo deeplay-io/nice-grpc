@@ -1,7 +1,6 @@
 import getPort = require('get-port');
 import defer = require('defer-promise');
 import {forever, isAbortError} from 'abort-controller-x';
-import AbortController from 'node-abort-controller';
 import {
   createChannel,
   createClient,
