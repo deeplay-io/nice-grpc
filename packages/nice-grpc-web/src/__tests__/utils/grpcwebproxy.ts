@@ -21,7 +21,7 @@ export async function startProxy(
       `--server_bind_address=localhost`,
       `--server_http_debug_port=${listenPort}`,
       `--run_tls_server=false`,
-      `--backend_addr=${backendAddress}`,
+      `--backend_addr=http://${backendAddress}`,
       `--use_websockets=true`,
       `--allow_all_origins=true`
     ],
