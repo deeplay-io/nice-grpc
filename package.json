@@ -16,6 +16,7 @@
   "devDependencies": {
     "@types/jest": "^27.4.0",
     "abort-controller": "^3.0.0",
+    "conventional-changelog-conventionalcommits": "^5.0.0",
     "jest": "^27.0.4",
     "lerna": "^4.0.0",
     "prettier": "^2.3.1",
