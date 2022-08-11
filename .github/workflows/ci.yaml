@@ -21,8 +21,8 @@ jobs:
         environment:
           - node-version: '14.17'
             node-options: --experimental-abortcontroller
-          - node-version: 16.x 
-          - node-version: 18.x 
+          - node-version: 16.x
+          - node-version: 18.x
 
     steps:
       - uses: actions/checkout@v2

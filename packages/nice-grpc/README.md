@@ -42,6 +42,15 @@ A Node.js gRPC library that is nice to you. Built on top of
 - Client and server middleware support via concise API that uses Async
   Generators.
 
+## Prerequisites
+
+Supports NodeJS 14+. Global `AbortController` is required which is
+[available in NodeJS](https://nodejs.org/api/globals.html#class-abortcontroller)
+since 15.0.0, NodeJS 14.17+ requires the
+[--experimental-abortcontroller](https://nodejs.org/docs/latest-v14.x/api/cli.html#cli_experimental_abortcontroller)
+flag. A [polyfill](https://www.npmjs.com/package/abort-controller) is available
+for older NodeJS versions.
+
 ## Installation
 
 ```
