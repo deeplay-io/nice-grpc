@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc",
-  "version": "1.2.2",
+  "version": "2.0.0",
   "description": "A Node.js gRPC library that is nice to you",
   "keywords": [
     "grpc",
@@ -49,6 +49,6 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.6.1",
     "abort-controller-x": "^0.4.0",
-    "nice-grpc-common": "^1.1.0"
+    "nice-grpc-common": "^2.0.0"
   }
 }

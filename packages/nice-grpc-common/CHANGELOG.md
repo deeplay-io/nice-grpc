@@ -1,3 +1,21 @@
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [2.0.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-common@1.1.0...nice-grpc-common@2.0.0) (2022-08-11)
+
+### ⚠ BREAKING CHANGES
+
+- use built-in `AbortController` instead of `node-abort-controller` (#178)
+
+### Features
+
+- use built-in `AbortController` instead of `node-abort-controller`
+  ([#178](https://github.com/deeplay-io/nice-grpc/issues/178))
+  ([4c4bc4e](https://github.com/deeplay-io/nice-grpc/commit/4c4bc4eacf38bedfbcdd5a41f4471698f7a117ed)),
+  closes [#158](https://github.com/deeplay-io/nice-grpc/issues/158)
+
 ## 1.1.0 (2022-04-18)
 
 ### Features
