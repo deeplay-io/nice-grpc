@@ -9,8 +9,5 @@
     "stripInternal": true
   },
   "files": ["src/index.ts"],
-  "include": [
-    "src/**/__tests__/**/*.ts",
-    "src/**/*.test.ts"
-  ]
+  "include": ["src/**/__tests__/**/*.ts", "src/**/*.test.ts"]
 }

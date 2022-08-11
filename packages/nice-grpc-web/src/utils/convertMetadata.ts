@@ -22,7 +22,7 @@ export function convertMetadataFromGrpcWeb(
 ): Metadata {
   const metadata = Metadata();
 
-  for (const [key, values] of Object.entries(grpcMetadata.headersMap)) {  
+  for (const [key, values] of Object.entries(grpcMetadata.headersMap)) {
     metadata.set(
       key,
       key.endsWith('-bin')

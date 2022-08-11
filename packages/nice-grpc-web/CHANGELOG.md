@@ -1,9 +1,11 @@
 ## 1.1.0 (2022-05-04)
 
-
 ### Features
 
-* add support for `ts-proto` server and client interfaces ([#126](https://github.com/deeplay-io/nice-grpc/issues/126)) ([67f7eb6](https://github.com/deeplay-io/nice-grpc/commit/67f7eb613455426d6b63a4027132060a8a572f65)), closes [#115](https://github.com/deeplay-io/nice-grpc/issues/115)
+- add support for `ts-proto` server and client interfaces
+  ([#126](https://github.com/deeplay-io/nice-grpc/issues/126))
+  ([67f7eb6](https://github.com/deeplay-io/nice-grpc/commit/67f7eb613455426d6b63a4027132060a8a572f65)),
+  closes [#115](https://github.com/deeplay-io/nice-grpc/issues/115)
 
 ## 1.0.8 (2022-04-18)
 
@@ -21,15 +23,15 @@
 
 ## 1.0.1 (2021-06-29)
 
-
 ### Bug Fixes
 
-* add missing `requestStream` and `responseStream` to `MethodDescriptor` ([2d92e40](https://github.com/deeplay-io/nice-grpc/commit/2d92e40564f646d80dccbde6e5cda6a8eadf4ba3))
+- add missing `requestStream` and `responseStream` to `MethodDescriptor`
+  ([2d92e40](https://github.com/deeplay-io/nice-grpc/commit/2d92e40564f646d80dccbde6e5cda6a8eadf4ba3))
 
 ## 1.0.0 (2021-06-29)
 
-
 ### Features
 
-* **nice-grpc-web:** support `ts-proto` service definitions ([#15](https://github.com/deeplay-io/nice-grpc/issues/15)) ([53a4861](https://github.com/deeplay-io/nice-grpc/commit/53a48610ce92263963882a68ef47bdf5ed26190c))
-
+- **nice-grpc-web:** support `ts-proto` service definitions
+  ([#15](https://github.com/deeplay-io/nice-grpc/issues/15))
+  ([53a4861](https://github.com/deeplay-io/nice-grpc/commit/53a48610ce92263963882a68ef47bdf5ed26190c))

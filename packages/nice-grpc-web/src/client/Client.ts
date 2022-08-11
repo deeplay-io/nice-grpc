@@ -9,19 +9,19 @@ import {MethodRequestIn, MethodResponseOut} from '../utils/methodTypes';
 
 export type Client<
   Service extends CompatServiceDefinition,
-  CallOptionsExt = {}
+  CallOptionsExt = {},
 > = RawClient<NormalizedServiceDefinition<Service>, CallOptionsExt>;
 
 export type RawClient<
   Service extends ServiceDefinition,
-  CallOptionsExt = {}
+  CallOptionsExt = {},
 > = {
   [Method in keyof Service]: ClientMethod<Service[Method], CallOptionsExt>;
 };
 
 export type ClientMethod<
   Definition extends MethodDefinition<any, any, any, any>,
-  CallOptionsExt = {}
+  CallOptionsExt = {},
 > = Definition['requestStream'] extends false
   ? Definition['responseStream'] extends false
     ? UnaryClientMethod<
@@ -60,7 +60,7 @@ export type UnaryClientMethod<RequestIn, ResponseOut, CallOptionsExt = {}> = (
 export type ServerStreamingClientMethod<
   RequestIn,
   ResponseOut,
-  CallOptionsExt = {}
+  CallOptionsExt = {},
 > = (
   request: RequestIn,
   options?: CallOptions & CallOptionsExt,
@@ -69,7 +69,7 @@ export type ServerStreamingClientMethod<
 export type ClientStreamingClientMethod<
   RequestIn,
   ResponseOut,
-  CallOptionsExt = {}
+  CallOptionsExt = {},
 > = (
   request: AsyncIterable<RequestIn>,
   options?: CallOptions & CallOptionsExt,
@@ -78,7 +78,7 @@ export type ClientStreamingClientMethod<
 export type BidiStreamingClientMethod<
   RequestIn,
   ResponseOut,
-  CallOptionsExt = {}
+  CallOptionsExt = {},
 > = (
   request: AsyncIterable<RequestIn>,
   options?: CallOptions & CallOptionsExt,

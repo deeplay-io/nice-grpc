@@ -23,7 +23,7 @@ export async function startProxy(
       `--run_tls_server=false`,
       `--backend_addr=${backendAddress}`,
       `--use_websockets=true`,
-      `--allow_all_origins=true`
+      `--allow_all_origins=true`,
     ],
     // {
     //   stdio: 'inherit',

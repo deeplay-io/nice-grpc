@@ -93,7 +93,7 @@ export function createClientStreamingMethod<Request, Response>(
         err => {
           if (!isAbortError(err)) {
             reject(err);
-            client.close();            
+            client.close();
           }
         },
       );

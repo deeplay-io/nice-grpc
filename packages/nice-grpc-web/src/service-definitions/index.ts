@@ -21,7 +21,7 @@ export type MethodDefinition<
   ResponseIn,
   ResponseOut,
   RequestStream extends boolean = boolean,
-  ResponseStream extends boolean = boolean
+  ResponseStream extends boolean = boolean,
 > = {
   path: string;
   requestStream: RequestStream;
@@ -43,7 +43,7 @@ export type CompatServiceDefinition =
   | TsProtoServiceDefinition;
 
 export type NormalizedServiceDefinition<
-  Service extends CompatServiceDefinition
+  Service extends CompatServiceDefinition,
 > = Service extends ServiceDefinition
   ? Service
   : Service extends grpc.ServiceDefinition

@@ -4,10 +4,12 @@
 
 ## 1.1.0 (2022-05-04)
 
-
 ### Features
 
-* add support for `ts-proto` server and client interfaces ([#126](https://github.com/deeplay-io/nice-grpc/issues/126)) ([67f7eb6](https://github.com/deeplay-io/nice-grpc/commit/67f7eb613455426d6b63a4027132060a8a572f65)), closes [#115](https://github.com/deeplay-io/nice-grpc/issues/115)
+- add support for `ts-proto` server and client interfaces
+  ([#126](https://github.com/deeplay-io/nice-grpc/issues/126))
+  ([67f7eb6](https://github.com/deeplay-io/nice-grpc/commit/67f7eb613455426d6b63a4027132060a8a572f65)),
+  closes [#115](https://github.com/deeplay-io/nice-grpc/issues/115)
 
 ## 1.0.7 (2022-04-18)
 
@@ -23,8 +25,7 @@
 
 ## 1.0.1 (2021-09-21)
 
-
 ### Bug Fixes
 
-* **nice-grpc-server-health:** fix context type ([8a55a90](https://github.com/deeplay-io/nice-grpc/commit/8a55a90ab32c582a60ebaf28a07511ab60c25690))
-
+- **nice-grpc-server-health:** fix context type
+  ([8a55a90](https://github.com/deeplay-io/nice-grpc/commit/8a55a90ab32c582a60ebaf28a07511ab60c25690))

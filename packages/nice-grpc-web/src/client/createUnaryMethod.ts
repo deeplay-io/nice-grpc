@@ -58,7 +58,7 @@ export function createUnaryMethod<Request, Response>(
 
       const client = grpc.client<any, any, any>(grpcMethodDefinition, {
         host: channel.address,
-        transport: channel.transport,  
+        transport: channel.transport,
       });
 
       client.onHeaders(headers => {
