@@ -11,7 +11,6 @@ import {
   Metadata,
   MethodDescriptor,
 } from 'nice-grpc-common';
-import AbortController, {AbortSignal} from 'node-abort-controller';
 import {
   MethodDefinition,
   toGrpcJsMethodDefinition,

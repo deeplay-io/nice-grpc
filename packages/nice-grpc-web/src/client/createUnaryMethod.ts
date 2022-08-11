@@ -8,7 +8,6 @@ import {
 } from 'nice-grpc-common';
 import {grpc} from '@improbable-eng/grpc-web';
 import {execute} from 'abort-controller-x';
-import AbortController from 'node-abort-controller';
 import {
   MethodDefinition,
   toGrpcWebMethodDefinition,
@@ -59,7 +58,7 @@ export function createUnaryMethod<Request, Response>(
 
       const client = grpc.client<any, any, any>(grpcMethodDefinition, {
         host: channel.address,
-        transport: channel.transport,  
+        transport: channel.transport,
       });
 
       client.onHeaders(headers => {

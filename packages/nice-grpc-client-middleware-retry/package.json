@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-client-middleware-retry",
-  "version": "1.1.2",
+  "version": "2.0.0",
   "description": "Retry client middleware for nice-grpc",
   "repository": "deeplay-io/nice-grpc",
   "main": "lib/index.js",
@@ -25,12 +25,11 @@
     "@tsconfig/recommended": "^1.0.1",
     "grpc-tools": "^1.10.0",
     "jest-mock-random": "^1.1.1",
-    "nice-grpc": "^1.2.2",
+    "nice-grpc": "^2.0.0",
     "ts-proto": "^1.112.0"
   },
   "dependencies": {
-    "abort-controller-x": "^0.2.6",
-    "nice-grpc-common": "^1.1.0",
-    "node-abort-controller": "^2.0.0"
+    "abort-controller-x": "^0.4.0",
+    "nice-grpc-common": "^2.0.0"
   }
 }

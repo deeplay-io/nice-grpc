@@ -5,7 +5,6 @@ import {
   ServerMiddlewareCall,
   Status,
 } from 'nice-grpc-common';
-import AbortController from 'node-abort-controller';
 
 export type TerminatorContext = {
   abortOnTerminate(): void;

@@ -27,7 +27,7 @@ if (releases[release]) {
       console.log('Downloading grpc-health-probe');
 
       await new Promise((resolve, reject) => {
-        request(releases[release])          
+        request(releases[release])
           .pipe(fs.createWriteStream(targetPath))
           .on('error', reject)
           .on('finish', resolve);
@@ -36,6 +36,6 @@ if (releases[release]) {
       await fs.promises.chmod(targetPath, 0o755);
     })
     .catch(err => console.error(err));
-} else {  
+} else {
   console.log(`Unsupported platform: ${release}`);
 }

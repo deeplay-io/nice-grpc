@@ -16,5 +16,6 @@
       "createRelease": "github",
       "message": "chore(release): publish"
     }
-  }
+  },
+  "changelogPreset": "conventionalcommits"
 }

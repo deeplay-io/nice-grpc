@@ -1,6 +1,5 @@
 import {ServerSurfaceCall} from '@grpc/grpc-js/build/src/server-call';
 import {CallContext, Metadata} from 'nice-grpc-common';
-import AbortController from 'node-abort-controller';
 import {
   convertMetadataFromGrpcJs,
   convertMetadataToGrpcJs,

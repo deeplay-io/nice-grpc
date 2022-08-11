@@ -29,34 +29,32 @@ export type ProtobufJsWriter = {
   finish(): Uint8Array;
 };
 
-export type TsProtoMessageIn<
-  Type extends TsProtoMessageType<any>
-> = Type['fromPartial'] extends Function
-  ? Parameters<Type['fromPartial']>[0]
-  : Type extends TsProtoMessageType<infer Message>
-  ? Message
-  : never;
+export type TsProtoMessageIn<Type extends TsProtoMessageType<any>> =
+  Type['fromPartial'] extends Function
+    ? Parameters<Type['fromPartial']>[0]
+    : Type extends TsProtoMessageType<infer Message>
+    ? Message
+    : never;
 
 export type FromTsProtoServiceDefinition<
-  Service extends TsProtoServiceDefinition
+  Service extends TsProtoServiceDefinition,
 > = {
   [M in keyof Service['methods']]: FromTsProtoMethodDefinition<
     Service['methods'][M]
   >;
 };
 
-export type FromTsProtoMethodDefinition<
-  Method
-> = Method extends TsProtoMethodDefinition<infer Request, infer Response>
-  ? MethodDefinition<
-      TsProtoMessageIn<Method['requestType']>,
-      Request,
-      TsProtoMessageIn<Method['responseType']>,
-      Response,
-      Method['requestStream'],
-      Method['responseStream']
-    >
-  : never;
+export type FromTsProtoMethodDefinition<Method> =
+  Method extends TsProtoMethodDefinition<infer Request, infer Response>
+    ? MethodDefinition<
+        TsProtoMessageIn<Method['requestType']>,
+        Request,
+        TsProtoMessageIn<Method['responseType']>,
+        Response,
+        Method['requestStream'],
+        Method['responseStream']
+      >
+    : never;
 
 export function fromTsProtoServiceDefinition(
   definition: TsProtoServiceDefinition,

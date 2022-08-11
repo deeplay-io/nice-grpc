@@ -72,13 +72,12 @@ const response = await client.exampleMethod(request, {
 
 ### Infinite retries
 
-You can also set `retryMaxAttempts` to `Infinity` and use `AbortSignal` to
+You can also set `retryMaxAttempts` to `Infinity` and use
+[`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) to
 [cancel](https://github.com/deeplay-io/nice-grpc/tree/master/packages/nice-grpc#cancelling-calls)
 the retried call:
 
 ```ts
-import AbortController from 'node-abort-controller';
-
 const abortController = new AbortController();
 
 setTimeout(() => {

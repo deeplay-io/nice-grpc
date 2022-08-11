@@ -3,7 +3,7 @@ import {CallContext} from './CallContext';
 
 export type ServerMiddleware<
   CallContextExt = {},
-  RequiredCallContextExt = {}
+  RequiredCallContextExt = {},
 > = <Request, Response>(
   call: ServerMiddlewareCall<
     Request,
@@ -31,7 +31,7 @@ export type ServerMiddlewareCallRequest<Request> =
 export type ServerMiddlewareCallResponse<
   Request,
   Response,
-  NextCallContextExt
+  NextCallContextExt,
 > =
   | {
       responseStream: false;

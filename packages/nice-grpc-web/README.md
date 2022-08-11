@@ -29,6 +29,13 @@ A Browser gRPC client library that is nice to you. Built on top of
   [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal).
 - Middleware support via concise API that uses Async Generators.
 
+## Prerequisites
+
+Global
+[`AbortController`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)
+is required. A [polyfill](https://www.npmjs.com/package/abort-controller) is
+available for older browsers.
+
 ## Installation
 
 ```
@@ -273,7 +280,6 @@ A client call can be cancelled using
 [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal).
 
 ```ts
-import AbortController from 'node-abort-controller';
 import {isAbortError} from 'abort-controller-x';
 
 const abortController = new AbortController();

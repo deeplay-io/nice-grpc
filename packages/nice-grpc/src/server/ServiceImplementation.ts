@@ -9,7 +9,7 @@ import {MethodRequestOut, MethodResponseIn} from '../utils/methodTypes';
 
 export type ServiceImplementation<
   Service extends CompatServiceDefinition,
-  CallContextExt = {}
+  CallContextExt = {},
 > = RawServiceImplementation<
   NormalizedServiceDefinition<Service>,
   CallContextExt
@@ -17,7 +17,7 @@ export type ServiceImplementation<
 
 export type RawServiceImplementation<
   Service extends ServiceDefinition,
-  CallContextExt = {}
+  CallContextExt = {},
 > = {
   [Method in keyof Service]: MethodImplementation<
     Service[Method],
@@ -27,7 +27,7 @@ export type RawServiceImplementation<
 
 export type MethodImplementation<
   Definition extends MethodDefinition<any, any, any, any>,
-  CallContextExt = {}
+  CallContextExt = {},
 > = Definition['requestStream'] extends false
   ? Definition['responseStream'] extends false
     ? UnaryMethodImplementation<
@@ -61,7 +61,7 @@ export type MethodImplementation<
 export type UnaryMethodImplementation<
   Request,
   Response,
-  CallContextExt = {}
+  CallContextExt = {},
 > = (
   request: Request,
   context: CallContext & CallContextExt,
@@ -70,7 +70,7 @@ export type UnaryMethodImplementation<
 export type ServerStreamingMethodImplementation<
   Request,
   Response,
-  CallContextExt = {}
+  CallContextExt = {},
 > = (
   request: Request,
   context: CallContext & CallContextExt,
@@ -79,7 +79,7 @@ export type ServerStreamingMethodImplementation<
 export type ClientStreamingMethodImplementation<
   Request,
   Response,
-  CallContextExt = {}
+  CallContextExt = {},
 > = (
   request: AsyncIterable<Request>,
   context: CallContext & CallContextExt,
@@ -88,7 +88,7 @@ export type ClientStreamingMethodImplementation<
 export type BidiStreamingMethodImplementation<
   Request,
   Response,
-  CallContextExt = {}
+  CallContextExt = {},
 > = (
   request: AsyncIterable<Request>,
   context: CallContext & CallContextExt,

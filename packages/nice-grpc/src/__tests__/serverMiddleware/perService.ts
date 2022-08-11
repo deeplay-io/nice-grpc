@@ -1,6 +1,9 @@
 import getPort = require('get-port');
 import {createChannel, createClient, createServer} from '../..';
-import {Test2Service, TestService} from '../../../fixtures/grpc-js/test_grpc_pb';
+import {
+  Test2Service,
+  TestService,
+} from '../../../fixtures/grpc-js/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../../fixtures/grpc-js/test_pb';
 import {createTestServerMiddleware} from '../utils/testServerMiddleware';
 import {throwUnimplemented} from '../utils/throwUnimplemented';

@@ -100,11 +100,11 @@ function constructWebSocketAddress(url: string) {
 }
 
 function headersToBytes(headers: Metadata): Uint8Array {
-  let asString = '';  
+  let asString = '';
   headers.forEach((key, values) => {
     values.forEach(value => {
       asString += `${key}: ${value}\r\n`;
-    })
+    });
   });
   return encodeASCII(asString);
 }

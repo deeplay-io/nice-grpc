@@ -8,7 +8,6 @@ import {
 } from 'nice-grpc-common';
 import {grpc} from '@improbable-eng/grpc-web';
 import {execute, isAbortError, throwIfAborted} from 'abort-controller-x';
-import AbortController from 'node-abort-controller';
 import {
   AnyMethodDefinition,
   MethodDefinition,
@@ -94,7 +93,7 @@ export function createClientStreamingMethod<Request, Response>(
         err => {
           if (!isAbortError(err)) {
             reject(err);
-            client.close();            
+            client.close();
           }
         },
       );
