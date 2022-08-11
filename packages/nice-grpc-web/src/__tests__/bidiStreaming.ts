@@ -10,7 +10,7 @@ import {startProxy} from './utils/grpcwebproxy';
 import {throwUnimplemented} from './utils/throwUnimplemented';
 import {WebsocketTransport} from './utils/WebsocketTransport';
 
-test('basic', async () => {
+test.only('basic', async () => {
   const server = createServer();
 
   server.add(TestService, {
