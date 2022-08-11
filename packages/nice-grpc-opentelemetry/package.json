@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-opentelemetry",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "OpenTelemetry instrumentation for nice-grpc",
   "keywords": [
     "grpc",
