@@ -35,7 +35,7 @@
     "defer-promise": "^2.0.1",
     "grpc-tools": "^1.10.0",
     "mkdirp": "^1.0.4",
-    "nice-grpc": "^1.2.1",
+    "nice-grpc": "^2.0.0",
     "protobufjs": "^6.11.2",
     "rimraf": "^3.0.2",
     "ts-proto": "^1.112.0"
@@ -43,8 +43,8 @@
   "dependencies": {
     "@opentelemetry/api": "^1.1.0",
     "@opentelemetry/semantic-conventions": "^1.5.0",
-    "abort-controller-x": "^0.2.6",
+    "abort-controller-x": "^0.4.0",
     "ipaddr.js": "^2.0.1",
-    "nice-grpc-common": "^1.1.0"
+    "nice-grpc-common": "^2.0.0"
   }
 }

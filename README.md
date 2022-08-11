@@ -33,3 +33,5 @@ A gRPC library that is nice to you.
 - [nice-grpc-error-details](/packages/nice-grpc-error-details) — experimental
   [Rich Error Model](https://grpc.io/docs/guides/error/#richer-error-model)
   support.
+- [nice-grpc-opentelemetry](/packages/nice-grpc-opentelemetry) —
+  [OpenTelemetry](https://opentelemetry.io/) instrumentation.
