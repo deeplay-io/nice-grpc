@@ -24,7 +24,7 @@
     "prepublishOnly": "npm run clean && npm run build && npm test",
     "build:proto": "grpc_tools_node_protoc --ts_proto_out=./fixtures --ts_proto_opt=outputServices=generic-definitions,useExactTypes=false,outputTypeRegistry=true -I fixtures fixtures/*.proto",
     "prepare": "npm run build:proto",
-    "version": "node scripts/version.js"
+    "version": "node scripts/version.js && git add src/version.ts"
   },
   "author": "Daniel Lytkin <aikoven@deeplay.io>",
   "license": "MIT",
