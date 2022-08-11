@@ -21,9 +21,11 @@ export async function startProxy(
       `--server_bind_address=localhost`,
       `--server_http_debug_port=${listenPort}`,
       `--run_tls_server=false`,
-      `--backend_addr=http://${backendAddress}`,
+      `--backend_addr=${backendAddress}`,
       `--use_websockets=true`,
-      `--allow_all_origins=true`
+      `--allow_all_origins=true`,
+      `--server_http_max_read_timeout=180s`,
+      `--server_http_max_write_timeout=180s`,
     ],
     {
       stdio: 'inherit',
