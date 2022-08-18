@@ -21,15 +21,15 @@ const server = createServer()
   .use(/* ... other middleware */);
 ```
 
-Attach middleware as the last one on the client:
+Attach middleware as the first one on the client:
 
 ```ts
 import {createClientFactory} from 'nice-grpc'; // or 'nice-grpc-web'
 import {openTelemetryClientMiddleware} from 'nice-grpc-opentelemetry';
 
 const clientFactory = createClientFactory()
-  .use(/* ... other middleware */)
-  .use(openTelemetryClientMiddleware());
+  .use(openTelemetryClientMiddleware())
+  .use(/* ... other middleware */);
 
 const client = clientFactory.create(/* ... */);
 ```
