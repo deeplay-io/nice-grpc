@@ -35,3 +35,5 @@ A gRPC library that is nice to you.
   support.
 - [nice-grpc-opentelemetry](/packages/nice-grpc-opentelemetry) —
   [OpenTelemetry](https://opentelemetry.io/) instrumentation.
+- [nice-grpc-prometheus](/packages/nice-grpc-prometheus) —
+  [Prometheus](https://prometheus.io/) monitoring.
