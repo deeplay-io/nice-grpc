@@ -11,7 +11,8 @@
 
 ## Usage
 
-[Merge metric registries](https://github.com/siimon/prom-client#multiple-registries):
+Import `nice-grpc-prometheus` metrics registry and
+[merge it with the global registry](https://github.com/siimon/prom-client#multiple-registries):
 
 ```ts
 import {register as globalRegistry, Registry} from 'prom-client';
