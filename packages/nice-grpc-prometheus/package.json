@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-prometheus",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Prometheus monitoring for nice-grpc",
   "keywords": [
     "grpc",
