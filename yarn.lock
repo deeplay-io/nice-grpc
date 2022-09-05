@@ -486,9 +486,9 @@
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
 "@grpc/grpc-js@^1.6.1":
-  version "1.6.9"
-  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.6.9.tgz#f8feeeb599c1ad148abaab39efbb597c22783fef"
-  integrity sha512-01Dy1wqXVsuiMI4m4tDoX+IPYAeNI8EsfNFPqAJBX4OiCSs5VU8Gw0pJq5NhGizH6nKUprmHb/QvxTq3d1xL5g==
+  version "1.6.10"
+  resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.6.10.tgz#b6584c59ef90aa76d878ac92c21785e602f247ff"
+  integrity sha512-XTX5z/P5kH802MDoVm/rqOil0UwYEOEjf9+NPgfmm5UINIxDzwYaXfVR6z8svCBG8Hlbu/FzkXqhP8J5xaWzSQ==
   dependencies:
     "@grpc/proto-loader" "^0.7.0"
     "@types/node" ">=12.12.47"
