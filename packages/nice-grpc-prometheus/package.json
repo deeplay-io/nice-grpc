@@ -36,7 +36,7 @@
     "grpc-tools": "^1.10.0",
     "mkdirp": "^1.0.4",
     "nice-grpc": "^2.0.0",
-    "protobufjs": "^6.11.2",
+    "protobufjs": "^7.1.0",
     "rimraf": "^3.0.2",
     "ts-proto": "^1.112.0"
   },
