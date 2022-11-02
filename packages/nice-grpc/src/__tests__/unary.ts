@@ -16,8 +16,12 @@ import {throwUnimplemented} from './utils/throwUnimplemented';
 test('basic', async () => {
   const server = createServer();
 
+  let serverSignal: AbortSignal;
+
   server.add(TestService, {
-    async testUnary(request: TestRequest) {
+    async testUnary(request: TestRequest, context) {
+      serverSignal = context.signal;
+
       return new TestResponse().setId(request.getId());
     },
     testServerStream: throwUnimplemented,
@@ -38,6 +42,7 @@ test('basic', async () => {
             "id": "test",
           }
         `);
+  expect(serverSignal!.aborted).toBe(false);
 
   channel.close();
 
@@ -154,8 +159,11 @@ test('metadata', async () => {
 test('error', async () => {
   const server = createServer();
 
+  let serverSignal: AbortSignal;
+
   server.add(TestService, {
     async testUnary(request: TestRequest, context) {
+      serverSignal = context.signal;
       context.trailer.set('test', ['test-value-1', 'test-value-2']);
       throw new ServerError(Status.NOT_FOUND, request.getId());
     },
@@ -182,6 +190,7 @@ test('error', async () => {
   ).rejects.toMatchInlineSnapshot(
     `[ClientError: /nice_grpc.test.Test/TestUnary NOT_FOUND: test]`,
   );
+  expect(serverSignal!.aborted).toBe(false);
 
   expect(trailer?.getAll('test')).toMatchInlineSnapshot(`
     Array [

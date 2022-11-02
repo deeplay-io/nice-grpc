@@ -16,8 +16,12 @@ import {throwUnimplemented} from './utils/throwUnimplemented';
 test('basic', async () => {
   const server = createServer();
 
+  let serverSignal: AbortSignal;
+
   server.add(TestService, {
     async *testServerStream(request: TestRequest, context) {
+      serverSignal = context.signal;
+
       yield new TestResponse().setId(`${request.getId()}-1`);
       yield new TestResponse().setId(`${request.getId()}-2`);
     },
@@ -51,6 +55,7 @@ test('basic', async () => {
       },
     ]
   `);
+  expect(serverSignal!.aborted).toBe(false);
 
   channel.close();
 
@@ -177,9 +182,12 @@ test('metadata', async () => {
 test('error', async () => {
   const server = createServer();
 
+  let serverSignal: AbortSignal;
+
   server.add(TestService, {
     testUnary: throwUnimplemented,
     async *testServerStream(request: TestRequest, context) {
+      serverSignal = context.signal;
       yield new TestResponse().setId(request.getId());
 
       context.trailer.set('test', 'test-value');
@@ -228,6 +236,7 @@ test('error', async () => {
       },
     ]
   `);
+  expect(serverSignal!.aborted).toBe(false);
 
   expect(trailer?.getAll('test')).toMatchInlineSnapshot(`
     Array [

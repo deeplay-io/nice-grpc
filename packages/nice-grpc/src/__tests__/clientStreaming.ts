@@ -16,10 +16,14 @@ import {throwUnimplemented} from './utils/throwUnimplemented';
 test('basic', async () => {
   const server = createServer();
 
+  let serverSignal: AbortSignal;
+
   server.add(TestService, {
     testUnary: throwUnimplemented,
     testServerStream: throwUnimplemented,
-    async testClientStream(request: AsyncIterable<TestRequest>) {
+    async testClientStream(request: AsyncIterable<TestRequest>, context) {
+      serverSignal = context.signal;
+
       const requests: TestRequest[] = [];
 
       for await (const req of request) {
@@ -52,6 +56,7 @@ test('basic', async () => {
       "id": "test-1 test-2",
     }
   `);
+  expect(serverSignal!.aborted).toBe(false);
 
   channel.close();
 
@@ -172,10 +177,13 @@ test('metadata', async () => {
 test('error', async () => {
   const server = createServer();
 
+  let serverSignal: AbortSignal;
+
   server.add(TestService, {
     testUnary: throwUnimplemented,
     testServerStream: throwUnimplemented,
     async testClientStream(request: AsyncIterable<TestRequest>, context) {
+      serverSignal = context.signal;
       context.trailer.set('test', ['test-value-1', 'test-value-2']);
 
       for await (const item of request) {
@@ -225,6 +233,8 @@ test('error', async () => {
   );
 
   await requestIterableFinish.promise;
+
+  expect(serverSignal!.aborted).toBe(false);
 
   expect(trailer?.getAll('test')).toMatchInlineSnapshot(`
     Array [
@@ -313,10 +323,14 @@ test('cancel', async () => {
 test('early response', async () => {
   const server = createServer();
 
+  let serverSignal: AbortSignal;
+
   server.add(TestService, {
     testUnary: throwUnimplemented,
     testServerStream: throwUnimplemented,
-    async testClientStream(request: AsyncIterable<TestRequest>) {
+    async testClientStream(request: AsyncIterable<TestRequest>, context) {
+      serverSignal = context.signal;
+
       for await (const item of request) {
         return new TestResponse().setId(item.getId());
       }
@@ -360,6 +374,8 @@ test('early response', async () => {
   `);
 
   await requestIterableFinish.promise;
+
+  expect(serverSignal!.aborted).toBe(false);
 
   channel.close();
 
