@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-prometheus",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Prometheus monitoring for nice-grpc",
   "keywords": [
     "grpc",
@@ -35,7 +35,7 @@
     "defer-promise": "^2.0.1",
     "grpc-tools": "^1.10.0",
     "mkdirp": "^1.0.4",
-    "nice-grpc": "^2.0.0",
+    "nice-grpc": "^2.0.1",
     "protobufjs": "^7.1.2",
     "rimraf": "^3.0.2",
     "ts-proto": "^1.112.0"

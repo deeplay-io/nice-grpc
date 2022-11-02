@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.0.0...nice-grpc@2.0.1) (2022-11-02)
+
+### Bug Fixes
+
+- **nice-grpc:** fix server signal abort on call end
+  ([#229](https://github.com/deeplay-io/nice-grpc/issues/229))
+  ([04c1713](https://github.com/deeplay-io/nice-grpc/commit/04c1713759405566f58e836c8f33c31c83a7954d)),
+  closes [#218](https://github.com/deeplay-io/nice-grpc/issues/218)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.0.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@1.2.2...nice-grpc@2.0.0) (2022-08-11)
 
 ### ⚠ BREAKING CHANGES
