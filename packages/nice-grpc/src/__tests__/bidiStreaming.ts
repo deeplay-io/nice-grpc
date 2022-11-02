@@ -16,11 +16,15 @@ import {throwUnimplemented} from './utils/throwUnimplemented';
 test('basic', async () => {
   const server = createServer();
 
+  let serverSignal: AbortSignal;
+
   server.add(TestService, {
     testUnary: throwUnimplemented,
     testServerStream: throwUnimplemented,
     testClientStream: throwUnimplemented,
-    async *testBidiStream(request: AsyncIterable<TestRequest>) {
+    async *testBidiStream(request: AsyncIterable<TestRequest>, context) {
+      serverSignal = context.signal;
+
       for await (const req of request) {
         yield new TestResponse().setId(req.getId());
       }
@@ -55,6 +59,7 @@ test('basic', async () => {
       },
     ]
   `);
+  expect(serverSignal!.aborted).toBe(false);
 
   channel.close();
 
@@ -185,11 +190,14 @@ test('metadata', async () => {
 test('error', async () => {
   const server = createServer();
 
+  let serverSignal: AbortSignal;
+
   server.add(TestService, {
     testUnary: throwUnimplemented,
     testServerStream: throwUnimplemented,
     testClientStream: throwUnimplemented,
     async *testBidiStream(request: AsyncIterable<TestRequest>, context) {
+      serverSignal = context.signal;
       context.trailer.set('test', ['test-value-1', 'test-value-2']);
 
       for await (const item of request) {
@@ -248,6 +256,8 @@ test('error', async () => {
   `);
 
   await requestIterableFinish.promise;
+
+  expect(serverSignal!.aborted).toBe(false);
 
   expect(trailer?.getAll('test')).toMatchInlineSnapshot(`
     Array [
@@ -357,11 +367,15 @@ test('cancel', async () => {
 test('early response', async () => {
   const server = createServer();
 
+  let serverSignal: AbortSignal;
+
   server.add(TestService, {
     testUnary: throwUnimplemented,
     testServerStream: throwUnimplemented,
     testClientStream: throwUnimplemented,
-    async *testBidiStream(request: AsyncIterable<TestRequest>) {
+    async *testBidiStream(request: AsyncIterable<TestRequest>, context) {
+      serverSignal = context.signal;
+
       for await (const item of request) {
         yield new TestResponse().setId(item.getId());
         return;
@@ -414,6 +428,8 @@ test('early response', async () => {
         `);
 
   await requestIterableFinish.promise;
+
+  expect(serverSignal!.aborted).toBe(false);
 
   channel.close();
 
