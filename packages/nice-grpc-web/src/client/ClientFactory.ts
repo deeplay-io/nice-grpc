@@ -122,7 +122,7 @@ function createClientFactoryWithMiddleware<CallOptionsExt = {}>(
         }
       }
 
-      return client as Client<Service>;
+      return client as Client<Service, CallOptionsExt>;
     },
   };
 }
