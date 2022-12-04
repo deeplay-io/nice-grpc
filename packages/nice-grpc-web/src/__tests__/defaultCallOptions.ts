@@ -4,7 +4,7 @@ import {Channel, createChannel, createClient, Metadata} from '..';
 import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../fixtures/grpc-js/test_pb';
 import {Test} from '../../fixtures/grpc-web/test_pb_service';
-import {startProxy} from './utils/grpcwebproxy';
+import {startGrptWebProxy} from './utils/grpcwebproxy';
 import {throwUnimplemented} from './utils/throwUnimplemented';
 import {WebsocketTransport} from './utils/WebsocketTransport';
 
@@ -30,7 +30,7 @@ beforeEach(async () => {
   await server.listen(address);
 
   const proxyPort = await getPort();
-  proxy = await startProxy(proxyPort, address);
+  proxy = await startGrptWebProxy(proxyPort, address);
 
   channel = createChannel(
     `http://localhost:${proxyPort}`,

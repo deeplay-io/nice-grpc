@@ -23,12 +23,15 @@ export function convertMetadataFromGrpcWeb(
   const metadata = Metadata();
 
   for (const [key, values] of Object.entries(grpcMetadata.headersMap)) {
-    metadata.set(
-      key,
-      key.endsWith('-bin')
-        ? values.map(value => Base64.toUint8Array(value))
-        : values,
-    );
+    if (key.endsWith('-bin')) {
+      for (const value of values) {
+        for (const item of value.split(/,\s?/)) {
+          metadata.append(key, Base64.toUint8Array(item));
+        }
+      }
+    } else {
+      metadata.set(key, values);
+    }
   }
 
   return metadata;

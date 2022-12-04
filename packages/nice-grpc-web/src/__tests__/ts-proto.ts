@@ -8,7 +8,7 @@ import {
   TestRequest,
   TestResponse,
 } from '../../fixtures/ts-proto/test';
-import {startProxy} from './utils/grpcwebproxy';
+import {startGrptWebProxy} from './utils/grpcwebproxy';
 import {throwUnimplemented} from './utils/throwUnimplemented';
 import {WebsocketTransport} from './utils/WebsocketTransport';
 
@@ -31,7 +31,7 @@ test('basic', async () => {
   await server.listen(address);
 
   const proxyPort = await getPort();
-  const proxy = await startProxy(proxyPort, address);
+  const proxy = await startGrptWebProxy(proxyPort, address);
 
   const channel = createChannel(
     `http://localhost:${proxyPort}`,

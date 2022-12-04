@@ -4,7 +4,7 @@ import {createChannel, createClientFactory, Metadata, Status} from '../..';
 import {TestService} from '../../../fixtures/grpc-js/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../../fixtures/grpc-js/test_pb';
 import {Test} from '../../../fixtures/grpc-web/test_pb_service';
-import {startProxy} from '../utils/grpcwebproxy';
+import {startGrptWebProxy} from '../utils/grpcwebproxy';
 import {createTestClientMiddleware} from '../utils/testClientMiddleware';
 import {throwUnimplemented} from '../utils/throwUnimplemented';
 import {WebsocketTransport} from '../utils/WebsocketTransport';
@@ -33,7 +33,7 @@ test('basic', async () => {
   await server.listen(address);
 
   const proxyPort = await getPort();
-  const proxy = await startProxy(proxyPort, address);
+  const proxy = await startGrptWebProxy(proxyPort, address);
 
   const channel = createChannel(
     `http://localhost:${proxyPort}`,
@@ -136,7 +136,7 @@ test('error', async () => {
   await server.listen(address);
 
   const proxyPort = await getPort();
-  const proxy = await startProxy(proxyPort, address);
+  const proxy = await startGrptWebProxy(proxyPort, address);
 
   const channel = createChannel(
     `http://localhost:${proxyPort}`,
