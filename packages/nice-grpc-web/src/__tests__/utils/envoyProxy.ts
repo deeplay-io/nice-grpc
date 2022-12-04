@@ -2,7 +2,8 @@ import fs from 'fs/promises';
 import * as path from 'path';
 import {env} from 'string-env-interpolation';
 import {waitUntilUsed} from 'tcp-port-used';
-import {GenericContainer} from 'testcontainers';
+import {GenericContainer, Wait} from 'testcontainers';
+import {HostPortWaitStrategy} from 'testcontainers/dist/wait-strategy';
 
 let nextId = 0;
 
@@ -38,7 +39,7 @@ export async function startEnvoyProxy(
     })
     .start();
 
-  await waitUntilUsed(listenPort, 200, 30_000);
+  await waitUntilUsed(listenPort, 200, 3_000);
 
   return {
     stop() {
