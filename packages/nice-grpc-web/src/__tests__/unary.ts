@@ -48,7 +48,7 @@ describe.each([
 
     proxy.stop();
     await server.shutdown();
-  }, 30_000);
+  });
 
   test('metadata', async () => {
     const server = createServer();
