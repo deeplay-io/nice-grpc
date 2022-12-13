@@ -13,7 +13,7 @@ const executablePath = path.join(
 
 export async function startGrptWebProxy(
   listenPort: number,
-  backendAddress: string,
+  backendPort: number,
 ): Promise<{stop(): void}> {
   const childProcess = spawn(
     executablePath,
@@ -21,7 +21,7 @@ export async function startGrptWebProxy(
       `--server_bind_address=0.0.0.0`,
       `--server_http_debug_port=${listenPort}`,
       `--run_tls_server=false`,
-      `--backend_addr=${backendAddress}`,
+      `--backend_addr=localhost:${backendPort}`,
       `--use_websockets=true`,
       `--allow_all_origins=true`,
     ],

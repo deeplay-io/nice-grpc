@@ -10,19 +10,16 @@ let nextId = 0;
 
 export async function startEnvoyProxy(
   listenPort: number,
-  backendAddress: string,
+  backendPort: number,
 ): Promise<{stop(): void}> {
-  const [backendHost, backendPort] = backendAddress.split(':') as [
-    string,
-    string,
-  ];
+  const internalListenPort = 8080;
 
   const config = env(
     await fs.readFile(path.join(__dirname, 'envoy.yaml'), 'utf8'),
     {
-      LISTEN_PORT: '8080',
+      LISTEN_PORT: internalListenPort.toString(),
       BACKEND_HOST: 'host.docker.internal',
-      BACKEND_PORT: backendPort,
+      BACKEND_PORT: backendPort.toString(),
     },
   );
 
@@ -35,7 +32,7 @@ export async function startEnvoyProxy(
       (nextId++).toString(),
     ])
     .withExposedPorts({
-      container: 8080,
+      container: internalListenPort,
       host: listenPort,
     })
     .withExtraHosts([

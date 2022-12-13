@@ -23,12 +23,10 @@ test('chain', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
-
-  await server.listen(address);
+  const listenPort = await server.listen('0.0.0.0:0');
 
   const proxyPort = await getPort();
-  const proxy = await startGrptWebProxy(proxyPort, address);
+  const proxy = await startGrptWebProxy(proxyPort, listenPort);
 
   const channel = createChannel(
     `http://localhost:${proxyPort}`,
@@ -114,12 +112,10 @@ test('set option from middleware', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
-
-  await server.listen(address);
+  const listenPort = await server.listen('0.0.0.0:0');
 
   const proxyPort = await getPort();
-  const proxy = await startGrptWebProxy(proxyPort, address);
+  const proxy = await startGrptWebProxy(proxyPort, listenPort);
 
   const channel = createChannel(
     `http://localhost:${proxyPort}`,

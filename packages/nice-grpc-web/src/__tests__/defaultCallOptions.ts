@@ -25,12 +25,10 @@ beforeEach(async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
-
-  await server.listen(address);
+  const listenPort = await server.listen('0.0.0.0:0');
 
   const proxyPort = await getPort();
-  proxy = await startGrptWebProxy(proxyPort, address);
+  proxy = await startGrptWebProxy(proxyPort, listenPort);
 
   channel = createChannel(
     `http://localhost:${proxyPort}`,

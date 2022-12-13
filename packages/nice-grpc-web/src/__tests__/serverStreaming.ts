@@ -30,12 +30,10 @@ describe.each([
       testBidiStream: throwUnimplemented,
     });
 
-    const address = `localhost:${await getPort()}`;
-
-    await server.listen(address);
+    const listenPort = await server.listen('0.0.0.0:0');
 
     const proxyPort = await getPort();
-    const proxy = await startProxy(proxyPort, address);
+    const proxy = await startProxy(proxyPort, listenPort);
 
     const channel = createChannel(`http://localhost:${proxyPort}`, Transport());
     const client = createClient(Test, channel);
@@ -85,12 +83,10 @@ describe.each([
       testBidiStream: throwUnimplemented,
     });
 
-    const address = `localhost:${await getPort()}`;
-
-    await server.listen(address);
+    const listenPort = await server.listen('0.0.0.0:0');
 
     const proxyPort = await getPort();
-    const proxy = await startProxy(proxyPort, address);
+    const proxy = await startProxy(proxyPort, listenPort);
 
     const channel = createChannel(`http://localhost:${proxyPort}`, Transport());
     const client = createClient(Test, channel);
@@ -159,12 +155,10 @@ describe.each([
       testBidiStream: throwUnimplemented,
     });
 
-    const address = `localhost:${await getPort()}`;
-
-    await server.listen(address);
+    const listenPort = await server.listen('0.0.0.0:0');
 
     const proxyPort = await getPort();
-    const proxy = await startProxy(proxyPort, address);
+    const proxy = await startProxy(proxyPort, listenPort);
 
     const channel = createChannel(`http://localhost:${proxyPort}`, Transport());
     const client = createClient(Test, channel);
@@ -236,12 +230,10 @@ describe.each([
       testBidiStream: throwUnimplemented,
     });
 
-    const address = `localhost:${await getPort()}`;
-
-    await server.listen(address);
+    const listenPort = await server.listen('0.0.0.0:0');
 
     const proxyPort = await getPort();
-    const proxy = await startProxy(proxyPort, address);
+    const proxy = await startProxy(proxyPort, listenPort);
 
     const channel = createChannel(`http://localhost:${proxyPort}`, Transport());
     const client = createClient(Test, channel);
@@ -300,12 +292,10 @@ describe.each([
       testBidiStream: throwUnimplemented,
     });
 
-    const address = `localhost:${await getPort()}`;
-
-    await server.listen(address);
+    const listenPort = await server.listen('0.0.0.0:0');
 
     const proxyPort = await getPort();
-    const proxy = await startProxy(proxyPort, address);
+    const proxy = await startProxy(proxyPort, listenPort);
 
     const channel = createChannel(`http://localhost:${proxyPort}`, Transport());
     const client = createClient(Test, channel);
