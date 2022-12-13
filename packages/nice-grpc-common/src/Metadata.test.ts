@@ -11,10 +11,10 @@ test('init', () => {
     ),
   ).toMatchInlineSnapshot(`
     Map {
-      "key-1" => Array [
+      "key-1" => [
         "value-1",
       ],
-      "key-2" => Array [
+      "key-2" => [
         "value-2, value-3",
       ],
     }
@@ -28,10 +28,10 @@ test('init', () => {
     ),
   ).toMatchInlineSnapshot(`
     Map {
-      "key-1" => Array [
+      "key-1" => [
         "value-1",
       ],
-      "key-2" => Array [
+      "key-2" => [
         "value-2, value-3",
       ],
     }
@@ -46,10 +46,10 @@ test('init', () => {
     ),
   ).toMatchInlineSnapshot(`
     Map {
-      "key-1" => Array [
+      "key-1" => [
         "value-1",
       ],
-      "key-2" => Array [
+      "key-2" => [
         "value-2, value-3",
       ],
     }
@@ -65,12 +65,12 @@ test('init', () => {
     ),
   ).toMatchInlineSnapshot(`
     Map {
-      "key-1-bin" => Array [
+      "key-1-bin" => [
         Uint8Array [
           1,
         ],
       ],
-      "key-2-bin" => Array [
+      "key-2-bin" => [
         Uint8Array [
           2,
         ],
@@ -91,12 +91,12 @@ test('init', () => {
     ),
   ).toMatchInlineSnapshot(`
     Map {
-      "key-1-bin" => Array [
+      "key-1-bin" => [
         Uint8Array [
           1,
         ],
       ],
-      "key-2-bin" => Array [
+      "key-2-bin" => [
         Uint8Array [
           2,
         ],
@@ -116,12 +116,12 @@ test('init', () => {
     ),
   ).toMatchInlineSnapshot(`
     Map {
-      "key-1-bin" => Array [
+      "key-1-bin" => [
         Uint8Array [
           1,
         ],
       ],
-      "key-2-bin" => Array [
+      "key-2-bin" => [
         Uint8Array [
           2,
         ],
@@ -162,7 +162,7 @@ test('init via new', () => {
 
   expect(new Map(new Metadata({key: 'value'}))).toMatchInlineSnapshot(`
     Map {
-      "key" => Array [
+      "key" => [
         "value",
       ],
     }
@@ -178,7 +178,7 @@ test('set', () => {
 
   expect(new Map(metadata)).toMatchInlineSnapshot(`
     Map {
-      "key" => Array [
+      "key" => [
         "value-1",
       ],
     }
@@ -188,7 +188,7 @@ test('set', () => {
 
   expect(new Map(metadata)).toMatchInlineSnapshot(`
     Map {
-      "key" => Array [
+      "key" => [
         "value-2",
       ],
     }
@@ -198,7 +198,7 @@ test('set', () => {
 
   expect(new Map(metadata)).toMatchInlineSnapshot(`
     Map {
-      "key" => Array [
+      "key" => [
         "value-1, value-2",
       ],
     }
@@ -208,10 +208,10 @@ test('set', () => {
 
   expect(new Map(metadata)).toMatchInlineSnapshot(`
     Map {
-      "key" => Array [
+      "key" => [
         "value-1, value-2",
       ],
-      "key-bin" => Array [
+      "key-bin" => [
         Uint8Array [
           1,
         ],
@@ -227,7 +227,7 @@ test('append', () => {
 
   expect(new Map(metadata)).toMatchInlineSnapshot(`
     Map {
-      "key" => Array [
+      "key" => [
         "value-1",
       ],
     }
@@ -237,7 +237,7 @@ test('append', () => {
 
   expect(new Map(metadata)).toMatchInlineSnapshot(`
     Map {
-      "key" => Array [
+      "key" => [
         "value-1, value-2",
       ],
     }
@@ -247,10 +247,10 @@ test('append', () => {
 
   expect(new Map(metadata)).toMatchInlineSnapshot(`
     Map {
-      "key" => Array [
+      "key" => [
         "value-1, value-2",
       ],
-      "key-bin" => Array [
+      "key-bin" => [
         Uint8Array [
           1,
         ],
@@ -262,10 +262,10 @@ test('append', () => {
 
   expect(new Map(metadata)).toMatchInlineSnapshot(`
     Map {
-      "key" => Array [
+      "key" => [
         "value-1, value-2",
       ],
-      "key-bin" => Array [
+      "key-bin" => [
         Uint8Array [
           1,
         ],
@@ -315,17 +315,17 @@ test('getAll', () => {
   });
 
   expect(metadata.getAll('key')).toMatchInlineSnapshot(`
-    Array [
+    [
       "value-1, value-2",
     ]
   `);
   expect(metadata.getAll('Key')).toMatchInlineSnapshot(`
-    Array [
+    [
       "value-1, value-2",
     ]
   `);
   expect(metadata.getAll('key-bin')).toMatchInlineSnapshot(`
-    Array [
+    [
       Uint8Array [
         1,
       ],
@@ -335,7 +335,7 @@ test('getAll', () => {
     ]
   `);
   expect(metadata.getAll('Key-Bin')).toMatchInlineSnapshot(`
-    Array [
+    [
       Uint8Array [
         1,
       ],
@@ -344,7 +344,7 @@ test('getAll', () => {
       ],
     ]
   `);
-  expect(metadata.getAll('non-existent-key')).toMatchInlineSnapshot(`Array []`);
+  expect(metadata.getAll('non-existent-key')).toMatchInlineSnapshot(`[]`);
 });
 
 test('has', () => {

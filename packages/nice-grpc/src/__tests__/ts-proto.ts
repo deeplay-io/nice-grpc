@@ -39,10 +39,10 @@ test('basic', async () => {
   const client: TestClient = createClient(TestDefinition, channel);
 
   await expect(client.testUnary({id: 'test'})).resolves.toMatchInlineSnapshot(`
-          Object {
-            "id": "test",
-          }
-        `);
+    {
+      "id": "test",
+    }
+  `);
 
   channel.close();
 
@@ -99,15 +99,15 @@ test('middleware', async () => {
 
   await expect(client.testUnary({id: 'test'}, {bar: 'baz'})).resolves
     .toMatchInlineSnapshot(`
-          Object {
-            "id": "test",
-          }
-        `);
+    {
+      "id": "test",
+    }
+  `);
   expect(serverMiddlewareCalls).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "method": Object {
-          "options": Object {
+    [
+      {
+        "method": {
+          "options": {
             "idempotencyLevel": "IDEMPOTENT",
           },
           "path": "/nice_grpc.test.Test2/TestUnary",
@@ -115,7 +115,7 @@ test('middleware', async () => {
           "responseStream": false,
         },
         "next": [Function],
-        "request": Object {
+        "request": {
           "id": "test",
         },
         "requestStream": false,
@@ -125,12 +125,12 @@ test('middleware', async () => {
   `);
 
   expect(clientMiddlewareCalls).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "bar": "baz",
-        "call": Object {
-          "method": Object {
-            "options": Object {
+        "call": {
+          "method": {
+            "options": {
               "idempotencyLevel": "IDEMPOTENT",
             },
             "path": "/nice_grpc.test.Test2/TestUnary",
@@ -138,7 +138,7 @@ test('middleware', async () => {
             "responseStream": false,
           },
           "next": [Function],
-          "request": Object {
+          "request": {
             "id": "test",
           },
           "requestStream": false,

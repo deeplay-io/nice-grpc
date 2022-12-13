@@ -102,54 +102,54 @@ test('metadata', async () => {
 
   await expect(headerDeferred.promise.then(header => header.getAll('test')))
     .resolves.toMatchInlineSnapshot(`
-          Array [
-            "test-value-1, test-value-2",
-          ]
-        `);
+    [
+      "test-value-1, test-value-2",
+    ]
+  `);
   await expect(headerDeferred.promise.then(header => header.getAll('test-bin')))
     .resolves.toMatchInlineSnapshot(`
-          Array [
-            Object {
-              "data": Array [
-                1,
-              ],
-              "type": "Buffer",
-            },
-            Object {
-              "data": Array [
-                2,
-              ],
-              "type": "Buffer",
-            },
-          ]
-        `);
+    [
+      {
+        "data": [
+          1,
+        ],
+        "type": "Buffer",
+      },
+      {
+        "data": [
+          2,
+        ],
+        "type": "Buffer",
+      },
+    ]
+  `);
 
   responseDeferred.resolve(new TestResponse());
 
   await expect(trailerDeferred.promise.then(header => header.getAll('test')))
     .resolves.toMatchInlineSnapshot(`
-          Array [
-            "test-value-1, test-value-2",
-          ]
-        `);
+    [
+      "test-value-1, test-value-2",
+    ]
+  `);
   await expect(
     trailerDeferred.promise.then(header => header.getAll('test-bin')),
   ).resolves.toMatchInlineSnapshot(`
-          Array [
-            Object {
-              "data": Array [
-                1,
-              ],
-              "type": "Buffer",
-            },
-            Object {
-              "data": Array [
-                2,
-              ],
-              "type": "Buffer",
-            },
-          ]
-        `);
+    [
+      {
+        "data": [
+          1,
+        ],
+        "type": "Buffer",
+      },
+      {
+        "data": [
+          2,
+        ],
+        "type": "Buffer",
+      },
+    ]
+  `);
 
   channel.close();
 
@@ -193,7 +193,7 @@ test('error', async () => {
   expect(serverSignal!.aborted).toBe(false);
 
   expect(trailer?.getAll('test')).toMatchInlineSnapshot(`
-    Array [
+    [
       "test-value-1, test-value-2",
     ]
   `);

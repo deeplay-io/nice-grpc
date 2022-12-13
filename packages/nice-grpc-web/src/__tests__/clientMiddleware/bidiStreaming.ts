@@ -60,7 +60,7 @@ test('basic', async () => {
   }
 
   expect(responses).toMatchInlineSnapshot(`
-    Array [
+    [
       nice_grpc.test.TestResponse {
         "id": "test-1",
       },
@@ -73,34 +73,34 @@ test('basic', async () => {
   expect(metadataValue).toMatchInlineSnapshot(`"test-metadata-value"`);
 
   expect(actions).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "options": Object {
+    [
+      {
+        "options": {
           "testOption": "test-value",
         },
         "requestStream": true,
         "responseStream": true,
         "type": "start",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test-1",
         },
         "type": "request",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test-2",
         },
         "type": "request",
       },
-      Object {
+      {
         "response": nice_grpc.test.TestResponse {
           "id": "test-1",
         },
         "type": "response",
       },
-      Object {
+      {
         "response": nice_grpc.test.TestResponse {
           "id": "test-2",
         },
@@ -161,8 +161,8 @@ test('error', async () => {
   }
 
   expect(responses).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "error": [ClientError: /nice_grpc.test.Test/TestBidiStream NOT_FOUND: test-1],
         "type": "error",
       },
@@ -170,28 +170,28 @@ test('error', async () => {
   `);
 
   expect(actions).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "options": Object {
+    [
+      {
+        "options": {
           "testOption": "test-value",
         },
         "requestStream": true,
         "responseStream": true,
         "type": "start",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test-1",
         },
         "type": "request",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test-2",
         },
         "type": "request",
       },
-      Object {
+      {
         "error": [ClientError: /nice_grpc.test.Test/TestBidiStream NOT_FOUND: test-1],
         "type": "error",
       },

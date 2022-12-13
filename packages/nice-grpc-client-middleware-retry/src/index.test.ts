@@ -51,7 +51,7 @@ test('basic', async () => {
     `[ClientError: /nice_grpc.test.Test/Test UNAVAILABLE: Unavailable]`,
   );
   expect(testMethodMock).toHaveBeenCalledTimes(1);
-  expect(onRetryableErrorMock.mock.calls).toMatchInlineSnapshot(`Array []`);
+  expect(onRetryableErrorMock.mock.calls).toMatchInlineSnapshot(`[]`);
 
   channel.close();
   await server.shutdown();
@@ -93,14 +93,14 @@ test('retries enabled', async () => {
   );
   expect(testMethodMock).toHaveBeenCalledTimes(2);
   expect(onRetryableErrorMock.mock.calls).toMatchInlineSnapshot(`
-Array [
-  Array [
-    [ClientError: /nice_grpc.test.Test/Test UNAVAILABLE: Unavailable],
-    0,
-    750,
-  ],
-]
-`);
+    [
+      [
+        [ClientError: /nice_grpc.test.Test/Test UNAVAILABLE: Unavailable],
+        0,
+        750,
+      ],
+    ]
+  `);
 
   channel.close();
   await server.shutdown();
@@ -142,19 +142,19 @@ test('idempotent', async () => {
   );
   expect(testMethodMock).toHaveBeenCalledTimes(3);
   expect(onRetryableErrorMock.mock.calls).toMatchInlineSnapshot(`
-Array [
-  Array [
-    [ClientError: /nice_grpc.test.Test/TestIdempotent UNAVAILABLE: Unavailable],
-    0,
-    750,
-  ],
-  Array [
-    [ClientError: /nice_grpc.test.Test/TestIdempotent UNAVAILABLE: Unavailable],
-    1,
-    1500,
-  ],
-]
-`);
+    [
+      [
+        [ClientError: /nice_grpc.test.Test/TestIdempotent UNAVAILABLE: Unavailable],
+        0,
+        750,
+      ],
+      [
+        [ClientError: /nice_grpc.test.Test/TestIdempotent UNAVAILABLE: Unavailable],
+        1,
+        1500,
+      ],
+    ]
+  `);
 
   channel.close();
   await server.shutdown();

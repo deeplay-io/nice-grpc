@@ -56,22 +56,22 @@ test('basic', async () => {
   expect(metadataValue).toMatchInlineSnapshot(`"test-metadata-value"`);
 
   expect(actions).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "options": Object {
+    [
+      {
+        "options": {
           "testOption": "test-value",
         },
         "requestStream": false,
         "responseStream": false,
         "type": "start",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test",
         },
         "type": "request",
       },
-      Object {
+      {
         "response": nice_grpc.test.TestResponse {
           "id": "test",
         },
@@ -121,22 +121,22 @@ test('error', async () => {
   );
 
   expect(actions).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "options": Object {
+    [
+      {
+        "options": {
           "testOption": "test-value",
         },
         "requestStream": false,
         "responseStream": false,
         "type": "start",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test",
         },
         "type": "request",
       },
-      Object {
+      {
         "error": [ClientError: /nice_grpc.test.Test/TestUnary NOT_FOUND: test],
         "type": "error",
       },
