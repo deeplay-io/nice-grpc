@@ -36,5 +36,4 @@ jobs:
       - run: yarn build
       - env:
           NODE_OPTIONS: ${{ matrix.environment.node-options }}
-        # run: yarn test
-        run: cd packages/nice-grpc-web && yarn test
+        run: yarn test
