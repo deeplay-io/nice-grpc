@@ -8,6 +8,7 @@ module.exports = {
   ],
   preset: 'ts-jest',
   testEnvironment: 'node',
+  testTimeout: 15000,
   reporters: ['default', 'github-actions'],
   collectCoverage: true,
   coverageDirectory: 'coverage',
