@@ -4,8 +4,6 @@ import {env} from 'string-env-interpolation';
 import {waitUntilUsed} from 'tcp-port-used';
 import {GenericContainer} from 'testcontainers';
 
-const DOCKER_HOST_GATEWAY = process.env.DOCKER_HOST_GATEWAY || 'host-gateway';
-
 let nextId = 0;
 
 export async function startEnvoyProxy(
@@ -38,7 +36,7 @@ export async function startEnvoyProxy(
     .withExtraHosts([
       {
         host: 'host.docker.internal',
-        ipAddress: DOCKER_HOST_GATEWAY,
+        ipAddress: 'host-gateway',
       },
     ])
     .start();
