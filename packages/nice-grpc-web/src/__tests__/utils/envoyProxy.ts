@@ -4,7 +4,7 @@ import {env} from 'string-env-interpolation';
 import {waitUntilUsed} from 'tcp-port-used';
 import {GenericContainer} from 'testcontainers';
 
-const DOCKER_HOST = process.env.DOCKER_HOST || 'host.docker.internal';
+const DOCKER_HOST = process.env.DOCKER_INTERNAL_HOST || 'host.docker.internal';
 
 let nextId = 0;
 
