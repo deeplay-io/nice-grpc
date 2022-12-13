@@ -34,8 +34,9 @@ jobs:
           node-version: ${{ matrix.environment.node-version }}
       - run: yarn --frozen-lockfile
       - run: yarn build
+      - run: ifconfig
       - env:
           NODE_OPTIONS: ${{ matrix.environment.node-options }}
-          DOCKER_INTERNAL_HOST: 172.17.0.1
+          DOCKER_HOST_GATEWAY: 172.17.0.1
         # run: yarn test
         run: cd packages/nice-grpc-web && yarn test
