@@ -11,9 +11,9 @@ const executablePath = path.join(
   process.platform === 'win32' ? `grpcwebproxy.exe` : 'grpcwebproxy',
 );
 
-export async function startProxy(
+export async function startGrpcWebProxy(
   listenPort: number,
-  backendAddress: string,
+  backendPort: number,
 ): Promise<{stop(): void}> {
   const childProcess = spawn(
     executablePath,
@@ -21,7 +21,7 @@ export async function startProxy(
       `--server_bind_address=0.0.0.0`,
       `--server_http_debug_port=${listenPort}`,
       `--run_tls_server=false`,
-      `--backend_addr=${backendAddress}`,
+      `--backend_addr=localhost:${backendPort}`,
       `--use_websockets=true`,
       `--allow_all_origins=true`,
     ],
@@ -30,7 +30,7 @@ export async function startProxy(
     // },
   );
 
-  await waitUntilUsed(listenPort);
+  await waitUntilUsed(listenPort, 200, 10_000);
 
   return {
     stop() {

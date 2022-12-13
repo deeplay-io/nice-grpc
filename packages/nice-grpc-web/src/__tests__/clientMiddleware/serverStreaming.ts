@@ -4,7 +4,7 @@ import {createChannel, createClientFactory, Metadata, Status} from '../..';
 import {TestService} from '../../../fixtures/grpc-js/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../../fixtures/grpc-js/test_pb';
 import {Test} from '../../../fixtures/grpc-web/test_pb_service';
-import {startProxy} from '../utils/grpcwebproxy';
+import {startGrpcWebProxy} from '../utils/grpcwebproxy';
 import {createTestClientMiddleware} from '../utils/testClientMiddleware';
 import {throwUnimplemented} from '../utils/throwUnimplemented';
 import {WebsocketTransport} from '../utils/WebsocketTransport';
@@ -26,12 +26,10 @@ test('basic', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
-
-  await server.listen(address);
+  const listenPort = await server.listen('0.0.0.0:0');
 
   const proxyPort = await getPort();
-  const proxy = await startProxy(proxyPort, address);
+  const proxy = await startGrpcWebProxy(proxyPort, listenPort);
 
   const channel = createChannel(
     `http://localhost:${proxyPort}`,
@@ -120,12 +118,10 @@ test('error', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
-
-  await server.listen(address);
+  const listenPort = await server.listen('0.0.0.0:0');
 
   const proxyPort = await getPort();
-  const proxy = await startProxy(proxyPort, address);
+  const proxy = await startGrpcWebProxy(proxyPort, listenPort);
 
   const channel = createChannel(
     `http://localhost:${proxyPort}`,

@@ -4,7 +4,7 @@ import {Channel, createChannel, createClient, Metadata} from '..';
 import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../fixtures/grpc-js/test_pb';
 import {Test} from '../../fixtures/grpc-web/test_pb_service';
-import {startProxy} from './utils/grpcwebproxy';
+import {startGrpcWebProxy} from './utils/grpcwebproxy';
 import {throwUnimplemented} from './utils/throwUnimplemented';
 import {WebsocketTransport} from './utils/WebsocketTransport';
 
@@ -25,12 +25,10 @@ beforeEach(async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
-
-  await server.listen(address);
+  const listenPort = await server.listen('0.0.0.0:0');
 
   const proxyPort = await getPort();
-  proxy = await startProxy(proxyPort, address);
+  proxy = await startGrpcWebProxy(proxyPort, listenPort);
 
   channel = createChannel(
     `http://localhost:${proxyPort}`,
