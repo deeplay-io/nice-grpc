@@ -46,7 +46,7 @@ test('basic', async () => {
   }
 
   expect(responses).toMatchInlineSnapshot(`
-    Array [
+    [
       nice_grpc.test.TestResponse {
         "id": "test-1",
       },
@@ -123,56 +123,56 @@ test('metadata', async () => {
 
   await expect(headerDeferred.promise.then(header => header.getAll('test')))
     .resolves.toMatchInlineSnapshot(`
-          Array [
-            "test-value-1, test-value-2",
-          ]
-        `);
+    [
+      "test-value-1, test-value-2",
+    ]
+  `);
   await expect(headerDeferred.promise.then(header => header.getAll('test-bin')))
     .resolves.toMatchInlineSnapshot(`
-          Array [
-            Object {
-              "data": Array [
-                1,
-              ],
-              "type": "Buffer",
-            },
-            Object {
-              "data": Array [
-                2,
-              ],
-              "type": "Buffer",
-            },
-          ]
-        `);
+    [
+      {
+        "data": [
+          1,
+        ],
+        "type": "Buffer",
+      },
+      {
+        "data": [
+          2,
+        ],
+        "type": "Buffer",
+      },
+    ]
+  `);
 
   responseDeferred.resolve();
 
-  await expect(promise).resolves.toMatchInlineSnapshot(`Array []`);
+  await expect(promise).resolves.toMatchInlineSnapshot(`[]`);
 
   await expect(trailerDeferred.promise.then(header => header.getAll('test')))
     .resolves.toMatchInlineSnapshot(`
-          Array [
-            "test-value-1, test-value-2",
-          ]
-        `);
+    [
+      "test-value-1, test-value-2",
+    ]
+  `);
   await expect(
     trailerDeferred.promise.then(header => header.getAll('test-bin')),
   ).resolves.toMatchInlineSnapshot(`
-                Array [
-                  Object {
-                    "data": Array [
-                      1,
-                    ],
-                    "type": "Buffer",
-                  },
-                  Object {
-                    "data": Array [
-                      2,
-                    ],
-                    "type": "Buffer",
-                  },
-                ]
-              `);
+    [
+      {
+        "data": [
+          1,
+        ],
+        "type": "Buffer",
+      },
+      {
+        "data": [
+          2,
+        ],
+        "type": "Buffer",
+      },
+    ]
+  `);
 
   channel.close();
 
@@ -223,14 +223,14 @@ test('error', async () => {
   }
 
   expect(responses).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "response": nice_grpc.test.TestResponse {
           "id": "test",
         },
         "type": "response",
       },
-      Object {
+      {
         "error": [ClientError: /nice_grpc.test.Test/TestServerStream ABORTED: test],
         "type": "error",
       },
@@ -239,7 +239,7 @@ test('error', async () => {
   expect(serverSignal!.aborted).toBe(false);
 
   expect(trailer?.getAll('test')).toMatchInlineSnapshot(`
-    Array [
+    [
       "test-value",
     ]
   `);
@@ -298,14 +298,14 @@ test('cancel', async () => {
   }
 
   expect(responses).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "response": nice_grpc.test.TestResponse {
           "id": "test",
         },
         "type": "response",
       },
-      Object {
+      {
         "error": [AbortError: The operation has been aborted],
         "type": "error",
       },
@@ -401,14 +401,14 @@ test('aborted iteration on client', async () => {
   }
 
   expect(responses).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "response": nice_grpc.test.TestResponse {
           "id": "test",
         },
         "type": "response",
       },
-      Object {
+      {
         "error": [Error: test],
         "type": "error",
       },

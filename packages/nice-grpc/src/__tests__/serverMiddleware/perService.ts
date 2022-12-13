@@ -68,41 +68,41 @@ test('per service', async () => {
         `);
 
   expect(actions).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "requestStream": false,
         "responseStream": false,
         "type": "middleware1-start",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test",
         },
         "type": "middleware1-request",
       },
-      Object {
+      {
         "requestStream": false,
         "responseStream": false,
         "type": "middleware2-start",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test",
         },
         "type": "middleware2-request",
       },
-      Object {
+      {
         "test1": "test-value-1",
         "test2": "test-value-2",
         "type": "test-request",
       },
-      Object {
+      {
         "response": nice_grpc.test.TestResponse {
           "id": "test",
         },
         "type": "middleware2-response",
       },
-      Object {
+      {
         "response": nice_grpc.test.TestResponse {
           "id": "test",
         },
@@ -121,24 +121,24 @@ test('per service', async () => {
         `);
 
   expect(actions).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "requestStream": false,
         "responseStream": false,
         "type": "middleware1-start",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test",
         },
         "type": "middleware1-request",
       },
-      Object {
+      {
         "test1": "test-value-1",
         "test2": undefined,
         "type": "test2-request",
       },
-      Object {
+      {
         "response": nice_grpc.test.TestResponse {
           "id": "test",
         },

@@ -102,43 +102,43 @@ describe.each([
 
     await expect(headerDeferred.promise.then(header => header.getAll('test')))
       .resolves.toMatchInlineSnapshot(`
-            Array [
-              "test-value-1, test-value-2",
-            ]
-          `);
+      [
+        "test-value-1, test-value-2",
+      ]
+    `);
     await expect(
       headerDeferred.promise.then(header => header.getAll('test-bin')),
     ).resolves.toMatchInlineSnapshot(`
-            Array [
-              Uint8Array [
-                1,
-              ],
-              Uint8Array [
-                2,
-              ],
-            ]
-          `);
+      [
+        Uint8Array [
+          1,
+        ],
+        Uint8Array [
+          2,
+        ],
+      ]
+    `);
 
     responseDeferred.resolve(new TestResponse());
 
     await expect(trailerDeferred.promise.then(header => header.getAll('test')))
       .resolves.toMatchInlineSnapshot(`
-            Array [
-              "test-value-1, test-value-2",
-            ]
-          `);
+      [
+        "test-value-1, test-value-2",
+      ]
+    `);
     await expect(
       trailerDeferred.promise.then(header => header.getAll('test-bin')),
     ).resolves.toMatchInlineSnapshot(`
-            Array [
-              Uint8Array [
-                1,
-              ],
-              Uint8Array [
-                2,
-              ],
-            ]
-          `);
+      [
+        Uint8Array [
+          1,
+        ],
+        Uint8Array [
+          2,
+        ],
+      ]
+    `);
 
     proxy.stop();
     await server.shutdown();
@@ -178,7 +178,7 @@ describe.each([
     );
 
     expect(trailer?.getAll('test')).toMatchInlineSnapshot(`
-      Array [
+      [
         "test-value-1, test-value-2",
       ]
     `);

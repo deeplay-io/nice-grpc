@@ -116,19 +116,19 @@ test('metadata', async () => {
 
   await expect(headerDeferred.promise.then(header => header.getAll('test')))
     .resolves.toMatchInlineSnapshot(`
-          Array [
-            "test-value-1, test-value-2",
-          ]
-        `);
+    [
+      "test-value-1, test-value-2",
+    ]
+  `);
 
   responseDeferred.resolve(new TestResponse());
 
   await expect(trailerDeferred.promise.then(header => header.getAll('test')))
     .resolves.toMatchInlineSnapshot(`
-          Array [
-            "test-value-1, test-value-2",
-          ]
-        `);
+    [
+      "test-value-1, test-value-2",
+    ]
+  `);
 
   proxy.stop();
   await server.shutdown();
@@ -196,7 +196,7 @@ test('error', async () => {
   await requestIterableFinish.promise;
 
   expect(trailer?.getAll('test')).toMatchInlineSnapshot(`
-    Array [
+    [
       "test-value-1, test-value-2",
     ]
   `);
