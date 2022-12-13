@@ -9,12 +9,12 @@ import {Test} from '../../fixtures/grpc-web/test_pb_service';
 import {startEnvoyProxy} from './utils/envoyProxy';
 import {throwUnimplemented} from './utils/throwUnimplemented';
 import {WebsocketTransport} from './utils/WebsocketTransport';
-import {startGrptWebProxy} from './utils/grpcwebproxy';
+import {startGrpcWebProxy} from './utils/grpcwebproxy';
 import {FetchTransport} from './utils/FetchTransport';
 
 describe.each([
-  ['grpcwebproxy - fetch', startGrptWebProxy, FetchTransport],
-  ['grpcwebproxy - websocket', startGrptWebProxy, WebsocketTransport],
+  ['grpcwebproxy - fetch', startGrpcWebProxy, FetchTransport],
+  ['grpcwebproxy - websocket', startGrpcWebProxy, WebsocketTransport],
   ['envoy - fetch', startEnvoyProxy, FetchTransport],
 ])('%s', (_, startProxy, Transport) => {
   test('basic', async () => {

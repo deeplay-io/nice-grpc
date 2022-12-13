@@ -11,7 +11,7 @@ const executablePath = path.join(
   process.platform === 'win32' ? `grpcwebproxy.exe` : 'grpcwebproxy',
 );
 
-export async function startGrptWebProxy(
+export async function startGrpcWebProxy(
   listenPort: number,
   backendPort: number,
 ): Promise<{stop(): void}> {
