@@ -9,6 +9,7 @@ module.exports = {
   snapshotSerializers: ['./src/__tests__/utils/snapshotSerializer'],
   preset: 'ts-jest',
   testEnvironment: 'node',
+  testTimeout: 15000,
   reporters: ['default', 'github-actions'],
   collectCoverage: true,
   coverageDirectory: 'coverage',
