@@ -38,10 +38,10 @@ test('basic', async () => {
   const client: TestClient = createClient(TestDefinition, channel);
 
   await expect(client.testUnary({id: 'test'})).resolves.toMatchInlineSnapshot(`
-          Object {
-            "id": "test",
-          }
-        `);
+    {
+      "id": "test",
+    }
+  `);
 
   proxy.stop();
   await server.shutdown();

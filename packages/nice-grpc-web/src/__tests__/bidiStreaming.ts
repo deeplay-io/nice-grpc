@@ -47,7 +47,7 @@ test('basic', async () => {
   }
 
   expect(responses).toMatchInlineSnapshot(`
-    Array [
+    [
       nice_grpc.test.TestResponse {
         "id": "test-1",
       },
@@ -127,21 +127,21 @@ test('metadata', async () => {
 
   await expect(headerDeferred.promise.then(header => header.getAll('test')))
     .resolves.toMatchInlineSnapshot(`
-          Array [
-            "test-value-1, test-value-2",
-          ]
-        `);
+    [
+      "test-value-1, test-value-2",
+    ]
+  `);
 
   responseDeferred.resolve();
 
-  await expect(promise).resolves.toMatchInlineSnapshot(`Array []`);
+  await expect(promise).resolves.toMatchInlineSnapshot(`[]`);
 
   await expect(trailerDeferred.promise.then(header => header.getAll('test')))
     .resolves.toMatchInlineSnapshot(`
-          Array [
-            "test-value-1, test-value-2",
-          ]
-        `);
+    [
+      "test-value-1, test-value-2",
+    ]
+  `);
 
   proxy.stop();
   await server.shutdown();
@@ -208,8 +208,8 @@ test('error', async () => {
   }
 
   expect(responses).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "error": [ClientError: /nice_grpc.test.Test/TestBidiStream NOT_FOUND: test-0],
         "type": "error",
       },
@@ -219,7 +219,7 @@ test('error', async () => {
   await requestIterableFinish.promise;
 
   expect(trailer?.getAll('test')).toMatchInlineSnapshot(`
-    Array [
+    [
       "test-value-1, test-value-2",
     ]
   `);
@@ -303,14 +303,14 @@ test('cancel', async () => {
   abortController.abort();
 
   expect(responses).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "response": nice_grpc.test.TestResponse {
           "id": "test-0",
         },
         "type": "response",
       },
-      Object {
+      {
         "error": [AbortError: The operation has been aborted],
         "type": "error",
       },
@@ -381,12 +381,12 @@ test('early response', async () => {
   });
 
   await expect(promise).resolves.toMatchInlineSnapshot(`
-          Array [
-            nice_grpc.test.TestResponse {
-              "id": "test-0",
-            },
-          ]
-        `);
+    [
+      nice_grpc.test.TestResponse {
+        "id": "test-0",
+      },
+    ]
+  `);
 
   await requestIterableFinish.promise;
 

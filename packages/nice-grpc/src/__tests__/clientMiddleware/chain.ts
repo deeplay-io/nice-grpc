@@ -41,42 +41,42 @@ test('chain', async () => {
         `);
 
   expect(actions).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "options": Object {
+    [
+      {
+        "options": {
           "testOption2": "test-value-2",
         },
         "requestStream": false,
         "responseStream": false,
         "type": "middleware-2-start",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test",
         },
         "type": "middleware-2-request",
       },
-      Object {
-        "options": Object {
+      {
+        "options": {
           "testOption1": "test-value-1",
         },
         "requestStream": false,
         "responseStream": false,
         "type": "middleware-1-start",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test",
         },
         "type": "middleware-1-request",
       },
-      Object {
+      {
         "response": nice_grpc.test.TestResponse {
           "id": "test",
         },
         "type": "middleware-1-response",
       },
-      Object {
+      {
         "response": nice_grpc.test.TestResponse {
           "id": "test",
         },
@@ -144,16 +144,16 @@ test('set option from middleware', async () => {
         `);
 
   expect(actions).toMatchInlineSnapshot(`
-    Array [
-      Object {
-        "options": Object {
+    [
+      {
+        "options": {
           "testOption1": "test-value-1",
           "testOption2": "test-value-2",
         },
         "type": "middleware-2-start",
       },
-      Object {
-        "options": Object {
+      {
+        "options": {
           "testOption1": "test-value-1-from-middleware-2",
         },
         "type": "middleware-1-start",

@@ -46,19 +46,19 @@ test('basic', async () => {
 
   expect(contextTestValue).toBe('test-value');
   expect(actions).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "requestStream": false,
         "responseStream": false,
         "type": "start",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test",
         },
         "type": "request",
       },
-      Object {
+      {
         "response": nice_grpc.test.TestResponse {
           "id": "test",
         },
@@ -102,19 +102,19 @@ test('error', async () => {
   );
 
   expect(actions).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "requestStream": false,
         "responseStream": false,
         "type": "start",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test",
         },
         "type": "request",
       },
-      Object {
+      {
         "error": [ServerError: NOT_FOUND: test],
         "type": "error",
       },

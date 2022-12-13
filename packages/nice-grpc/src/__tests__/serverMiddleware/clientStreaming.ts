@@ -60,25 +60,25 @@ test('basic', async () => {
 
   expect(contextTestValue).toBe('test-value');
   expect(actions).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "requestStream": true,
         "responseStream": false,
         "type": "start",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test-1",
         },
         "type": "request",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test-2",
         },
         "type": "request",
       },
-      Object {
+      {
         "response": nice_grpc.test.TestResponse {
           "id": "test-1 test-2",
         },
@@ -131,19 +131,19 @@ test('error', async () => {
   );
 
   expect(actions).toMatchInlineSnapshot(`
-    Array [
-      Object {
+    [
+      {
         "requestStream": true,
         "responseStream": false,
         "type": "start",
       },
-      Object {
+      {
         "request": nice_grpc.test.TestRequest {
           "id": "test-1",
         },
         "type": "request",
       },
-      Object {
+      {
         "error": [ServerError: NOT_FOUND: test-1],
         "type": "error",
       },
