@@ -37,6 +37,12 @@ export async function startEnvoyProxy(
       container: 8080,
       host: listenPort,
     })
+    .withExtraHosts([
+      {
+        host: 'host.docker.internal',
+        ipAddress: 'host-gateway',
+      },
+    ])
     .start();
 
   await waitUntilUsed(listenPort, 200, 3_000);
