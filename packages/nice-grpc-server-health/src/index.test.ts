@@ -16,10 +16,10 @@ test('basic', async () => {
   const client = createClient(HealthDefinition, channel);
 
   await expect(client.check({service: ''})).resolves.toMatchInlineSnapshot(`
-          Object {
-            "status": 1,
-          }
-        `);
+    {
+      "status": 1,
+    }
+  `);
 
   await expect(client.check({service: 'fake'})).rejects.toMatchInlineSnapshot(
     `[ClientError: /grpc.health.v1.Health/Check NOT_FOUND: Unknown service: 'fake']`,
@@ -42,10 +42,10 @@ test('per-service', async () => {
   const client = createClient(HealthDefinition, channel);
 
   await expect(client.check({service: ''})).resolves.toMatchInlineSnapshot(`
-          Object {
-            "status": 1,
-          }
-        `);
+    {
+      "status": 1,
+    }
+  `);
 
   await expect(
     client.check({service: 'MyService'}),
@@ -57,19 +57,19 @@ test('per-service', async () => {
 
   await expect(client.check({service: 'MyService'})).resolves
     .toMatchInlineSnapshot(`
-          Object {
-            "status": 2,
-          }
-        `);
+    {
+      "status": 2,
+    }
+  `);
 
   healthState.setStatus('healthy', 'MyService');
 
   await expect(client.check({service: 'MyService'})).resolves
     .toMatchInlineSnapshot(`
-          Object {
-            "status": 1,
-          }
-        `);
+    {
+      "status": 1,
+    }
+  `);
 
   healthState.setStatus('unknown', 'MyService');
 
@@ -100,59 +100,59 @@ test('watch', async () => {
   const it1 = client.watch({service: ''})[Symbol.asyncIterator]();
 
   await expect(it1.next()).resolves.toMatchInlineSnapshot(`
-          Object {
-            "done": false,
-            "value": Object {
-              "status": 1,
-            },
-          }
-        `);
+    {
+      "done": false,
+      "value": {
+        "status": 1,
+      },
+    }
+  `);
 
   await it1.return?.();
 
   const it2 = client.watch({service: 'MyService'})[Symbol.asyncIterator]();
 
   await expect(it2.next()).resolves.toMatchInlineSnapshot(`
-          Object {
-            "done": false,
-            "value": Object {
-              "status": 3,
-            },
-          }
-        `);
+    {
+      "done": false,
+      "value": {
+        "status": 3,
+      },
+    }
+  `);
 
   healthState.setStatus('unhealthy', 'MyService');
 
   await expect(it2.next()).resolves.toMatchInlineSnapshot(`
-          Object {
-            "done": false,
-            "value": Object {
-              "status": 2,
-            },
-          }
-        `);
+    {
+      "done": false,
+      "value": {
+        "status": 2,
+      },
+    }
+  `);
 
   healthState.setStatus('healthy', 'MyService');
 
   await expect(it2.next()).resolves.toMatchInlineSnapshot(`
-          Object {
-            "done": false,
-            "value": Object {
-              "status": 1,
-            },
-          }
-        `);
+    {
+      "done": false,
+      "value": {
+        "status": 1,
+      },
+    }
+  `);
 
   healthState.setStatus('unknown', 'MyService');
 
   await expect(it2.next()).resolves.toMatchInlineSnapshot(`
-          Object {
-            "done": false,
-            "value": Object {
-              "status": 3,
-            },
-          }
-        `);
+    {
+      "done": false,
+      "value": {
+        "status": 3,
+      },
+    }
+  `);
 
   terminatorMiddleware.terminate();
 
@@ -199,49 +199,49 @@ test.skipWindows(
       });
 
     await expect(execProbe()).resolves.toMatchInlineSnapshot(`
-          Object {
-            "code": 0,
-            "stderr": "status: SERVING",
-          }
-        `);
+      {
+        "code": 0,
+        "stderr": "status: SERVING",
+      }
+    `);
 
     await expect(execProbe('-service', 'MyService')).resolves
       .toMatchInlineSnapshot(`
-          Object {
-            "code": 3,
-            "stderr": "error: health rpc failed: rpc error: code = NotFound desc = Unknown service: 'MyService'",
-          }
-        `);
+      {
+        "code": 3,
+        "stderr": "error: health rpc failed: rpc error: code = NotFound desc = Unknown service: 'MyService'",
+      }
+    `);
 
     healthState.setStatus('unhealthy', 'MyService');
 
     await expect(execProbe('-service', 'MyService')).resolves
       .toMatchInlineSnapshot(`
-          Object {
-            "code": 4,
-            "stderr": "service unhealthy (responded with \\"NOT_SERVING\\")",
-          }
-        `);
+      {
+        "code": 4,
+        "stderr": "service unhealthy (responded with "NOT_SERVING")",
+      }
+    `);
 
     healthState.setStatus('healthy', 'MyService');
 
     await expect(execProbe('-service', 'MyService')).resolves
       .toMatchInlineSnapshot(`
-          Object {
-            "code": 0,
-            "stderr": "status: SERVING",
-          }
-        `);
+      {
+        "code": 0,
+        "stderr": "status: SERVING",
+      }
+    `);
 
     healthState.setStatus('unknown', 'MyService');
 
     await expect(execProbe('-service', 'MyService')).resolves
       .toMatchInlineSnapshot(`
-          Object {
-            "code": 3,
-            "stderr": "error: health rpc failed: rpc error: code = NotFound desc = Unknown service: 'MyService'",
-          }
-        `);
+      {
+        "code": 3,
+        "stderr": "error: health rpc failed: rpc error: code = NotFound desc = Unknown service: 'MyService'",
+      }
+    `);
 
     await server.shutdown();
   },

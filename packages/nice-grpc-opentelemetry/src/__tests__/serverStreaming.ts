@@ -61,24 +61,24 @@ test('basic', async () => {
   const clientSpan = finishedSpans.find(span => span.kind === SpanKind.CLIENT)!;
 
   expect(dumpSpan(clientSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "rpc.grpc.status_code": 0,
         "rpc.grpc.status_text": "OK",
         "rpc.method": "TestServerStream",
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
-      "events": Array [
-        Object {
-          "attributes": Object {
+      "events": [
+        {
+          "attributes": {
             "message.id": 1,
             "message.type": "RECEIVED",
           },
           "name": "message",
         },
-        Object {
-          "attributes": Object {
+        {
+          "attributes": {
             "message.id": 2,
             "message.type": "RECEIVED",
           },
@@ -87,7 +87,7 @@ test('basic', async () => {
       ],
       "kind": "CLIENT",
       "name": "nice_grpc.test.Test/TestServerStream",
-      "status": Object {
+      "status": {
         "code": "UNSET",
         "message": undefined,
       },
@@ -98,8 +98,8 @@ test('basic', async () => {
   delete serverSpan.attributes['net.peer.port'];
 
   expect(dumpSpan(serverSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "net.peer.ip": "::1",
         "rpc.grpc.status_code": 0,
         "rpc.grpc.status_text": "OK",
@@ -107,16 +107,16 @@ test('basic', async () => {
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
-      "events": Array [
-        Object {
-          "attributes": Object {
+      "events": [
+        {
+          "attributes": {
             "message.id": 1,
             "message.type": "SENT",
           },
           "name": "message",
         },
-        Object {
-          "attributes": Object {
+        {
+          "attributes": {
             "message.id": 2,
             "message.type": "SENT",
           },
@@ -125,7 +125,7 @@ test('basic', async () => {
       ],
       "kind": "SERVER",
       "name": "nice_grpc.test.Test/TestServerStream",
-      "status": Object {
+      "status": {
         "code": "UNSET",
         "message": undefined,
       },
@@ -170,17 +170,17 @@ test('error', async () => {
   const clientSpan = finishedSpans.find(span => span.kind === SpanKind.CLIENT)!;
 
   expect(dumpSpan(clientSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "rpc.grpc.status_code": 5,
         "rpc.grpc.status_text": "NOT_FOUND",
         "rpc.method": "TestServerStream",
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
-      "events": Array [
-        Object {
-          "attributes": Object {
+      "events": [
+        {
+          "attributes": {
             "message.id": 1,
             "message.type": "RECEIVED",
           },
@@ -189,7 +189,7 @@ test('error', async () => {
       ],
       "kind": "CLIENT",
       "name": "nice_grpc.test.Test/TestServerStream",
-      "status": Object {
+      "status": {
         "code": "ERROR",
         "message": "NOT_FOUND: test error message",
       },
@@ -200,8 +200,8 @@ test('error', async () => {
   delete serverSpan.attributes['net.peer.port'];
 
   expect(dumpSpan(serverSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "net.peer.ip": "::1",
         "rpc.grpc.status_code": 5,
         "rpc.grpc.status_text": "NOT_FOUND",
@@ -209,9 +209,9 @@ test('error', async () => {
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
-      "events": Array [
-        Object {
-          "attributes": Object {
+      "events": [
+        {
+          "attributes": {
             "message.id": 1,
             "message.type": "SENT",
           },
@@ -220,7 +220,7 @@ test('error', async () => {
       ],
       "kind": "SERVER",
       "name": "nice_grpc.test.Test/TestServerStream",
-      "status": Object {
+      "status": {
         "code": "ERROR",
         "message": "NOT_FOUND: test error message",
       },
@@ -264,17 +264,17 @@ test('aborted iteration on client', async () => {
   const clientSpan = finishedSpans.find(span => span.kind === SpanKind.CLIENT)!;
 
   expect(dumpSpan(clientSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "rpc.grpc.status_code": 1,
         "rpc.grpc.status_text": "CANCELLED",
         "rpc.method": "TestServerStream",
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
-      "events": Array [
-        Object {
-          "attributes": Object {
+      "events": [
+        {
+          "attributes": {
             "message.id": 1,
             "message.type": "RECEIVED",
           },
@@ -283,7 +283,7 @@ test('aborted iteration on client', async () => {
       ],
       "kind": "CLIENT",
       "name": "nice_grpc.test.Test/TestServerStream",
-      "status": Object {
+      "status": {
         "code": "ERROR",
         "message": "CANCELLED: Stream iteration was aborted by client, e.g. by breaking from the for .. of loop",
       },
@@ -294,8 +294,8 @@ test('aborted iteration on client', async () => {
   delete serverSpan.attributes['net.peer.port'];
 
   expect(dumpSpan(serverSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "net.peer.ip": "::1",
         "rpc.grpc.status_code": 1,
         "rpc.grpc.status_text": "CANCELLED",
@@ -303,9 +303,9 @@ test('aborted iteration on client', async () => {
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
-      "events": Array [
-        Object {
-          "attributes": Object {
+      "events": [
+        {
+          "attributes": {
             "message.id": 1,
             "message.type": "SENT",
           },
@@ -314,7 +314,7 @@ test('aborted iteration on client', async () => {
       ],
       "kind": "SERVER",
       "name": "nice_grpc.test.Test/TestServerStream",
-      "status": Object {
+      "status": {
         "code": "ERROR",
         "message": "CANCELLED: The operation was cancelled",
       },

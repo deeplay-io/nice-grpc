@@ -60,18 +60,18 @@ test('basic', async () => {
   const clientSpan = finishedSpans.find(span => span.kind === SpanKind.CLIENT)!;
 
   expect(dumpSpan(clientSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "rpc.grpc.status_code": 0,
         "rpc.grpc.status_text": "OK",
         "rpc.method": "TestUnary",
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
-      "events": Array [],
+      "events": [],
       "kind": "CLIENT",
       "name": "nice_grpc.test.Test/TestUnary",
-      "status": Object {
+      "status": {
         "code": "UNSET",
         "message": undefined,
       },
@@ -82,8 +82,8 @@ test('basic', async () => {
   delete serverSpan.attributes['net.peer.port'];
 
   expect(dumpSpan(serverSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "net.peer.ip": "::1",
         "rpc.grpc.status_code": 0,
         "rpc.grpc.status_text": "OK",
@@ -91,10 +91,10 @@ test('basic', async () => {
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
-      "events": Array [],
+      "events": [],
       "kind": "SERVER",
       "name": "nice_grpc.test.Test/TestUnary",
-      "status": Object {
+      "status": {
         "code": "UNSET",
         "message": undefined,
       },
@@ -133,18 +133,18 @@ test('error', async () => {
   const clientSpan = finishedSpans.find(span => span.kind === SpanKind.CLIENT)!;
 
   expect(dumpSpan(clientSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "rpc.grpc.status_code": 5,
         "rpc.grpc.status_text": "NOT_FOUND",
         "rpc.method": "TestUnary",
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
-      "events": Array [],
+      "events": [],
       "kind": "CLIENT",
       "name": "nice_grpc.test.Test/TestUnary",
-      "status": Object {
+      "status": {
         "code": "ERROR",
         "message": "NOT_FOUND: test error message",
       },
@@ -155,8 +155,8 @@ test('error', async () => {
   delete serverSpan.attributes['net.peer.port'];
 
   expect(dumpSpan(serverSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "net.peer.ip": "::1",
         "rpc.grpc.status_code": 5,
         "rpc.grpc.status_text": "NOT_FOUND",
@@ -164,10 +164,10 @@ test('error', async () => {
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
-      "events": Array [],
+      "events": [],
       "kind": "SERVER",
       "name": "nice_grpc.test.Test/TestUnary",
-      "status": Object {
+      "status": {
         "code": "ERROR",
         "message": "NOT_FOUND: test error message",
       },
@@ -206,18 +206,18 @@ test('unknown error', async () => {
   const clientSpan = finishedSpans.find(span => span.kind === SpanKind.CLIENT)!;
 
   expect(dumpSpan(clientSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "rpc.grpc.status_code": 2,
         "rpc.grpc.status_text": "UNKNOWN",
         "rpc.method": "TestUnary",
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
-      "events": Array [],
+      "events": [],
       "kind": "CLIENT",
       "name": "nice_grpc.test.Test/TestUnary",
-      "status": Object {
+      "status": {
         "code": "ERROR",
         "message": "UNKNOWN: Unknown server error occurred",
       },
@@ -233,8 +233,8 @@ test('unknown error', async () => {
   delete serverSpan.events[0]?.attributes?.['exception.stacktrace'];
 
   expect(dumpSpan(serverSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "net.peer.ip": "::1",
         "rpc.grpc.status_code": 2,
         "rpc.grpc.status_text": "UNKNOWN",
@@ -242,9 +242,9 @@ test('unknown error', async () => {
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
-      "events": Array [
-        Object {
-          "attributes": Object {
+      "events": [
+        {
+          "attributes": {
             "exception.message": "test error message",
             "exception.type": "Error",
           },
@@ -253,7 +253,7 @@ test('unknown error', async () => {
       ],
       "kind": "SERVER",
       "name": "nice_grpc.test.Test/TestUnary",
-      "status": Object {
+      "status": {
         "code": "ERROR",
         "message": "UNKNOWN: Unknown server error occurred",
       },
@@ -304,18 +304,18 @@ test('cancel', async () => {
   const clientSpan = finishedSpans.find(span => span.kind === SpanKind.CLIENT)!;
 
   expect(dumpSpan(clientSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "rpc.grpc.status_code": 1,
         "rpc.grpc.status_text": "CANCELLED",
         "rpc.method": "TestUnary",
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
-      "events": Array [],
+      "events": [],
       "kind": "CLIENT",
       "name": "nice_grpc.test.Test/TestUnary",
-      "status": Object {
+      "status": {
         "code": "ERROR",
         "message": "CANCELLED: The operation was cancelled",
       },
@@ -326,8 +326,8 @@ test('cancel', async () => {
   delete serverSpan.attributes['net.peer.port'];
 
   expect(dumpSpan(serverSpan)).toMatchInlineSnapshot(`
-    Object {
-      "attributes": Object {
+    {
+      "attributes": {
         "net.peer.ip": "::1",
         "rpc.grpc.status_code": 1,
         "rpc.grpc.status_text": "CANCELLED",
@@ -335,10 +335,10 @@ test('cancel', async () => {
         "rpc.service": "nice_grpc.test.Test",
         "rpc.system": "grpc",
       },
-      "events": Array [],
+      "events": [],
       "kind": "SERVER",
       "name": "nice_grpc.test.Test/TestUnary",
-      "status": Object {
+      "status": {
         "code": "ERROR",
         "message": "CANCELLED: The operation was cancelled",
       },
