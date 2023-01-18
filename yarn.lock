@@ -7642,9 +7642,9 @@ test-exclude@^6.0.0:
     minimatch "^3.0.4"
 
 testcontainers@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/testcontainers/-/testcontainers-9.0.0.tgz#af9a820cdc84ff8b10fc90aec9b1628a738486e0"
-  integrity sha512-vEqJBm7eQino4VqayXjLsN1oXR8kN3jy1jxOdbQ2FA9UsTWoDCJU61wH+v60i3CaJ2bF1PlftHNzuOprD8B68Q==
+  version "9.1.1"
+  resolved "https://registry.yarnpkg.com/testcontainers/-/testcontainers-9.1.1.tgz#3a3df829a4c0bf5d3003171fe65b62f1f86c63fb"
+  integrity sha512-4vTjKQWZxpMA+pNFlpupZ3XCdcbisYwbZIVUYFaNxl9bk8Vi/ELDzZJ3Kr14WdG7Q7333BGaZjKgKtx/ouEuMg==
   dependencies:
     "@balena/dockerignore" "^1.0.2"
     "@types/archiver" "^5.3.1"
@@ -7655,6 +7655,7 @@ testcontainers@^9.0.0:
     docker-compose "^0.23.17"
     dockerode "^3.3.4"
     get-port "^5.1.1"
+    node-fetch "^2.6.7"
     properties-reader "^2.2.0"
     ssh-remote-port-forward "^1.0.4"
     tar-fs "^2.1.1"
