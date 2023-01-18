@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.2](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@2.0.1...nice-grpc-web@2.0.2) (2023-01-18)
+
+### Bug Fixes
+
+- **nice-grpc-web:** split joined binary metadata into multiple values
+  ([#248](https://github.com/deeplay-io/nice-grpc/issues/248))
+  ([8da7de8](https://github.com/deeplay-io/nice-grpc/commit/8da7de87ba6dba505b3564444f9ff061237f4e9a))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.0.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@2.0.0...nice-grpc-web@2.0.1) (2022-11-02)
 
 **Note:** Version bump only for package nice-grpc-web

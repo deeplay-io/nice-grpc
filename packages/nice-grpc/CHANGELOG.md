@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.0.1...nice-grpc@2.1.0) (2023-01-18)
+
+### Features
+
+- **nice-grpc:** include support for implicit secure protocol
+  ([#271](https://github.com/deeplay-io/nice-grpc/issues/271))
+  ([8d31462](https://github.com/deeplay-io/nice-grpc/commit/8d31462824caae66cd78d114c7606ed7489311d2))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.0.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.0.0...nice-grpc@2.0.1) (2022-11-02)
 
 ### Bug Fixes
