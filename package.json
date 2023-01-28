@@ -3,9 +3,14 @@
   "version": "0.0.0",
   "description": "A gRPC library that is nice to you",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "nice-grpc-web/@types/jasmine"
+    ]
+  },
   "author": "Daniel Lytkin <aikoven@deeplay.io>",
   "license": "MIT",
   "scripts": {
