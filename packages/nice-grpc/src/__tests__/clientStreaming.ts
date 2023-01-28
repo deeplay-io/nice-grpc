@@ -174,6 +174,64 @@ test('metadata', async () => {
   await server.shutdown();
 });
 
+test('implicit header sending', async () => {
+  const server = createServer();
+
+  server.add(TestService, {
+    testUnary: throwUnimplemented,
+    testServerStream: throwUnimplemented,
+    async testClientStream(request: AsyncIterable<TestRequest>, context) {
+      const values = context.metadata.getAll('test');
+
+      context.header.set('test', values);
+
+      const requests: TestRequest[] = [];
+
+      for await (const req of request) {
+        requests.push(req);
+      }
+
+      return new TestResponse().setId(
+        requests.map(request => request.getId()).join(' '),
+      );
+    },
+    testBidiStream: throwUnimplemented,
+  });
+
+  const address = `localhost:${await getPort()}`;
+
+  await server.listen(address);
+
+  const channel = createChannel(address);
+  const client = createClient(TestService, channel);
+
+  const metadata = Metadata();
+  metadata.set('test', ['test-value-1', 'test-value-2']);
+
+  let header: Metadata | undefined;
+
+  async function* createRequest() {
+    yield new TestRequest();
+  }
+
+  await client.testClientStream(createRequest(), {
+    metadata,
+    onHeader(header_) {
+      header = header_;
+    },
+  });
+
+  expect(header?.getAll('test')).toMatchInlineSnapshot(`
+    [
+      "test-value-1, test-value-2",
+    ]
+  `);
+
+  channel.close();
+
+  await server.shutdown();
+});
+
 test('error', async () => {
   const server = createServer();
 

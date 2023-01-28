@@ -61,47 +61,54 @@ export function createServerStreamingMethodHandler<Request, Response>(
         const iterable = handler(call.request, context);
         const iterator = iterable[Symbol.asyncIterator]();
 
-        let result = await iterator.next();
+        try {
+          let result = await iterator.next();
 
-        while (true) {
-          if (!result.done) {
-            try {
-              const shouldContinue = call.write(result.value);
+          while (true) {
+            if (!result.done) {
+              try {
+                context.sendHeader();
 
-              if (!shouldContinue) {
-                await waitForEvent(context.signal, call, 'drain');
+                const shouldContinue = call.write(result.value);
+
+                if (!shouldContinue) {
+                  await waitForEvent(context.signal, call, 'drain');
+                }
+              } catch (err) {
+                result = isAbortError(err)
+                  ? await iterator.return()
+                  : await iterator.throw(err);
+
+                continue;
               }
-            } catch (err) {
-              result = isAbortError(err)
-                ? await iterator.return()
-                : await iterator.throw(err);
+
+              result = await iterator.next();
 
               continue;
             }
 
-            result = await iterator.next();
+            if (result.value != null) {
+              result = await iterator.throw(
+                new Error(
+                  'A middleware returned a message, but expected to return void for server streaming method',
+                ),
+              );
 
-            continue;
+              continue;
+            }
+
+            break;
           }
-
-          if (result.value != null) {
-            result = await iterator.throw(
-              new Error(
-                'A middleware returned a message, but expected to return void for server streaming method',
-              ),
-            );
-
-            continue;
-          }
-
-          break;
+        } finally {
+          context.sendHeader();
         }
       })
       .then(
         () => {
           call.end(convertMetadataToGrpcJs(context.trailer));
         },
-        err => {
+        async err => {
+          await new Promise<void>(resolve => setTimeout(resolve, 100));
           call.destroy(
             createErrorStatusObject(
               definition.path,
