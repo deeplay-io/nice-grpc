@@ -213,7 +213,6 @@ const environment = detect();
 
       const client = await this.init({
         async testClientStream(request, {signal}) {
-          console.log(1);
           serverRequestStartDeferred.resolve();
 
           try {
