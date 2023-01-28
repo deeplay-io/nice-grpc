@@ -20,12 +20,19 @@ export function createCallContext(call: ServerSurfaceCall): CallContext {
     });
   }
 
+  let headerSent = false;
+
   return {
     metadata: convertMetadataFromGrpcJs(call.metadata),
     peer: call.getPeer(),
     header,
     sendHeader() {
+      if (headerSent) {
+        return;
+      }
+
       call.sendMetadata(convertMetadataToGrpcJs(header));
+      headerSent = true;
     },
     trailer,
     signal: abortController.signal,

@@ -107,8 +107,7 @@ export function createServerStreamingMethodHandler<Request, Response>(
         () => {
           call.end(convertMetadataToGrpcJs(context.trailer));
         },
-        async err => {
-          await new Promise<void>(resolve => setTimeout(resolve, 100));
+        err => {
           call.destroy(
             createErrorStatusObject(
               definition.path,
