@@ -9,8 +9,8 @@ on:
       - master
 
 jobs:
-  build:
-    name: Test and Build
+  test:
+    name: Test
 
     runs-on: ubuntu-latest
 
@@ -40,7 +40,39 @@ jobs:
             modules-${{ runner.os }}-${{ matrix.environment.node-version }}-${{
             hashFiles('yarn.lock') }}
       - run: yarn --frozen-lockfile
-      - run: yarn build
+      - run: yarn build --ignore nice-grpc-web
       - env:
           NODE_OPTIONS: ${{ matrix.environment.node-options }}
-        run: yarn test
+        run: yarn test --ignore nice-grpc-web
+
+  test-nice-grpc-web-nodejs:
+    name: Test nice-grpc-web on NodeJS
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 5
+
+    strategy:
+      matrix:
+        environment:
+          - node-version: 16.x
+          - node-version: 18.x
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.environment.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.environment.node-version }}
+      - name: Restore Cache
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key:
+            modules-${{ runner.os }}-${{ matrix.environment.node-version }}-${{
+            hashFiles('yarn.lock') }}
+      - run: yarn --frozen-lockfile
+      - run: yarn build --scope nice-grpc-web
+      - env:
+          NODE_OPTIONS: ${{ matrix.environment.node-options }}
+        run: yarn test --scope nice-grpc-web
