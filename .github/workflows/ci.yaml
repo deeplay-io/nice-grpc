@@ -72,7 +72,7 @@ jobs:
             modules-${{ runner.os }}-${{ matrix.environment.node-version }}-${{
             hashFiles('yarn.lock') }}
       - run: yarn --frozen-lockfile
-      - run: yarn build --scope nice-grpc-web
+      - run: yarn build
       - env:
           NODE_OPTIONS: ${{ matrix.environment.node-options }}
         run: yarn test --scope nice-grpc-web
