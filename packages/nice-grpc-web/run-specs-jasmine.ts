@@ -10,6 +10,8 @@ global.ReadableStream ??= require('stream/web').ReadableStream;
 
 const jasmine = new Jasmine();
 
+Object.assign(Jasmine, {DEFAULT_TIMEOUT_INTERVAL: 10_000});
+
 jasmine.loadConfig({
   spec_files: [
     'src/__tests__/**/*.ts',

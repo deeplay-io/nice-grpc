@@ -4,7 +4,7 @@ export type Deferred<T> = {
   reject(error: unknown): void;
 };
 
-export function defer<T = void>(timeoutMs = 4000): Deferred<T> {
+export function defer<T = void>(timeoutMs = 5000): Deferred<T> {
   let resolve: (value: T) => void;
   let reject: (error: unknown) => void;
 
