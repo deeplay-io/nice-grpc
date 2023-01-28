@@ -39,7 +39,7 @@ jobs:
           key:
             modules-${{ runner.os }}-${{ matrix.environment.node-version }}-${{
             hashFiles('yarn.lock') }}
-      - run: yarn --frozen-lockfile
+      - run: yarn --frozen-lockfile --ignore-engines
       - run: yarn build --ignore nice-grpc-web
       - env:
           NODE_OPTIONS: ${{ matrix.environment.node-options }}
