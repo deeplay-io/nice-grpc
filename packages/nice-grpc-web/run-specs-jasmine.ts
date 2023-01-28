@@ -5,6 +5,9 @@ import {
   startMockServer,
 } from './src/__tests__/utils/mockServer/server';
 
+// for Node16
+global.ReadableStream ??= require('stream/web').ReadableStream;
+
 const jasmine = new Jasmine();
 
 jasmine.loadConfig({

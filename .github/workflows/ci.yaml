@@ -56,9 +56,6 @@ jobs:
       matrix:
         environment:
           - node-version: 16.x
-            node-options:
-              --require
-              "./packages/nice-grpc-web/src/__tests__/utils/putReadableStreamToGlobal.js"
           - node-version: 18.x
 
     steps:
