@@ -57,30 +57,34 @@ export function createUnaryMethodHandler<Request, Response>(
         const iterable = handler(call.request, context);
         const iterator = iterable[Symbol.asyncIterator]();
 
-        let result = await iterator.next();
+        try {
+          let result = await iterator.next();
 
-        while (true) {
-          if (!result.done) {
-            result = await iterator.throw(
-              new Error(
-                'A middleware yielded a message, but expected to only return a message for unary method',
-              ),
-            );
+          while (true) {
+            if (!result.done) {
+              result = await iterator.throw(
+                new Error(
+                  'A middleware yielded a message, but expected to only return a message for unary method',
+                ),
+              );
 
-            continue;
+              continue;
+            }
+
+            if (result.value == null) {
+              result = await iterator.throw(
+                new Error(
+                  'A middleware returned void, but expected to return a message for unary method',
+                ),
+              );
+
+              continue;
+            }
+
+            return result.value;
           }
-
-          if (result.value == null) {
-            result = await iterator.throw(
-              new Error(
-                'A middleware returned void, but expected to return a message for unary method',
-              ),
-            );
-
-            continue;
-          }
-
-          return result.value;
+        } finally {
+          context.sendHeader();
         }
       })
       .then(
