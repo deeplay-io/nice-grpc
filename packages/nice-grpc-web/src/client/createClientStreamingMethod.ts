@@ -1,25 +1,15 @@
 import {
   CallOptions,
+  ClientError,
   ClientMiddleware,
   MethodDescriptor,
-  ClientError,
-  Metadata,
   Status,
 } from 'nice-grpc-common';
-import {grpc} from '@improbable-eng/grpc-web';
-import {execute, isAbortError, throwIfAborted} from 'abort-controller-x';
-import {
-  AnyMethodDefinition,
-  MethodDefinition,
-  toGrpcWebMethodDefinition,
-} from '../service-definitions';
+import {MethodDefinition} from '../service-definitions';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
-import {ClientStreamingClientMethod} from './Client';
-import {
-  convertMetadataFromGrpcWeb,
-  convertMetadataToGrpcWeb,
-} from '../utils/convertMetadata';
 import {Channel} from './channel';
+import {ClientStreamingClientMethod} from './Client';
+import {makeCall} from './makeCall';
 
 /** @internal */
 export function createClientStreamingMethod<Request, Response>(
@@ -28,8 +18,6 @@ export function createClientStreamingMethod<Request, Response>(
   middleware: ClientMiddleware | undefined,
   defaultOptions: CallOptions,
 ): ClientStreamingClientMethod<Request, Response> {
-  const grpcMethodDefinition = toGrpcWebMethodDefinition(definition);
-
   const methodDescriptor: MethodDescriptor = {
     path: definition.path,
     requestStream: definition.requestStream,
@@ -42,67 +30,36 @@ export function createClientStreamingMethod<Request, Response>(
     options: CallOptions,
   ): AsyncGenerator<never, Response, undefined> {
     if (!isAsyncIterable(request)) {
-      throw new Error(
+      throw Error(
         'A middleware passed invalid request to next(): expected a single message for client streaming method',
       );
     }
 
-    const {
-      metadata = Metadata(),
-      signal = new AbortController().signal,
-      onHeader,
-      onTrailer,
-    } = options;
+    const response = makeCall(definition, channel, request, options);
 
-    return await execute<Response>(signal, (resolve, reject) => {
-      const pipeAbortController = new AbortController();
+    let unaryResponse: Response | undefined;
 
-      let response: Response;
+    for await (const message of response) {
+      if (unaryResponse != null) {
+        throw new ClientError(
+          definition.path,
+          Status.INTERNAL,
+          'Received more than one message from server for client streaming method',
+        );
+      }
 
-      const client = grpc.client<any, any, any>(grpcMethodDefinition, {
-        host: channel.address,
-        transport: channel.transport,
-      });
+      unaryResponse = message;
+    }
 
-      client.onHeaders(headers => {
-        onHeader?.(convertMetadataFromGrpcWeb(headers));
-      });
-
-      client.onMessage(message => {
-        response = message;
-      });
-
-      client.onEnd((code, message, trailers) => {
-        onTrailer?.(convertMetadataFromGrpcWeb(trailers));
-
-        pipeAbortController.abort();
-
-        if (code === grpc.Code.OK) {
-          resolve(response!);
-        } else {
-          reject(new ClientError(definition.path, +code as Status, message));
-        }
-      });
-
-      client.start(convertMetadataToGrpcWeb(metadata));
-
-      pipeRequest(pipeAbortController.signal, request, client, definition).then(
-        () => {
-          client.finishSend();
-        },
-        err => {
-          if (!isAbortError(err)) {
-            reject(err);
-            client.close();
-          }
-        },
+    if (unaryResponse == null) {
+      throw new ClientError(
+        definition.path,
+        Status.INTERNAL,
+        'Server did not return a response',
       );
+    }
 
-      return () => {
-        pipeAbortController.abort();
-        client.close();
-      };
-    });
+    return unaryResponse;
   }
 
   const method =
@@ -153,19 +110,4 @@ export function createClientStreamingMethod<Request, Response>(
       return result.value;
     }
   };
-}
-
-async function pipeRequest<Request>(
-  signal: AbortSignal,
-  request: AsyncIterable<Request>,
-  client: grpc.Client<any, any>,
-  definition: AnyMethodDefinition,
-): Promise<void> {
-  for await (const item of request) {
-    throwIfAborted(signal);
-
-    client.send({
-      serializeBinary: () => definition.requestSerialize(item),
-    });
-  }
 }

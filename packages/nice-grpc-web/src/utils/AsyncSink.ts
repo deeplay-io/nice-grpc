@@ -40,7 +40,7 @@ export class AsyncSink<TSource> implements AsyncIterableIterator<TSource> {
 
   private _push(item: AsyncSinkItem<TSource>) {
     if (this._ended) {
-      throw new Error('AsyncSink already ended');
+      return;
     }
 
     if (this._resolvers.length > 0) {

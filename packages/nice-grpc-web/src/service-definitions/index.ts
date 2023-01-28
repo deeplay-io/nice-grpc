@@ -1,7 +1,7 @@
-import {grpc} from '@improbable-eng/grpc-web';
 import {
   fromGrpcWebServiceDefinition,
   FromGrpcWebServiceDefinition,
+  GrpcWebServiceDefinition,
   isGrpcWebServiceDefinition,
 } from './grpc-web';
 import {
@@ -39,14 +39,14 @@ export type AnyMethodDefinition = MethodDefinition<any, any, any, any>;
 
 export type CompatServiceDefinition =
   | ServiceDefinition
-  | grpc.ServiceDefinition
+  | GrpcWebServiceDefinition
   | TsProtoServiceDefinition;
 
 export type NormalizedServiceDefinition<
   Service extends CompatServiceDefinition,
 > = Service extends ServiceDefinition
   ? Service
-  : Service extends grpc.ServiceDefinition
+  : Service extends GrpcWebServiceDefinition
   ? FromGrpcWebServiceDefinition<Service>
   : Service extends TsProtoServiceDefinition
   ? FromTsProtoServiceDefinition<Service>
@@ -63,38 +63,4 @@ export function normalizeServiceDefinition(
   } else {
     return definition;
   }
-}
-
-/** @internal */
-export function toGrpcWebMethodDefinition(
-  definition: AnyMethodDefinition,
-): grpc.MethodDefinition<any, any> {
-  const [, serviceName, methodName] = definition.path.split('/');
-
-  return {
-    service: {
-      serviceName,
-    },
-    methodName,
-    requestStream: definition.requestStream,
-    responseStream: definition.responseStream,
-    requestType: class {
-      constructor() {
-        throw new Error('Unexpected instantiation');
-      }
-
-      static deserializeBinary(bytes: Uint8Array) {
-        return definition.requestDeserialize(bytes);
-      }
-    },
-    responseType: class {
-      constructor() {
-        throw new Error('Unexpected instantiation');
-      }
-
-      static deserializeBinary(bytes: Uint8Array) {
-        return definition.responseDeserialize(bytes);
-      }
-    },
-  };
 }

@@ -1,13 +1,14 @@
-import {grpc} from '@improbable-eng/grpc-web';
+import {Transport} from './Transport';
+import {FetchTransport} from './transports/fetch';
 
 export type Channel = {
   address: string;
-  transport?: grpc.TransportFactory;
+  transport: Transport;
 };
 
 export function createChannel(
   address: string,
-  transport?: grpc.TransportFactory,
+  transport: Transport = FetchTransport(),
 ): Channel {
   return {address, transport};
 }

@@ -1,242 +1,401 @@
-import getPort = require('get-port');
-import defer = require('defer-promise');
 import {forever, isAbortError} from 'abort-controller-x';
-import {createServer, ServerError} from 'nice-grpc';
+import {detect} from 'detect-browser';
+import {ClientError, ServerError} from 'nice-grpc-common';
 import {createChannel, createClient, Metadata, Status} from '..';
-import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';
-import {TestRequest, TestResponse} from '../../fixtures/grpc-js/test_pb';
-import {Test} from '../../fixtures/grpc-web/test_pb_service';
-import {startEnvoyProxy} from './utils/envoyProxy';
-import {throwUnimplemented} from './utils/throwUnimplemented';
-import {WebsocketTransport} from './utils/WebsocketTransport';
-import {startGrpcWebProxy} from './utils/grpcwebproxy';
-import {FetchTransport} from './utils/FetchTransport';
+import {
+  TestClient,
+  TestDefinition,
+  TestResponse,
+  TestServiceImplementation,
+} from '../../fixtures/ts-proto/test';
+import {FetchTransport} from '../client/transports/fetch';
+import {WebsocketTransport} from '../client/transports/websocket';
+import {defer} from './utils/defer';
+import {
+  RemoteTestServer,
+  startRemoteTestServer,
+} from './utils/mockServer/control';
 
-describe.each([
-  ['grpcwebproxy - fetch', startGrpcWebProxy, FetchTransport],
-  ['grpcwebproxy - websocket', startGrpcWebProxy, WebsocketTransport],
-  ['envoy - fetch', startEnvoyProxy, FetchTransport],
-])('%s', (_, startProxy, Transport) => {
-  test('basic', async () => {
-    const server = createServer();
+const environment = detect();
 
-    server.add(TestService, {
-      async testUnary(request: TestRequest) {
-        return new TestResponse().setId(request.getId());
-      },
-      testServerStream: throwUnimplemented,
-      testClientStream: throwUnimplemented,
-      testBidiStream: throwUnimplemented,
+(
+  [
+    ['grpcwebproxy', 'fetch'],
+    ['grpcwebproxy', 'websocket'],
+    ['envoy', 'fetch'],
+  ] as const
+).forEach(([proxyType, transport]) => {
+  describe(`unary / ${proxyType} / ${transport}`, () => {
+    type Context = {
+      server?: RemoteTestServer;
+      init(
+        mockImplementation: Partial<TestServiceImplementation>,
+      ): Promise<TestClient>;
+    };
+
+    beforeEach(function (this: Context) {
+      this.init = async impl => {
+        this.server = await startRemoteTestServer(
+          `ws://localhost:18283/?proxy=${proxyType}`,
+          impl,
+        );
+
+        return createClient(
+          TestDefinition,
+          createChannel(
+            this.server.address,
+            transport === 'fetch' ? FetchTransport() : WebsocketTransport(),
+          ),
+        );
+      };
     });
 
-    const listenPort = await server.listen('0.0.0.0:0');
-
-    const proxyPort = await getPort();
-    const proxy = await startProxy(proxyPort, listenPort);
-
-    const channel = createChannel(`http://localhost:${proxyPort}`, Transport());
-    const client = createClient(Test, channel);
-
-    await expect(client.testUnary(new TestRequest().setId('test'))).resolves
-      .toMatchInlineSnapshot(`
-            nice_grpc.test.TestResponse {
-              "id": "test",
-            }
-          `);
-
-    proxy.stop();
-    await server.shutdown();
-  });
-
-  test('metadata', async () => {
-    const server = createServer();
-
-    const responseDeferred = defer<TestResponse>();
-
-    server.add(TestService, {
-      async testUnary(request: TestRequest, context) {
-        const values = context.metadata.getAll('test');
-        const binValues = context.metadata.getAll('test-bin');
-
-        context.header.set('test', values);
-        context.header.set('test-bin', binValues);
-
-        context.sendHeader();
-
-        const response = await responseDeferred.promise;
-
-        context.trailer.set('test', values);
-        context.trailer.set('test-bin', binValues);
-
-        return response;
-      },
-      testServerStream: throwUnimplemented,
-      testClientStream: throwUnimplemented,
-      testBidiStream: throwUnimplemented,
+    afterEach(function (this: Context) {
+      this.server?.shutdown();
     });
 
-    const listenPort = await server.listen('0.0.0.0:0');
-
-    const proxyPort = await getPort();
-    const proxy = await startProxy(proxyPort, listenPort);
-
-    const channel = createChannel(`http://localhost:${proxyPort}`, Transport());
-    const client = createClient(Test, channel);
-
-    const headerDeferred = defer<Metadata>();
-    const trailerDeferred = defer<Metadata>();
-
-    const metadata = Metadata();
-    metadata.set('test', ['test-value-1', 'test-value-2']);
-    metadata.set('test-bin', [new Uint8Array([1]), new Uint8Array([2])]);
-
-    client.testUnary(new TestRequest(), {
-      metadata,
-      onHeader(header) {
-        headerDeferred.resolve(header);
-      },
-      onTrailer(trailer) {
-        trailerDeferred.resolve(trailer);
-      },
-    });
-
-    await expect(headerDeferred.promise.then(header => header.getAll('test')))
-      .resolves.toMatchInlineSnapshot(`
-      [
-        "test-value-1, test-value-2",
-      ]
-    `);
-    await expect(
-      headerDeferred.promise.then(header => header.getAll('test-bin')),
-    ).resolves.toMatchInlineSnapshot(`
-      [
-        Uint8Array [
-          1,
-        ],
-        Uint8Array [
-          2,
-        ],
-      ]
-    `);
-
-    responseDeferred.resolve(new TestResponse());
-
-    await expect(trailerDeferred.promise.then(header => header.getAll('test')))
-      .resolves.toMatchInlineSnapshot(`
-      [
-        "test-value-1, test-value-2",
-      ]
-    `);
-    await expect(
-      trailerDeferred.promise.then(header => header.getAll('test-bin')),
-    ).resolves.toMatchInlineSnapshot(`
-      [
-        Uint8Array [
-          1,
-        ],
-        Uint8Array [
-          2,
-        ],
-      ]
-    `);
-
-    proxy.stop();
-    await server.shutdown();
-  });
-
-  test('error', async () => {
-    const server = createServer();
-
-    server.add(TestService, {
-      async testUnary(request: TestRequest, context) {
-        context.trailer.set('test', ['test-value-1', 'test-value-2']);
-        throw new ServerError(Status.NOT_FOUND, request.getId());
-      },
-      testServerStream: throwUnimplemented,
-      testClientStream: throwUnimplemented,
-      testBidiStream: throwUnimplemented,
-    });
-
-    const listenPort = await server.listen('0.0.0.0:0');
-
-    const proxyPort = await getPort();
-    const proxy = await startProxy(proxyPort, listenPort);
-
-    const channel = createChannel(`http://localhost:${proxyPort}`, Transport());
-    const client = createClient(Test, channel);
-
-    let trailer: Metadata | undefined;
-
-    await expect(
-      client.testUnary(new TestRequest().setId('test'), {
-        onTrailer(metadata) {
-          trailer = metadata;
+    it('sends request and receives response', async function (this: Context) {
+      const client = await this.init({
+        async testUnary(request, context) {
+          context.header.set('test', `${request.id}-header`);
+          context.trailer.set('test', `${request.id}-trailer`);
+          return {id: request.id};
         },
-      }),
-    ).rejects.toMatchInlineSnapshot(
-      `[ClientError: /nice_grpc.test.Test/TestUnary NOT_FOUND: test]`,
-    );
+      });
 
-    expect(trailer?.getAll('test')).toMatchInlineSnapshot(`
-      [
-        "test-value-1, test-value-2",
-      ]
-    `);
+      let header: Metadata | undefined;
+      let trailer: Metadata | undefined;
 
-    proxy.stop();
-    await server.shutdown();
-  });
+      expect(
+        await client.testUnary(
+          {id: 'test'},
+          {
+            onHeader(header_) {
+              header = header_;
+            },
+            onTrailer(trailer_) {
+              trailer = trailer_;
+            },
+          },
+        ),
+      ).toEqual({id: 'test'});
 
-  test('cancel', async () => {
-    const server = createServer();
+      expect(header?.get('test')).toEqual('test-header');
+      expect(trailer?.get('test')).toEqual('test-trailer');
+    });
 
-    const serverRequestStartDeferred = defer<void>();
-    const serverAbortDeferred = defer<void>();
+    it('receives an error', async function (this: Context) {
+      const client = await this.init({
+        async testUnary(request, context) {
+          context.header.set('test', `${request.id}-header`);
+          context.trailer.set('test', `${request.id}-trailer`);
+          throw new ServerError(Status.NOT_FOUND, request.id);
+        },
+      });
 
-    server.add(TestService, {
-      async testUnary(request: TestRequest, {signal}) {
-        serverRequestStartDeferred.resolve();
+      let header: Metadata | undefined;
+      let trailer: Metadata | undefined;
+      let error: unknown;
 
-        try {
-          return await forever(signal);
-        } catch (err) {
-          if (isAbortError(err)) {
-            serverAbortDeferred.resolve();
+      try {
+        await client.testUnary(
+          {id: 'test'},
+          {
+            onHeader(header_) {
+              header = header_;
+            },
+            onTrailer(trailer_) {
+              trailer = trailer_;
+            },
+          },
+        );
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error).toEqual(
+        new ClientError(
+          '/nice_grpc.test.Test/TestUnary',
+          Status.NOT_FOUND,
+          'test',
+        ),
+      );
+      expect(header?.get('test')).toEqual('test-header');
+      expect(trailer?.get('test')).toEqual('test-trailer');
+    });
+
+    it('cancels a call', async function (this: Context) {
+      const serverRequestStartDeferred = defer<void>();
+      const serverAbortDeferred = defer<void>();
+
+      const client = await this.init({
+        async testUnary(request, {signal}) {
+          serverRequestStartDeferred.resolve();
+
+          try {
+            return await forever(signal);
+          } catch (err) {
+            if (isAbortError(err)) {
+              serverAbortDeferred.resolve();
+            }
+
+            throw err;
+          }
+        },
+      });
+
+      const abortController = new AbortController();
+
+      await Promise.all([
+        Promise.resolve().then(async () => {
+          let error: unknown;
+
+          try {
+            await client.testUnary({}, {signal: abortController.signal});
+          } catch (err) {
+            error = err;
           }
 
-          throw err;
-        }
-      },
-      testServerStream: throwUnimplemented,
-      testClientStream: throwUnimplemented,
-      testBidiStream: throwUnimplemented,
+          expect(isAbortError(error))
+            .withContext(`Expected AbortError, got ${error}`)
+            .toBe(true);
+
+          await serverAbortDeferred.promise;
+        }),
+        Promise.resolve().then(async () => {
+          await serverRequestStartDeferred.promise;
+
+          abortController.abort();
+        }),
+      ]);
     });
 
-    const listenPort = await server.listen('0.0.0.0:0');
+    it('sends metadata', async function (this: Context) {
+      const client = await this.init({
+        async testUnary(request, context) {
+          return {id: context.metadata.get('test')};
+        },
+      });
 
-    const proxyPort = await getPort();
-    const proxy = await startProxy(proxyPort, listenPort);
-
-    const channel = createChannel(`http://localhost:${proxyPort}`, Transport());
-    const client = createClient(Test, channel);
-
-    const abortController = new AbortController();
-
-    const promise = client.testUnary(new TestRequest(), {
-      signal: abortController.signal,
+      expect(
+        await client.testUnary(
+          {},
+          {
+            metadata: Metadata({
+              test: 'test-value',
+            }),
+          },
+        ),
+      ).toEqual({id: 'test-value'});
     });
 
-    await serverRequestStartDeferred.promise;
+    it('sends binary metadata', async function (this: Context) {
+      const client = await this.init({
+        async testUnary(request, context) {
+          return {
+            id: new TextDecoder().decode(context.metadata.get('test-bin')),
+          };
+        },
+      });
 
-    abortController.abort();
+      expect(
+        await client.testUnary(
+          {},
+          {
+            metadata: Metadata({
+              'test-bin': new TextEncoder().encode('test-value'),
+            }),
+          },
+        ),
+      ).toEqual({id: 'test-value'});
+    });
 
-    await expect(promise).rejects.toMatchInlineSnapshot(
-      `[AbortError: The operation has been aborted]`,
-    );
+    if (
+      process.env.FORCE_ALL_TESTS !== 'true' &&
+      proxyType === 'grpcwebproxy' &&
+      transport === 'fetch'
+    ) {
+      // grpcwebproxy does not support multiple values in metadata
+    } else {
+      it('sends binary metadata with multiple values', async function (this: Context) {
+        const client = await this.init({
+          async testUnary(request, context) {
+            return {
+              id: context.metadata
+                .getAll('test-bin')
+                .map(value => new TextDecoder().decode(value))
+                .join(', '),
+            };
+          },
+        });
 
-    await serverAbortDeferred.promise;
+        expect(
+          await client.testUnary(
+            {},
+            {
+              metadata: Metadata({
+                'test-bin': [
+                  new TextEncoder().encode('test-value-1'),
+                  new TextEncoder().encode('test-value-2'),
+                ],
+              }),
+            },
+          ),
+        ).toEqual({id: 'test-value-1, test-value-2'});
+      });
+    }
 
-    proxy.stop();
-    await server.shutdown();
+    if (
+      process.env.FORCE_ALL_TESTS !== 'true' &&
+      (environment?.name === 'chrome' || environment?.name === 'safari') &&
+      transport === 'fetch'
+    ) {
+      // chrome and safari only receive headers after the first message is sent
+    } else {
+      it('receives early header', async function (this: Context) {
+        const responseDeferred = defer<TestResponse>();
+
+        const client = await this.init({
+          async testUnary(request, context) {
+            context.header.set('test', request.id);
+            context.sendHeader();
+
+            return await responseDeferred.promise;
+          },
+        });
+
+        const headerDeferred = defer<Metadata>();
+
+        await Promise.all([
+          Promise.resolve().then(async () => {
+            expect(
+              await client.testUnary(
+                {id: 'test-value'},
+                {
+                  onHeader(header) {
+                    headerDeferred.resolve(header);
+                  },
+                },
+              ),
+            ).toEqual({id: 'test'});
+          }),
+          Promise.resolve().then(async () => {
+            expect(
+              await headerDeferred.promise.then(header => header.get('test')),
+            ).toEqual('test-value');
+
+            responseDeferred.resolve({id: 'test'});
+          }),
+        ]);
+      });
+    }
+
+    it('receives binary header', async function (this: Context) {
+      const client = await this.init({
+        async testUnary(request, context) {
+          context.header.set('test-bin', new TextEncoder().encode(request.id));
+
+          return {};
+        },
+      });
+
+      let header: Metadata | undefined;
+
+      await client.testUnary(
+        {id: 'test-value'},
+        {
+          onHeader(header_) {
+            header = header_;
+          },
+        },
+      );
+
+      expect(header?.get('test-bin')).toEqual(
+        new TextEncoder().encode('test-value'),
+      );
+    });
+
+    it('receives binary header with multiple values', async function (this: Context) {
+      const client = await this.init({
+        async testUnary(request, context) {
+          context.header.set('test-bin', [
+            new TextEncoder().encode(`${request.id}-1`),
+            new TextEncoder().encode(`${request.id}-2`),
+          ]);
+
+          return {};
+        },
+      });
+
+      let header: Metadata | undefined;
+
+      await client.testUnary(
+        {id: 'test-value'},
+        {
+          onHeader(header_) {
+            header = header_;
+          },
+        },
+      );
+
+      expect(header?.getAll('test-bin')).toEqual([
+        new TextEncoder().encode('test-value-1'),
+        new TextEncoder().encode('test-value-2'),
+      ]);
+    });
+
+    it('receives binary trailer', async function (this: Context) {
+      const client = await this.init({
+        async testUnary(request, context) {
+          context.trailer.set('test-bin', new TextEncoder().encode(request.id));
+
+          return {};
+        },
+      });
+
+      let trailer: Metadata | undefined;
+
+      await client.testUnary(
+        {id: 'test-value'},
+        {
+          onTrailer(trailer_) {
+            trailer = trailer_;
+          },
+        },
+      );
+
+      expect(trailer?.get('test-bin')).toEqual(
+        new TextEncoder().encode('test-value'),
+      );
+    });
+
+    it('receives binary trailer with multiple values', async function (this: Context) {
+      const client = await this.init({
+        async testUnary(request, context) {
+          context.trailer.set('test-bin', [
+            new TextEncoder().encode(`${request.id}-1`),
+            new TextEncoder().encode(`${request.id}-2`),
+          ]);
+
+          return {};
+        },
+      });
+
+      let trailer: Metadata | undefined;
+
+      await client.testUnary(
+        {id: 'test-value'},
+        {
+          onTrailer(trailer_) {
+            trailer = trailer_;
+          },
+        },
+      );
+
+      expect(trailer?.getAll('test-bin')).toEqual([
+        new TextEncoder().encode('test-value-1'),
+        new TextEncoder().encode('test-value-2'),
+      ]);
+    });
   });
 });

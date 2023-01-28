@@ -1,24 +1,16 @@
 import {
   CallOptions,
+  ClientError,
   ClientMiddleware,
   MethodDescriptor,
-  ClientError,
-  Metadata,
   Status,
 } from 'nice-grpc-common';
-import {grpc} from '@improbable-eng/grpc-web';
-import {execute} from 'abort-controller-x';
-import {
-  MethodDefinition,
-  toGrpcWebMethodDefinition,
-} from '../service-definitions';
+import {MethodDefinition} from '../service-definitions';
+import {asyncIterableOf} from '../utils/asyncIterableOf';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
-import {UnaryClientMethod} from './Client';
-import {
-  convertMetadataFromGrpcWeb,
-  convertMetadataToGrpcWeb,
-} from '../utils/convertMetadata';
 import {Channel} from './channel';
+import {UnaryClientMethod} from './Client';
+import {makeCall} from './makeCall';
 
 /** @internal */
 export function createUnaryMethod<Request, Response>(
@@ -27,8 +19,6 @@ export function createUnaryMethod<Request, Response>(
   middleware: ClientMiddleware | undefined,
   defaultOptions: CallOptions,
 ): UnaryClientMethod<Request, Response> {
-  const grpcMethodDefinition = toGrpcWebMethodDefinition(definition);
-
   const methodDescriptor: MethodDescriptor = {
     path: definition.path,
     requestStream: definition.requestStream,
@@ -46,49 +36,36 @@ export function createUnaryMethod<Request, Response>(
       );
     }
 
-    const {
-      metadata = Metadata(),
-      signal = new AbortController().signal,
-      onHeader,
-      onTrailer,
-    } = options;
+    const response = makeCall(
+      definition,
+      channel,
+      asyncIterableOf(request),
+      options,
+    );
 
-    return await execute<Response>(signal, (resolve, reject) => {
-      let response: Response;
+    let unaryResponse: Response | undefined;
 
-      const client = grpc.client<any, any, any>(grpcMethodDefinition, {
-        host: channel.address,
-        transport: channel.transport,
-      });
+    for await (const message of response) {
+      if (unaryResponse != null) {
+        throw new ClientError(
+          definition.path,
+          Status.INTERNAL,
+          'Received more than one message from server for unary method',
+        );
+      }
 
-      client.onHeaders(headers => {
-        onHeader?.(convertMetadataFromGrpcWeb(headers));
-      });
+      unaryResponse = message;
+    }
 
-      client.onMessage(message => {
-        response = message;
-      });
+    if (unaryResponse == null) {
+      throw new ClientError(
+        definition.path,
+        Status.INTERNAL,
+        'Server did not return a response',
+      );
+    }
 
-      client.onEnd((code, message, trailers) => {
-        onTrailer?.(convertMetadataFromGrpcWeb(trailers));
-
-        if (code === grpc.Code.OK) {
-          resolve(response!);
-        } else {
-          reject(new ClientError(definition.path, +code as Status, message));
-        }
-      });
-
-      client.start(convertMetadataToGrpcWeb(metadata));
-      client.send({
-        serializeBinary: () => definition.requestSerialize(request),
-      });
-      client.finishSend();
-
-      return () => {
-        client.close();
-      };
-    });
+    return unaryResponse;
   }
 
   const method =
