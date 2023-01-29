@@ -12,10 +12,10 @@ const executablePath = path.join(
     : 'browserstack-local',
 );
 
-export function startBrowserstackLocal(
+export async function startBrowserstackLocal(
   key: string,
   localIdentifier?: string,
-): {stop(): void} {
+): Promise<{stop(): void}> {
   const childProcess = spawn(
     executablePath,
     [
@@ -27,9 +27,29 @@ export function startBrowserstackLocal(
       ...(localIdentifier ? ['--local-identifier', localIdentifier] : []),
     ],
     {
-      stdio: ['ignore', 'inherit', 'inherit'],
+      stdio: ['ignore', 'pipe', 'inherit'],
     },
   );
+
+  await new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error('Browserstack local took too long to start'));
+    }, 15_000);
+
+    childProcess.stdout.on('data', data => {
+      process.stdout.write(data);
+
+      if (data.toString().includes('[SUCCESS]')) {
+        clearTimeout(timer);
+        resolve();
+      }
+    });
+
+    childProcess.on('exit', code => {
+      clearTimeout(timer);
+      reject(new Error(`Browserstack local exited with code ${code}`));
+    });
+  });
 
   return {
     stop() {

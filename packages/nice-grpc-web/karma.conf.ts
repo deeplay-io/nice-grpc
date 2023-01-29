@@ -76,7 +76,7 @@ export default (config: Config & Record<string, unknown>) => {
 
     client: {
       jasmine: {
-        timeoutInterval: 10_000,
+        timeoutInterval: 15_000,
       },
     },
 
@@ -130,15 +130,15 @@ function WebdriverIOLauncher(
   Object.assign(this, {
     name: 'WebdriverIO',
     _start: (url: string) => {
-      const browserstackLocal = options.key
-        ? startBrowserstackLocal(
-            options.key,
-            (options.capabilities as any)['bstack:options']?.localIdentifier,
-          )
-        : null;
+      Promise.resolve().then(async () => {
+        const browserstackLocal = options.key
+          ? await startBrowserstackLocal(
+              options.key,
+              (options.capabilities as any)['bstack:options']?.localIdentifier,
+            )
+          : null;
 
-      Promise.resolve()
-        .then(async () => {
+        try {
           const browser = await wdio.remote(options);
 
           this.on('kill', (done: () => void) => {
@@ -149,12 +149,12 @@ function WebdriverIOLauncher(
           });
 
           await browser.url(url);
-        })
-        .catch(err => {
+        } catch (err) {
           browserstackLocal?.stop();
 
           this._done(err);
-        });
+        }
+      });
     },
   });
 }

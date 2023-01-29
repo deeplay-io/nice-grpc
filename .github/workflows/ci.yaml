@@ -86,6 +86,7 @@ jobs:
     timeout-minutes: 5
 
     strategy:
+      max-parallel: 5
       matrix:
         environment:
           - {browserName: chrome, browserVersion: '106'}
