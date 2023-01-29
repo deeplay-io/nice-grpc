@@ -27,10 +27,11 @@ const environment = detect();
 ).forEach(([proxyType, transport]) => {
   if (
     process.env.FORCE_ALL_TESTS !== 'true' &&
-    environment?.name === 'safari' &&
+    (environment?.name === 'safari' || environment?.name === 'firefox') &&
     transport === 'fetch'
   ) {
     // safari does not support constructing readable streams
+    // firefox does not support sending readable streams
 
     return;
   }

@@ -22,9 +22,12 @@
   "scripts": {
     "clean": "rimraf lib",
     "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 ts-node ./run-specs-jasmine.ts",
+    "test:local-browser": "karma start --single-run",
+    "test:browserstack": "npm run prepare:browserstack-local && karma start --single-run --browserstack",
     "build": "tsc -P tsconfig.build.json",
     "prepublishOnly": "npm run clean && npm run build && npm test",
-    "prepare:grpcwebproxy": "path-exists grpcwebproxy || node scripts/download_grpcwebproxy.js",
+    "prepare:grpcwebproxy": "path-exists grpcwebproxy || node scripts/download-grpcwebproxy.js",
+    "prepare:browserstack-local": "path-exists browserstack-local || node scripts/download-browserstack-local.js",
     "prepare:proto:grpc-web": "mkdirp ./fixtures/grpc-web && grpc_tools_node_protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./fixtures/grpc-web --ts_out=service=grpc-web:./fixtures/grpc-web -I fixtures fixtures/*.proto",
     "prepare:proto:ts-proto": "mkdirp ./fixtures/ts-proto && grpc_tools_node_protoc --ts_proto_out=./fixtures/ts-proto --ts_proto_opt=outputServices=nice-grpc,outputServices=generic-definitions,outputJsonMethods=false,useExactTypes=false,esModuleInterop=true -I fixtures fixtures/*.proto",
     "prepare:proto": "npm run prepare:proto:grpc-web && npm run prepare:proto:ts-proto",

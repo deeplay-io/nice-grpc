@@ -1,15 +1,31 @@
 import {Config, CustomLauncher} from 'karma';
 import * as wdio from 'webdriverio';
 import {KarmaTypescriptConfig} from 'karma-typescript';
+import {randomUUID} from 'crypto';
 import {startMockServer} from './src/__tests__/utils/mockServer/server';
+import {startBrowserstackLocal} from './src/__tests__/utils/browserstack-local';
 
 declare module 'karma' {
   export interface ConfigOptions {
     karmaTypescriptConfig?: KarmaTypescriptConfig;
   }
+
+  export interface ClientOptions {
+    jasmine?: {
+      random?: boolean;
+      seed?: string;
+      oneFailurePerSpec?: boolean;
+      failFast?: boolean;
+      timeoutInterval?: number;
+    };
+  }
+
+  export interface CustomLauncher {
+    options?: wdio.RemoteOptions;
+  }
 }
 
-export default (config: Config) => {
+export default (config: Config & Record<string, unknown>) => {
   config.set({
     // logLevel: config.LOG_DEBUG,
 
@@ -18,6 +34,7 @@ export default (config: Config) => {
     exclude: [
       'src/__tests__/utils/envoyProxy.ts',
       'src/__tests__/utils/grpcwebproxy.ts',
+      'src/__tests__/utils/browserstack-local.ts',
       'src/__tests__/utils/mockServer/server.ts',
     ],
     preprocessors: {
@@ -25,11 +42,41 @@ export default (config: Config) => {
       '**/*.js': 'karma-typescript',
     },
     reporters: ['spec', 'karma-typescript'],
-    browsers: ['ChromeWebdriverIO'],
+    browsers: ['CustomWebdriverIO'],
     customLaunchers: {
-      ChromeWebdriverIO: {
+      CustomWebdriverIO: {
         base: 'WebdriverIO',
-        browserName: 'chrome',
+        options: {
+          ...(config.browserstack
+            ? {
+                hostname: 'hub.browserstack.com',
+                user: process.env.BROWSERSTACK_USERNAME,
+                key: process.env.BROWSERSTACK_KEY,
+              }
+            : {}),
+          capabilities: {
+            acceptInsecureCerts: true,
+            'goog:chromeOptions': {
+              args: ['--ignore-certificate-errors'],
+            },
+            browserName: process.env.BROWSERSTACK_BROWSER_NAME ?? 'Chrome',
+            'bstack:options': {
+              local: true,
+              localIdentifier: randomUUID(),
+              idleTimeout: 300,
+              browserVersion: process.env.BROWSERSTACK_BROWSER_VERSION,
+              os: process.env.BROWSERSTACK_OS,
+              osVersion: process.env.BROWSERSTACK_OS_VERSION,
+            },
+          },
+          maxInstances: 1,
+        },
+      },
+    },
+
+    client: {
+      jasmine: {
+        timeoutInterval: 10_000,
       },
     },
 
@@ -72,39 +119,43 @@ function WebdriverIOLauncher(
     _done(error: unknown): void;
   },
   baseBrowserDecorator: (arg: any) => void,
-  args: CustomLauncher,
+  {options}: CustomLauncher,
 ) {
+  if (options == null) {
+    throw new Error('Launcher options must be provided');
+  }
+
   baseBrowserDecorator(this);
 
   Object.assign(this, {
     name: 'WebdriverIO',
     _start: (url: string) => {
-      wdio
-        .remote({
-          capabilities: {
-            browserName: args.browserName,
-            platformName: args.platform,
-            acceptInsecureCerts: true,
-            'goog:chromeOptions': {
-              args: ['--ignore-certificate-errors'],
-            },
-          },
-          maxInstances: 1,
-        })
-        .then(
-          async browser => {
+      Promise.resolve()
+        .then(async () => {
+          const browserstackLocal = options.key
+            ? startBrowserstackLocal(
+                options.key,
+                options.capabilities['bstack:options']?.localIdentifier,
+              )
+            : null;
+
+          try {
+            const browser = await wdio.remote(options);
+
             this.on('kill', (done: () => void) => {
-              browser.closeWindow().then(() => {
+              browser.closeWindow().finally(() => {
                 done();
               });
             });
 
             await browser.url(url);
-          },
-          err => {
-            this._done(err);
-          },
-        );
+          } finally {
+            browserstackLocal?.stop();
+          }
+        })
+        .catch(err => {
+          this._done(err);
+        });
     },
   });
 }

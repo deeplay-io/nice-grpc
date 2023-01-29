@@ -1,4 +1,4 @@
-import {AbortError, throwIfAborted} from 'abort-controller-x';
+import {throwIfAborted} from 'abort-controller-x';
 import {Base64} from 'js-base64';
 import {ClientError, Metadata, Status} from 'nice-grpc-common';
 import {Transport} from '../Transport';
@@ -11,18 +11,12 @@ export function FetchTransport(): Transport {
       let bodyBuffer: Uint8Array | undefined;
 
       for await (const chunk of body) {
-        if (bodyBuffer != null) {
-          throw new Error('Unexpected multiple body chunks');
-        }
-
         bodyBuffer = chunk;
+
+        break;
       }
 
-      if (bodyBuffer == null) {
-        throw new Error('Expected at least one body chunk');
-      }
-
-      requestBody = bodyBuffer;
+      requestBody = bodyBuffer!;
     } else {
       let iterator: AsyncIterator<Uint8Array> | undefined;
 
