@@ -249,11 +249,11 @@ const environment = detect();
       process.env.FORCE_ALL_TESTS !== 'true' &&
       (environment?.name === 'chrome' ||
         environment?.name === 'safari' ||
+        environment?.name === 'edge' ||
         environment?.name === 'firefox') &&
       transport === 'fetch'
     ) {
-      // chrome, safari and firefox only receive headers after the first message
-      // is sent
+      // most browsers only receive headers after the first message is sent
     } else {
       it('receives early header', async function (this: Context) {
         const responseDeferred = defer<TestResponse>();
