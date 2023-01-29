@@ -39,7 +39,7 @@ export async function startBrowserstackLocal(
     childProcess.stdout.on('data', data => {
       process.stdout.write(data);
 
-      if (data.toString().includes('[SUCCESS]')) {
+      if (data.toString().includes('Press Ctrl-C to exit')) {
         clearTimeout(timer);
         resolve();
       }
