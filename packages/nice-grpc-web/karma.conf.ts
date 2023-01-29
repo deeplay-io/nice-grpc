@@ -130,30 +130,29 @@ function WebdriverIOLauncher(
   Object.assign(this, {
     name: 'WebdriverIO',
     _start: (url: string) => {
+      const browserstackLocal = options.key
+        ? startBrowserstackLocal(
+            options.key,
+            (options.capabilities as any)['bstack:options']?.localIdentifier,
+          )
+        : null;
+
       Promise.resolve()
         .then(async () => {
-          const browserstackLocal = options.key
-            ? startBrowserstackLocal(
-                options.key,
-                options.capabilities['bstack:options']?.localIdentifier,
-              )
-            : null;
+          const browser = await wdio.remote(options);
 
-          try {
-            const browser = await wdio.remote(options);
-
-            this.on('kill', (done: () => void) => {
-              browser.closeWindow().finally(() => {
-                done();
-              });
+          this.on('kill', (done: () => void) => {
+            browser.closeWindow().finally(() => {
+              browserstackLocal?.stop();
+              done();
             });
+          });
 
-            await browser.url(url);
-          } finally {
-            browserstackLocal?.stop();
-          }
+          await browser.url(url);
         })
         .catch(err => {
+          browserstackLocal?.stop();
+
           this._done(err);
         });
     },
