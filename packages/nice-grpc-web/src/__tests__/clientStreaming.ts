@@ -301,7 +301,7 @@ const environment = detect();
       process.env.FORCE_ALL_TESTS !== 'true' &&
       (environment?.name === 'chrome' ||
         environment?.name === 'safari' ||
-        environment?.name === 'edge' ||
+        environment?.name === 'edge-chromium' ||
         environment?.name === 'firefox') &&
       transport === 'fetch'
     ) {
