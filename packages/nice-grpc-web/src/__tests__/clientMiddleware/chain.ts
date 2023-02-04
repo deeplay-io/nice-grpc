@@ -7,7 +7,7 @@ describe('clientMiddleware / chain', () => {
   it('passes a call through middleware chain', async () => {
     const actions: any[] = [];
 
-    const server = await startRemoteTestServer('ws://localhost:18283', {
+    const server = await startRemoteTestServer({
       async testUnary(request) {
         return {id: request.id};
       },
@@ -81,7 +81,7 @@ describe('clientMiddleware / chain', () => {
   it('passes custom options call through middleware chain', async () => {
     const actions: any[] = [];
 
-    const server = await startRemoteTestServer('ws://localhost:18283', {
+    const server = await startRemoteTestServer({
       async testUnary(request) {
         return {id: request.id};
       },

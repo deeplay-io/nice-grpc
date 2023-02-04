@@ -16,7 +16,7 @@ describe('clientMiddleware / serverStreaming', () => {
     const actions: any[] = [];
     let metadataValue: string | undefined;
 
-    const server = await startRemoteTestServer('ws://localhost:18283', {
+    const server = await startRemoteTestServer({
       async *testServerStream(request, context) {
         metadataValue = context.metadata.get('test');
         yield {id: `${request.id}-0`};
@@ -84,7 +84,7 @@ describe('clientMiddleware / serverStreaming', () => {
   it('passes an erroneous call through middleware', async () => {
     const actions: any[] = [];
 
-    const server = await startRemoteTestServer('ws://localhost:18283', {
+    const server = await startRemoteTestServer({
       async *testServerStream(request) {
         yield {id: `${request.id}-0`};
         throw new ServerError(Status.NOT_FOUND, `${request.id}-1`);

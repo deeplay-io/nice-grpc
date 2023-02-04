@@ -1,5 +1,10 @@
 import Jasmine from 'jasmine';
 import {SpecReporter} from 'jasmine-spec-reporter';
+import * as selfsigned from 'selfsigned';
+import * as tmp from 'tmp';
+import * as fs from 'fs';
+import * as path from 'path';
+
 import {
   MockServerLogger,
   startMockServer,
@@ -25,10 +30,30 @@ jasmine.loadConfig({
 
 jasmine.addReporter(new SpecReporter());
 
-const stopMockServer = startMockServer(createLogger(LogLevel.info));
+const certs = selfsigned.generate([{name: 'commonName', value: 'localhost'}], {
+  keySize: 2048,
+});
+
+const tmpDir = tmp.dirSync();
+
+process.on('exit', () => {
+  tmpDir.removeCallback();
+});
+
+const certPath = path.join(tmpDir.name, 'tls.crt');
+fs.writeFileSync(certPath, certs.cert);
+const keyPath = path.join(tmpDir.name, 'tls.key');
+fs.writeFileSync(keyPath, certs.private);
+
+const stopMockServer = startMockServer(
+  createLogger(LogLevel.info),
+  certPath,
+  keyPath,
+);
 
 jasmine.execute().finally(() => {
   stopMockServer();
+  tmpDir.removeCallback();
 });
 
 const enum LogLevel {

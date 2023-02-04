@@ -1,4 +1,6 @@
 import getPort = require('get-port');
+import * as https from 'https';
+import * as fs from 'fs';
 import {CallContext, createServer, ServerError} from 'nice-grpc';
 import {WebSocketServer} from 'ws';
 import {TestDefinition} from '../../../../fixtures/ts-proto/test';
@@ -7,10 +9,6 @@ import {startEnvoyProxy} from '../envoyProxy';
 import {startGrpcWebProxy} from '../grpcwebproxy';
 import {metadataToJson, metadataFromJson} from './metadata';
 import {MockServerCommand, MockServerEvent} from './types';
-import * as selfsigned from 'selfsigned';
-import * as tmp from 'tmp';
-import * as fs from 'fs';
-import * as path from 'path';
 
 export type MockServerLogger = {
   debug(message: any, ...args: any[]): void;
@@ -19,22 +17,17 @@ export type MockServerLogger = {
   error(message: any, ...args: any[]): void;
 };
 
-export function startMockServer(logger: MockServerLogger): () => void {
-  const certs = selfsigned.generate(
-    [{name: 'commonName', value: 'localhost'}],
-    {
-      keySize: 2048,
-    },
-  );
+export function startMockServer(
+  logger: MockServerLogger,
+  certPath: string,
+  keyPath: string,
+): () => void {
+  const server = https.createServer({
+    cert: fs.readFileSync(certPath),
+    key: fs.readFileSync(keyPath),
+  });
 
-  const tmpDir = tmp.dirSync();
-
-  const certPath = path.join(tmpDir.name, 'tls.crt');
-  fs.writeFileSync(certPath, certs.cert);
-  const keyPath = path.join(tmpDir.name, 'tls.key');
-  fs.writeFileSync(keyPath, certs.private);
-
-  const wsServer = new WebSocketServer({port: 18283});
+  const wsServer = new WebSocketServer({server});
 
   wsServer.on('connection', (ws, request) => {
     const searchParams = new URLSearchParams(request.url?.slice(1));
@@ -220,8 +213,9 @@ export function startMockServer(logger: MockServerLogger): () => void {
     });
   });
 
+  server.listen(18283);
+
   return () => {
-    wsServer.close();
-    tmpDir.removeCallback();
+    server.close();
   };
 }

@@ -57,7 +57,6 @@
     "mkdirp": "^1.0.4",
     "path-exists-cli": "^2.0.0",
     "request": "^2.88.2",
-    "safaridriver": "^0.0.4",
     "selfsigned": "^2.1.1",
     "string-env-interpolation": "^1.0.1",
     "tcp-port-used": "^1.0.2",

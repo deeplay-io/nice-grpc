@@ -2,6 +2,11 @@ import {Config, CustomLauncher} from 'karma';
 import * as wdio from 'webdriverio';
 import {KarmaTypescriptConfig} from 'karma-typescript';
 import {randomUUID} from 'crypto';
+import * as selfsigned from 'selfsigned';
+import * as tmp from 'tmp';
+import * as fs from 'fs';
+import * as path from 'path';
+
 import {startMockServer} from './src/__tests__/utils/mockServer/server';
 import {startBrowserstackLocal} from './src/__tests__/utils/browserstack-local';
 
@@ -26,6 +31,23 @@ declare module 'karma' {
 }
 
 export default (config: Config & Record<string, unknown>) => {
+  const hostname = 'localhost';
+
+  const certs = selfsigned.generate([{name: 'commonName', value: hostname}], {
+    keySize: 2048,
+  });
+
+  const tmpDir = tmp.dirSync();
+
+  process.on('exit', () => {
+    tmpDir.removeCallback();
+  });
+
+  const certPath = path.join(tmpDir.name, 'tls.crt');
+  fs.writeFileSync(certPath, certs.cert);
+  const keyPath = path.join(tmpDir.name, 'tls.key');
+  fs.writeFileSync(keyPath, certs.private);
+
   config.set({
     // logLevel: config.LOG_DEBUG,
 
@@ -42,6 +64,12 @@ export default (config: Config & Record<string, unknown>) => {
       '**/*.js': 'karma-typescript',
     },
     reporters: ['spec', 'karma-typescript'],
+    protocol: 'https:',
+    hostname,
+    httpsServerOptions: {
+      key: certs.private,
+      cert: certs.cert,
+    },
     browsers: ['CustomWebdriverIO'],
     customLaunchers: {
       CustomWebdriverIO: {
@@ -68,7 +96,6 @@ export default (config: Config & Record<string, unknown>) => {
               browserVersion: process.env.BROWSERSTACK_BROWSER_VERSION,
               os: process.env.BROWSERSTACK_OS,
               osVersion: process.env.BROWSERSTACK_OS_VERSION,
-              realMobile: false,
             },
           },
           maxInstances: 1,
@@ -90,7 +117,11 @@ export default (config: Config & Record<string, unknown>) => {
         'framework:mock-server': [
           'factory',
           function (args, config, logger) {
-            startMockServer(logger.create('framework.mock-server'));
+            startMockServer(
+              logger.create('framework.mock-server'),
+              certPath,
+              keyPath,
+            );
           },
         ],
         'launcher:WebdriverIO': ['type', WebdriverIOLauncher],

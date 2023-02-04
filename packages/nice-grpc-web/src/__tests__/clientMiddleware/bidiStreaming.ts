@@ -16,7 +16,7 @@ describe('clientMiddleware / bidiStreaming', () => {
     const actions: any[] = [];
     let metadataValue: string | undefined;
 
-    const server = await startRemoteTestServer('ws://localhost:18283', {
+    const server = await startRemoteTestServer({
       async *testBidiStream(request, context) {
         metadataValue = context.metadata.get('test');
 
@@ -94,7 +94,7 @@ describe('clientMiddleware / bidiStreaming', () => {
   it('passes an erroneous call through middleware', async () => {
     const actions: any[] = [];
 
-    const server = await startRemoteTestServer('ws://localhost:18283', {
+    const server = await startRemoteTestServer({
       async *testBidiStream(request) {
         for await (const item of request) {
           throw new ServerError(Status.NOT_FOUND, item.id);

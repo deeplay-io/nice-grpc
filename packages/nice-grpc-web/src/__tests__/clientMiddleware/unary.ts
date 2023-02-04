@@ -16,7 +16,7 @@ describe('clientMiddleware / unary', () => {
     const actions: any[] = [];
     let metadataValue: string | undefined;
 
-    const server = await startRemoteTestServer('ws://localhost:18283', {
+    const server = await startRemoteTestServer({
       async testUnary(request, context) {
         metadataValue = context.metadata.get('test');
         return {id: request.id};
@@ -75,7 +75,7 @@ describe('clientMiddleware / unary', () => {
   it('passes an erroneous call through middleware', async () => {
     const actions: any[] = [];
 
-    const server = await startRemoteTestServer('ws://localhost:18283', {
+    const server = await startRemoteTestServer({
       async testUnary(request) {
         throw new ServerError(Status.NOT_FOUND, request.id);
       },

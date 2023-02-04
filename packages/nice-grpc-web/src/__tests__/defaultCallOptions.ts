@@ -16,7 +16,7 @@ describe('defaultCallOptions', () => {
   let channel: Channel;
 
   beforeEach(async () => {
-    server = await startRemoteTestServer('ws://localhost:18283', {
+    server = await startRemoteTestServer({
       async testUnary(request, context) {
         const metadataValue = context.metadata.get('test') ?? '';
         return {id: metadataValue};

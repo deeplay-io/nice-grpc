@@ -54,10 +54,7 @@ const environment = detect();
 
     beforeEach(function (this: Context) {
       this.init = async impl => {
-        this.server = await startRemoteTestServer(
-          `ws://localhost:18283/?proxy=${proxyType}`,
-          impl,
-        );
+        this.server = await startRemoteTestServer(impl, proxyType);
 
         return createClient(
           TestDefinition,

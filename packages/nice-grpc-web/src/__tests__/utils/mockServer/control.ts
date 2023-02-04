@@ -21,10 +21,12 @@ export type RemoteTestServer = {
 };
 
 export async function startRemoteTestServer(
-  websocketAddress: string,
   implementation: Partial<TestServiceImplementation>,
+  proxyType: 'grpcwebproxy' | 'envoy' = 'grpcwebproxy',
 ): Promise<RemoteTestServer> {
-  const ws = new WebSocket(websocketAddress);
+  const hostname = globalThis.location?.hostname ?? 'localhost';
+
+  const ws = new WebSocket(`wss://${hostname}:18283?proxy=${proxyType}`);
 
   let nextSeq = 0;
 
@@ -234,8 +236,6 @@ export async function startRemoteTestServer(
       await forever(signal);
     }),
   );
-
-  const hostname = globalThis.location?.hostname ?? 'localhost';
 
   const port = await new Promise<number>(resolve => {
     onEventOnce('listening', event => {

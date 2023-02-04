@@ -9636,11 +9636,6 @@ rxjs@^7.5.7:
   dependencies:
     tslib "^2.1.0"
 
-safaridriver@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/safaridriver/-/safaridriver-0.0.4.tgz#b06935e2c79c11e21632bd86447357bb8581f5a8"
-  integrity sha512-EgK9Vc2Bk4WaECq1E7ti9GyeQ6JKKQNs40vNOE/b5Ul5dDEt429G0Kj5Nzs4FRS5ZIVa7nBck1TyHuinOYdz2Q==
-
 safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@^5.1.2, safe-buffer@^5.2.0, safe-buffer@~5.2.0:
   version "5.2.1"
   resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.1.tgz"

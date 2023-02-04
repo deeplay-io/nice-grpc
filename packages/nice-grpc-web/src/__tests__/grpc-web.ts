@@ -5,7 +5,7 @@ import {startRemoteTestServer} from './utils/mockServer/control';
 
 describe('grpc-web protoc plugin', () => {
   it('sends a request and returns a response', async () => {
-    const server = await startRemoteTestServer('ws://localhost:18283', {
+    const server = await startRemoteTestServer({
       async testUnary(request) {
         return {
           id: request.id,
