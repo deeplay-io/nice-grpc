@@ -36,7 +36,7 @@ const certs = selfsigned.generate([{name: 'commonName', value: 'localhost'}], {
 
 const tmpDir = tmp.dirSync();
 
-process.on('exit', () => {
+process.on('beforeExit', () => {
   tmpDir.removeCallback();
 });
 
@@ -53,7 +53,6 @@ const stopMockServer = startMockServer(
 
 jasmine.execute().finally(() => {
   stopMockServer();
-  tmpDir.removeCallback();
 });
 
 const enum LogLevel {

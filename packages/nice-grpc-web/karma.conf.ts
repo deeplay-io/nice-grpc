@@ -39,7 +39,7 @@ export default (config: Config & Record<string, unknown>) => {
 
   const tmpDir = tmp.dirSync();
 
-  process.on('exit', () => {
+  process.on('beforeExit', () => {
     tmpDir.removeCallback();
   });
 
@@ -87,7 +87,7 @@ export default (config: Config & Record<string, unknown>) => {
             'goog:chromeOptions': {
               args: ['--ignore-certificate-errors'],
             },
-            browserName: process.env.BROWSER_NAME ?? 'Chrome',
+            browserName: process.env.BROWSER_NAME ?? 'chrome',
             'bstack:options': {
               local: true,
               localIdentifier: randomUUID(),
