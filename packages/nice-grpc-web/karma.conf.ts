@@ -59,7 +59,7 @@ export default (config: Config & Record<string, unknown>) => {
             'goog:chromeOptions': {
               args: ['--ignore-certificate-errors'],
             },
-            browserName: process.env.BROWSERSTACK_BROWSER_NAME ?? 'Chrome',
+            browserName: process.env.BROWSER_NAME ?? 'Chrome',
             'bstack:options': {
               local: true,
               localIdentifier: randomUUID(),
@@ -144,7 +144,7 @@ function WebdriverIOLauncher(
           const browser = await wdio.remote(options);
 
           this.on('kill', (done: () => void) => {
-            browser.closeWindow().finally(() => {
+            browser.deleteSession().finally(() => {
               browserstackLocal?.stop();
               done();
             });

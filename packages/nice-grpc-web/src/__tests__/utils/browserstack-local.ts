@@ -22,8 +22,6 @@ export async function startBrowserstackLocal(
       '--key',
       key,
       '--verbose',
-      '--include-hosts',
-      'localhost',
       ...(localIdentifier ? ['--local-identifier', localIdentifier] : []),
     ],
     {

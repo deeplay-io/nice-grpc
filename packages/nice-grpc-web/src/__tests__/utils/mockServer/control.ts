@@ -235,6 +235,8 @@ export async function startRemoteTestServer(
     }),
   );
 
+  const hostname = globalThis.location?.hostname ?? 'localhost';
+
   const port = await new Promise<number>(resolve => {
     onEventOnce('listening', event => {
       resolve(event.port);
@@ -242,7 +244,7 @@ export async function startRemoteTestServer(
   });
 
   return {
-    address: `https://localhost:${port}`,
+    address: `https://${hostname}:${port}`,
     shutdown() {
       stop();
     },
