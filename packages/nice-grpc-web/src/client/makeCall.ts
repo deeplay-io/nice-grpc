@@ -7,6 +7,7 @@ import {encodeRequest} from './encodeRequest';
 import {makeInternalErrorMessage} from './makeInternalErrorMessage';
 import {parseTrailer} from './parseTrailer';
 
+/** @internal */
 export async function* makeCall<Request, Response>(
   definition: MethodDefinition<Request, unknown, unknown, Response>,
   channel: Channel,

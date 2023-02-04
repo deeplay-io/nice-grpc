@@ -1,6 +1,11 @@
-import {Channel, createChannel, createClient, Metadata} from '..';
+import {
+  Channel,
+  createChannel,
+  createClient,
+  Metadata,
+  WebsocketTransport,
+} from '..';
 import {TestDefinition} from '../../fixtures/ts-proto/test';
-import {WebsocketTransport} from '../client/transports/websocket';
 import {
   RemoteTestServer,
   startRemoteTestServer,

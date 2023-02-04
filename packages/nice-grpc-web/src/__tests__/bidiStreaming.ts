@@ -1,15 +1,21 @@
 import {forever, isAbortError} from 'abort-controller-x';
 import {ServerError} from 'nice-grpc-common';
 import {detect} from 'detect-browser';
-import {ClientError, createChannel, createClient, Metadata, Status} from '..';
+import {
+  ClientError,
+  createChannel,
+  createClient,
+  Metadata,
+  Status,
+  FetchTransport,
+  WebsocketTransport,
+} from '..';
 import {
   TestClient,
   TestDefinition,
   TestResponse,
   TestServiceImplementation,
 } from '../../fixtures/ts-proto/test';
-import {FetchTransport} from '../client/transports/fetch';
-import {WebsocketTransport} from '../client/transports/websocket';
 import {defer} from './utils/defer';
 import {
   RemoteTestServer,

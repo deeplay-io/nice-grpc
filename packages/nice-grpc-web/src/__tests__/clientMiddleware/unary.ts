@@ -1,7 +1,13 @@
-import {ClientError, ServerError} from 'nice-grpc-common';
-import {createChannel, createClientFactory, Metadata, Status} from '../..';
+import {ServerError} from 'nice-grpc-common';
+import {
+  ClientError,
+  createChannel,
+  createClientFactory,
+  Metadata,
+  Status,
+  WebsocketTransport,
+} from '../..';
 import {TestDefinition} from '../../../fixtures/ts-proto/test';
-import {WebsocketTransport} from '../../client/transports/websocket';
 import {startRemoteTestServer} from '../utils/mockServer/control';
 import {createTestClientMiddleware} from '../utils/testClientMiddleware';
 

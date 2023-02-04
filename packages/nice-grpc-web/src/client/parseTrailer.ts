@@ -1,11 +1,13 @@
 import {Metadata, Status} from 'nice-grpc-common';
 
+/** @internal */
 export type ParsedTrailer = {
   status: Status;
   message?: string;
   trailer: Metadata;
 };
 
+/** @internal */
 export function parseTrailer(trailer: Metadata): ParsedTrailer {
   let status: Status;
 

@@ -5,9 +5,9 @@ import {
   createClientFactory,
   Metadata,
   Status,
+  WebsocketTransport,
 } from '../..';
 import {TestDefinition} from '../../../fixtures/ts-proto/test';
-import {WebsocketTransport} from '../../client/transports/websocket';
 import {startRemoteTestServer} from '../utils/mockServer/control';
 import {createTestClientMiddleware} from '../utils/testClientMiddleware';
 

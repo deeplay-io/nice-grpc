@@ -1,3 +1,4 @@
+/** @internal */
 export function makeInternalErrorMessage(err: any): string {
   if (err == null || typeof err !== 'object') {
     return String(err);

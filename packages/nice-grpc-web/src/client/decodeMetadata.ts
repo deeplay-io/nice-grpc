@@ -1,6 +1,7 @@
 import {Metadata} from 'nice-grpc-common';
 import {Base64} from 'js-base64';
 
+/** @internal */
 export function decodeMetadata(data: Uint8Array): Metadata {
   const metadata = Metadata();
 

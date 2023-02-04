@@ -1,3 +1,4 @@
+/** @internal */
 export function concatBuffers(
   buffers: Uint8Array[],
   totalLength: number,

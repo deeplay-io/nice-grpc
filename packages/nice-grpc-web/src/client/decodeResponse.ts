@@ -4,6 +4,7 @@ import {decodeMetadata} from './decodeMetadata';
 import {LPM_HEADER_LENGTH, ParsedLpmHeader, parseLpmHeader} from './framing';
 import {Frame} from './Transport';
 
+/** @internal */
 export type DecodeResponseParams<T> = {
   response: AsyncIterable<Frame>;
   decode(data: Uint8Array): T;
@@ -11,6 +12,7 @@ export type DecodeResponseParams<T> = {
   onTrailer(trailer: Metadata): void;
 };
 
+/** @internal */
 export async function* decodeResponse<T>({
   response,
   decode,

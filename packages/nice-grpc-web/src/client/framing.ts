@@ -10,15 +10,19 @@
  * whether the message represents metadata.
  *
  * https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-WEB.md
+ *
+ * @internal
  */
 export const LPM_HEADER_LENGTH = 5;
 
+/** @internal */
 export type ParsedLpmHeader = {
   compressed: boolean;
   isMetadata: boolean;
   length: number;
 };
 
+/** @internal */
 export function parseLpmHeader(data: Uint8Array): ParsedLpmHeader {
   if (data.length !== LPM_HEADER_LENGTH) {
     throw new Error(`Invalid LPM header length: ${data.length}`);
@@ -37,6 +41,7 @@ export function parseLpmHeader(data: Uint8Array): ParsedLpmHeader {
   };
 }
 
+/** @internal */
 export function encodeFrame(data: Uint8Array): Uint8Array {
   const messageBytes = new Uint8Array(LPM_HEADER_LENGTH + data.length);
 
