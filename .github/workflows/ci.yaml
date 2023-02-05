@@ -125,6 +125,7 @@ jobs:
           BROWSER_NAME: ${{ matrix.environment.browserName }}
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_KEY: ${{ secrets.BROWSERSTACK_KEY }}
+          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
           BROWSERSTACK_BROWSER_VERSION: ${{ matrix.environment.browserVersion }}
           BROWSERSTACK_OS_VERSION: ${{ matrix.environment.osVersion }}
         run: yarn lerna run test:browserstack --scope nice-grpc-web
