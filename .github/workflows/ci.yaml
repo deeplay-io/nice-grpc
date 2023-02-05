@@ -89,7 +89,7 @@ jobs:
 
     strategy:
       fail-fast: false
-      max-parallel: 5
+      max-parallel: 3
       matrix:
         environment:
           - {browserName: chrome, browserVersion: '106'}

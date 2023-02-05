@@ -1,14 +1,12 @@
+import * as http2 from 'http2';
+import proxy from 'http2-proxy';
 import {Config, CustomLauncher} from 'karma';
-import * as wdio from 'webdriverio';
 import {KarmaTypescriptConfig} from 'karma-typescript';
-import {randomUUID} from 'crypto';
+import ngrok from 'ngrok';
 import * as selfsigned from 'selfsigned';
-import * as tmp from 'tmp';
-import * as fs from 'fs';
-import * as path from 'path';
+import * as wdio from 'webdriverio';
 
 import {startMockServer} from './src/__tests__/utils/mockServer/server';
-import {startBrowserstackLocal} from './src/__tests__/utils/browserstack-local';
 
 declare module 'karma' {
   export interface ConfigOptions {
@@ -30,6 +28,20 @@ declare module 'karma' {
   }
 }
 
+const proxies = {
+  '/mock-server': 18283,
+  '/nice_grpc.test.Test': 48080,
+};
+
+const BROWSERSTACK_USERNAME = process.env.BROWSERSTACK_USERNAME;
+const BROWSERSTACK_KEY = process.env.BROWSERSTACK_KEY;
+const BROWSER_NAME = process.env.BROWSER_NAME;
+const BROWSERSTACK_BROWSER_VERSION = process.env.BROWSERSTACK_BROWSER_VERSION;
+const BROWSERSTACK_OS = process.env.BROWSERSTACK_OS;
+const BROWSERSTACK_OS_VERSION = process.env.BROWSERSTACK_OS_VERSION;
+const FORCE_ALL_TESTS = process.env.FORCE_ALL_TESTS;
+const NGROK_AUTHTOKEN = process.env.NGROK_AUTHTOKEN;
+
 export default (config: Config & Record<string, unknown>) => {
   const hostname = 'localhost';
 
@@ -37,21 +49,15 @@ export default (config: Config & Record<string, unknown>) => {
     keySize: 2048,
   });
 
-  const tmpDir = tmp.dirSync();
-
-  process.on('beforeExit', () => {
-    tmpDir.removeCallback();
-  });
-
-  const certPath = path.join(tmpDir.name, 'tls.crt');
-  fs.writeFileSync(certPath, certs.cert);
-  const keyPath = path.join(tmpDir.name, 'tls.key');
-  fs.writeFileSync(keyPath, certs.private);
-
   config.set({
     // logLevel: config.LOG_DEBUG,
 
-    frameworks: ['jasmine', 'karma-typescript', 'mock-server'],
+    frameworks: [
+      'jasmine',
+      'karma-typescript',
+      'mock-server',
+      'websocket-proxy',
+    ],
     files: ['src/**/*.ts', 'fixtures/**/*.ts', 'fixtures/**/*.js'],
     exclude: [
       'src/__tests__/utils/envoyProxy.ts',
@@ -65,11 +71,21 @@ export default (config: Config & Record<string, unknown>) => {
     },
     reporters: ['spec', 'karma-typescript'],
     protocol: 'https:',
+    httpModule: {
+      createServer(options: http2.SecureServerOptions, handler: any) {
+        return http2.createSecureServer(
+          {
+            ...options,
+            key: certs.private,
+            cert: certs.cert,
+            allowHTTP1: true,
+          },
+          handler,
+        );
+      },
+    } as any,
     hostname,
-    httpsServerOptions: {
-      key: certs.private,
-      cert: certs.cert,
-    },
+    beforeMiddleware: ['proxy'],
     browsers: ['CustomWebdriverIO'],
     customLaunchers: {
       CustomWebdriverIO: {
@@ -78,8 +94,8 @@ export default (config: Config & Record<string, unknown>) => {
           ...(config.browserstack
             ? {
                 hostname: 'hub.browserstack.com',
-                user: process.env.BROWSERSTACK_USERNAME,
-                key: process.env.BROWSERSTACK_KEY,
+                user: BROWSERSTACK_USERNAME,
+                key: BROWSERSTACK_KEY,
               }
             : {}),
           capabilities: {
@@ -87,15 +103,13 @@ export default (config: Config & Record<string, unknown>) => {
             'goog:chromeOptions': {
               args: ['--ignore-certificate-errors'],
             },
-            browserName: process.env.BROWSER_NAME ?? 'chrome',
+            browserName: BROWSER_NAME ?? 'chrome',
             'bstack:options': {
-              local: true,
-              localIdentifier: randomUUID(),
               idleTimeout: 300,
               networkLogs: true,
-              browserVersion: process.env.BROWSERSTACK_BROWSER_VERSION,
-              os: process.env.BROWSERSTACK_OS,
-              osVersion: process.env.BROWSERSTACK_OS_VERSION,
+              browserVersion: BROWSERSTACK_BROWSER_VERSION,
+              os: BROWSERSTACK_OS,
+              osVersion: BROWSERSTACK_OS_VERSION,
             },
           },
           maxInstances: 1,
@@ -117,14 +131,14 @@ export default (config: Config & Record<string, unknown>) => {
         'framework:mock-server': [
           'factory',
           function (args, config, logger) {
-            startMockServer(
-              logger.create('framework.mock-server'),
-              certPath,
-              keyPath,
-            );
+            startMockServer(logger.create('framework.mock-server'), {
+              port: 18283,
+            });
           },
         ],
         'launcher:WebdriverIO': ['type', WebdriverIOLauncher],
+        'middleware:proxy': ['factory', ProxyMiddleware],
+        'framework:websocket-proxy': ['factory', WebsocketProxy],
       },
     ],
 
@@ -133,7 +147,7 @@ export default (config: Config & Record<string, unknown>) => {
       bundlerOptions: {
         constants: {
           'process.env': {
-            FORCE_ALL_TESTS: process.env.FORCE_ALL_TESTS,
+            FORCE_ALL_TESTS,
           },
         },
         acornOptions: {
@@ -144,6 +158,58 @@ export default (config: Config & Record<string, unknown>) => {
     },
   });
 };
+
+function getProxyDestinationPort(req: http2.Http2ServerRequest) {
+  for (const [path, port] of Object.entries(proxies)) {
+    if (req.url.startsWith(path)) {
+      return port;
+    }
+  }
+
+  return null;
+}
+
+WebsocketProxy.$inject = ['webServer'];
+function WebsocketProxy(server: http2.Http2Server) {
+  server.on('upgrade', (req: http2.Http2ServerRequest, socket, head) => {
+    const port = getProxyDestinationPort(req);
+
+    if (port != null) {
+      proxy.ws(req, socket, head, {
+        hostname: 'localhost',
+        port,
+      });
+    }
+  });
+}
+
+function ProxyMiddleware() {
+  return (
+    req: http2.Http2ServerRequest,
+    res: http2.Http2ServerResponse,
+    next: (err?: unknown) => void,
+  ): void => {
+    const port = getProxyDestinationPort(req);
+
+    if (port != null) {
+      proxy.web(
+        req,
+        res,
+        {
+          hostname: 'localhost',
+          port,
+        },
+        err => {
+          if (err) {
+            next(err);
+          }
+        },
+      );
+    } else {
+      next();
+    }
+  };
+}
 
 WebdriverIOLauncher.$inject = ['baseBrowserDecorator', 'args'];
 function WebdriverIOLauncher(
@@ -164,26 +230,39 @@ function WebdriverIOLauncher(
     name: 'WebdriverIO',
     _start: (url: string) => {
       Promise.resolve().then(async () => {
-        const browserstackLocal = options.key
-          ? await startBrowserstackLocal(
-              options.key,
-              (options.capabilities as any)['bstack:options']?.localIdentifier,
-            )
-          : null;
+        const parsedUrl = new URL(url);
+
+        const proxiedAddress = await ngrok.connect({
+          addr: parsedUrl.origin,
+          authtoken: NGROK_AUTHTOKEN,
+        });
+
+        const parsedProxiedUrl = new URL(proxiedAddress);
+        parsedProxiedUrl.pathname = parsedUrl.pathname;
+        parsedProxiedUrl.search = parsedUrl.search;
+        const proxiedUrl = parsedProxiedUrl.toString();
 
         try {
           const browser = await wdio.remote(options);
 
           this.on('kill', (done: () => void) => {
-            browser.deleteSession().finally(() => {
-              browserstackLocal?.stop();
-              done();
-            });
+            Promise.resolve()
+              .then(async () => {
+                await browser.deleteSession();
+                await ngrok.disconnect(proxiedAddress);
+              })
+              .finally(() => {
+                done();
+              });
           });
 
-          await browser.url(url);
+          await browser.url(proxiedUrl);
+
+          // confirm on ngrok page
+          const button = await browser.$('button');
+          await button.click();
         } catch (err) {
-          browserstackLocal?.stop();
+          await ngrok.disconnect(proxiedAddress);
 
           this._done(err);
         }

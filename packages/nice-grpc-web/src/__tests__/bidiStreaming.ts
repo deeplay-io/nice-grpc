@@ -35,11 +35,12 @@ const environment = detect();
     process.env.FORCE_ALL_TESTS !== 'true' &&
     (environment?.name === 'safari' ||
       environment?.name === 'ios' ||
-      environment?.name === 'firefox') &&
+      environment?.name === 'firefox' ||
+      (environment?.name === 'chrome' && environment?.os === 'Android OS')) &&
     transport === 'fetch'
   ) {
     // safari does not support constructing readable streams
-    // firefox does not support sending readable streams
+    // most browsers don't not support sending readable streams
 
     return;
   }

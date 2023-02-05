@@ -8,8 +8,6 @@ let nextId = 0;
 export async function startEnvoyProxy(
   listenPort: number,
   backendPort: number,
-  certPath: string,
-  keyPath: string,
 ): Promise<{stop(): void}> {
   const internalListenPort = 8080;
   const backendHost = 'host.docker.internal';
@@ -34,16 +32,6 @@ export async function startEnvoyProxy(
       config,
       '--base-id',
       (nextId++).toString(),
-    ])
-    .withBindMounts([
-      {
-        source: certPath,
-        target: internalCertPath,
-      },
-      {
-        source: keyPath,
-        target: internalKeyPath,
-      },
     ])
     .withExposedPorts({
       container: internalListenPort,

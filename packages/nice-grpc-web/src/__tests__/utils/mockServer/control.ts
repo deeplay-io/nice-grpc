@@ -1,6 +1,7 @@
 import {
   forever,
   isAbortError,
+  rethrowAbortError,
   run,
   spawn,
   waitForEvent,
@@ -24,9 +25,11 @@ export async function startRemoteTestServer(
   implementation: Partial<TestServiceImplementation>,
   proxyType: 'grpcwebproxy' | 'envoy' = 'grpcwebproxy',
 ): Promise<RemoteTestServer> {
-  const hostname = globalThis.location?.hostname ?? 'localhost';
+  const mockServerHost = globalThis.location?.host ?? 'localhost:18283';
 
-  const ws = new WebSocket(`wss://${hostname}:18283?proxy=${proxyType}`);
+  const ws = new WebSocket(
+    `wss://${mockServerHost}/mock-server?proxy=${proxyType}`,
+  );
 
   let nextSeq = 0;
 
@@ -234,17 +237,23 @@ export async function startRemoteTestServer(
       });
 
       await forever(signal);
+    }).catch(err => {
+      rethrowAbortError(err);
+
+      console.log('Mock server control error:', err);
+
+      throw err;
     }),
   );
 
-  const port = await new Promise<number>(resolve => {
-    onEventOnce('listening', event => {
-      resolve(event.port);
+  await new Promise<void>(resolve => {
+    onEventOnce('listening', () => {
+      resolve();
     });
   });
 
   return {
-    address: `https://${hostname}:${port}`,
+    address: globalThis.location?.origin ?? 'https://localhost:48080',
     shutdown() {
       stop();
     },

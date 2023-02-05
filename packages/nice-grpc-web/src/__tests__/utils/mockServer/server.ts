@@ -1,13 +1,12 @@
-import getPort = require('get-port');
+import * as http from 'https';
 import * as https from 'https';
-import * as fs from 'fs';
 import {CallContext, createServer, ServerError} from 'nice-grpc';
-import {WebSocketServer} from 'ws';
+import {ServerOptions, WebSocketServer} from 'ws';
 import {TestDefinition} from '../../../../fixtures/ts-proto/test';
 import {AsyncSink} from '../../../utils/AsyncSink';
 import {startEnvoyProxy} from '../envoyProxy';
 import {startGrpcWebProxy} from '../grpcwebproxy';
-import {metadataToJson, metadataFromJson} from './metadata';
+import {metadataFromJson, metadataToJson} from './metadata';
 import {MockServerCommand, MockServerEvent} from './types';
 
 export type MockServerLogger = {
@@ -19,17 +18,13 @@ export type MockServerLogger = {
 
 export function startMockServer(
   logger: MockServerLogger,
-  certPath: string,
-  keyPath: string,
-): () => void {
-  const server = https.createServer({
-    cert: fs.readFileSync(certPath),
-    key: fs.readFileSync(keyPath),
-  });
-
-  const wsServer = new WebSocketServer({server});
+  options: ServerOptions,
+) {
+  const wsServer = new WebSocketServer(options);
 
   wsServer.on('connection', (ws, request) => {
+    logger.debug('server connection', request.url);
+
     const searchParams = new URLSearchParams(request.url?.slice(1));
     const proxyType = searchParams.get('proxy') ?? 'grpcwebproxy';
 
@@ -200,11 +195,12 @@ export function startMockServer(
       const startProxy =
         proxyType === 'envoy' ? startEnvoyProxy : startGrpcWebProxy;
 
-      const proxyPort = await getPort();
+      // const proxyPort = await getPort();
+      const proxyPort = 48080;
 
-      const proxy = await startProxy(proxyPort, listenPort, certPath, keyPath);
+      const proxy = await startProxy(proxyPort, listenPort);
 
-      sendEvent({type: 'listening', port: proxyPort});
+      sendEvent({type: 'listening'});
 
       await closePromise;
 
@@ -212,10 +208,4 @@ export function startMockServer(
       await server.shutdown();
     });
   });
-
-  server.listen(18283);
-
-  return () => {
-    server.close();
-  };
 }

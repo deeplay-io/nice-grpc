@@ -4,6 +4,7 @@ import * as selfsigned from 'selfsigned';
 import * as tmp from 'tmp';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as https from 'https';
 
 import {
   MockServerLogger,
@@ -45,14 +46,17 @@ fs.writeFileSync(certPath, certs.cert);
 const keyPath = path.join(tmpDir.name, 'tls.key');
 fs.writeFileSync(keyPath, certs.private);
 
-const stopMockServer = startMockServer(
-  createLogger(LogLevel.info),
-  certPath,
-  keyPath,
-);
+const server = https.createServer({
+  key: certs.private,
+  cert: certs.cert,
+});
+
+server.listen(18283);
+
+startMockServer(createLogger(LogLevel.info), {server});
 
 jasmine.execute().finally(() => {
-  stopMockServer();
+  server.close();
 });
 
 const enum LogLevel {
