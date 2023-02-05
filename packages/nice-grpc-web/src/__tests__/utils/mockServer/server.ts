@@ -1,7 +1,6 @@
-import * as http from 'https';
-import * as https from 'https';
 import {CallContext, createServer, ServerError} from 'nice-grpc';
 import {ServerOptions, WebSocketServer} from 'ws';
+import {waitUntilFree} from 'tcp-port-used';
 import {TestDefinition} from '../../../../fixtures/ts-proto/test';
 import {AsyncSink} from '../../../utils/AsyncSink';
 import {startEnvoyProxy} from '../envoyProxy';
@@ -195,8 +194,9 @@ export function startMockServer(
       const startProxy =
         proxyType === 'envoy' ? startEnvoyProxy : startGrpcWebProxy;
 
-      // const proxyPort = await getPort();
       const proxyPort = 48080;
+
+      await waitUntilFree(proxyPort);
 
       const proxy = await startProxy(proxyPort, listenPort);
 

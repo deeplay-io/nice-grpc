@@ -1,10 +1,6 @@
+import * as http from 'http';
 import Jasmine from 'jasmine';
 import {SpecReporter} from 'jasmine-spec-reporter';
-import * as selfsigned from 'selfsigned';
-import * as tmp from 'tmp';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as https from 'https';
 
 import {
   MockServerLogger,
@@ -31,25 +27,7 @@ jasmine.loadConfig({
 
 jasmine.addReporter(new SpecReporter());
 
-const certs = selfsigned.generate([{name: 'commonName', value: 'localhost'}], {
-  keySize: 2048,
-});
-
-const tmpDir = tmp.dirSync();
-
-process.on('beforeExit', () => {
-  tmpDir.removeCallback();
-});
-
-const certPath = path.join(tmpDir.name, 'tls.crt');
-fs.writeFileSync(certPath, certs.cert);
-const keyPath = path.join(tmpDir.name, 'tls.key');
-fs.writeFileSync(keyPath, certs.private);
-
-const server = https.createServer({
-  key: certs.private,
-  cert: certs.cert,
-});
+const server = http.createServer();
 
 server.listen(18283);
 

@@ -99,10 +99,6 @@ export default (config: Config & Record<string, unknown>) => {
               }
             : {}),
           capabilities: {
-            acceptInsecureCerts: true,
-            'goog:chromeOptions': {
-              args: ['--ignore-certificate-errors'],
-            },
             browserName: BROWSER_NAME ?? 'chrome',
             'bstack:options': {
               idleTimeout: 300,
@@ -232,10 +228,13 @@ function WebdriverIOLauncher(
       Promise.resolve().then(async () => {
         const parsedUrl = new URL(url);
 
-        const proxiedAddress = await ngrok.connect({
-          addr: parsedUrl.origin,
-          authtoken: NGROK_AUTHTOKEN,
-        });
+        await ngrok.kill();
+        const proxiedAddress = await retry(() =>
+          ngrok.connect({
+            addr: parsedUrl.origin,
+            authtoken: NGROK_AUTHTOKEN,
+          }),
+        );
 
         const parsedProxiedUrl = new URL(proxiedAddress);
         parsedProxiedUrl.pathname = parsedUrl.pathname;
@@ -269,4 +268,20 @@ function WebdriverIOLauncher(
       });
     },
   });
+}
+
+async function retry<T>(fn: () => Promise<T>, retries = 5): Promise<T> {
+  let attempt = 0;
+
+  while (true) {
+    try {
+      return await fn();
+    } catch (err) {
+      if (attempt++ >= retries) {
+        throw err;
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+  }
 }

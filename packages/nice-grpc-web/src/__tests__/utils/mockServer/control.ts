@@ -26,9 +26,10 @@ export async function startRemoteTestServer(
   proxyType: 'grpcwebproxy' | 'envoy' = 'grpcwebproxy',
 ): Promise<RemoteTestServer> {
   const mockServerHost = globalThis.location?.host ?? 'localhost:18283';
+  const protocol = globalThis.location?.protocol === 'https:' ? 'wss' : 'ws';
 
   const ws = new WebSocket(
-    `wss://${mockServerHost}/mock-server?proxy=${proxyType}`,
+    `${protocol}://${mockServerHost}/mock-server?proxy=${proxyType}`,
   );
 
   let nextSeq = 0;
@@ -253,7 +254,7 @@ export async function startRemoteTestServer(
   });
 
   return {
-    address: globalThis.location?.origin ?? 'https://localhost:48080',
+    address: globalThis.location?.origin ?? 'http://localhost:48080',
     shutdown() {
       stop();
     },

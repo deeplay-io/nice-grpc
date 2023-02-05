@@ -21,7 +21,7 @@
   ],
   "scripts": {
     "clean": "rimraf lib",
-    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 ts-node ./run-specs-jasmine.ts",
+    "test": "ts-node ./run-specs-jasmine.ts",
     "test:local-browser": "karma start --single-run",
     "test:browserstack": "karma start --single-run --browserstack",
     "build": "tsc -P tsconfig.build.json",
