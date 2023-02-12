@@ -116,7 +116,7 @@ jobs:
           method: kubeconfig
           kubeconfig: ${{ secrets.KUBECONFIG }}
       - name: Export TLS secret for test server
-        run: test-server/cert/export.sh
+        run: packages/nice-grpc-web/test-server/cert/export.sh
       - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
