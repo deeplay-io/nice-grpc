@@ -40,12 +40,13 @@ const environment = detect();
       environment?.name === 'ios' ||
       environment?.name === 'firefox' ||
       (environment?.name === 'chrome' && environment?.os === 'Android OS') ||
-      (environment?.name === 'chrome' && protocol === 'http'))
+      (environment?.name === 'chrome' && protocol === 'http') ||
+      (environment?.name === 'edge-chromium' && protocol === 'http'))
   ) {
     // safari does not support constructing readable streams
     // most browsers don't not support sending readable streams
 
-    // chrome requires http2 (hence https) to send client streams
+    // chromium requires http2 (hence https) to send client streams
 
     return;
   }
