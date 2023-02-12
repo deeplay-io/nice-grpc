@@ -1,11 +1,10 @@
-import * as http from 'http';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as selfsigned from 'selfsigned';
 import Jasmine from 'jasmine';
 import {SpecReporter} from 'jasmine-spec-reporter';
 
-import {
-  MockServerLogger,
-  startMockServer,
-} from './src/__tests__/utils/mockServer/server';
+import {MockServerLogger, startMockServer} from './test-server/server';
 
 // for Node16
 global.ReadableStream ??= require('stream/web').ReadableStream;
@@ -27,11 +26,28 @@ jasmine.loadConfig({
 
 jasmine.addReporter(new SpecReporter());
 
-const server = http.createServer();
+const certPath = path.resolve(__dirname, './test-server/cert/self-signed.crt');
+const keyPath = path.resolve(__dirname, './test-server/cert/self-signed.key');
 
-server.listen(18283);
+const hostname = 'localhost';
+const cert = selfsigned.generate([{name: 'commonName', value: hostname}], {
+  keySize: 2048,
+});
 
-startMockServer(createLogger(LogLevel.info), {server});
+fs.writeFileSync(certPath, cert.cert);
+fs.writeFileSync(keyPath, cert.private);
+
+process.on('beforeExit', () => {
+  fs.unlinkSync(certPath);
+  fs.unlinkSync(keyPath);
+});
+
+const server = startMockServer(
+  createLogger(LogLevel.info),
+  hostname,
+  certPath,
+  keyPath,
+);
 
 jasmine.execute().finally(() => {
   server.close();

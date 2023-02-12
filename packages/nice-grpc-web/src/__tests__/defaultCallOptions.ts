@@ -9,7 +9,7 @@ import {TestDefinition} from '../../fixtures/ts-proto/test';
 import {
   RemoteTestServer,
   startRemoteTestServer,
-} from './utils/mockServer/control';
+} from '../../test-server/client';
 
 describe('defaultCallOptions', () => {
   let server: RemoteTestServer;

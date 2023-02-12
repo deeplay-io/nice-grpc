@@ -1,7 +1,7 @@
 import {createChannel, createClient} from '..';
 import {TestRequest, TestResponse} from '../../fixtures/grpc-web/test_pb';
 import {Test} from '../../fixtures/grpc-web/test_pb_service';
-import {startRemoteTestServer} from './utils/mockServer/control';
+import {startRemoteTestServer} from '../../test-server/client';
 
 describe('grpc-web protoc plugin', () => {
   it('sends a request and returns a response', async () => {

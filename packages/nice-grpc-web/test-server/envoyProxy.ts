@@ -8,6 +8,10 @@ let nextId = 0;
 export async function startEnvoyProxy(
   listenPort: number,
   backendPort: number,
+  tls?: {
+    certPath: string;
+    keyPath: string;
+  },
 ): Promise<{stop(): void}> {
   const internalListenPort = 8080;
   const backendHost = 'host.docker.internal';
@@ -15,7 +19,10 @@ export async function startEnvoyProxy(
   const internalKeyPath = '/etc/certs/tls.key';
 
   const config = env(
-    await fs.readFile(path.join(__dirname, 'envoy.yaml'), 'utf8'),
+    await fs.readFile(
+      path.join(__dirname, tls ? 'envoy-tls.yaml' : 'envoy.yaml'),
+      'utf8',
+    ),
     {
       LISTEN_PORT: internalListenPort.toString(),
       BACKEND_HOST: backendHost,
@@ -33,6 +40,20 @@ export async function startEnvoyProxy(
       '--base-id',
       (nextId++).toString(),
     ])
+    .withBindMounts(
+      tls
+        ? [
+            {
+              source: tls.certPath,
+              target: internalCertPath,
+            },
+            {
+              source: tls.keyPath,
+              target: internalKeyPath,
+            },
+          ]
+        : [],
+    )
     .withExposedPorts({
       container: internalListenPort,
       host: listenPort,

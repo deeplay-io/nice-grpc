@@ -20,32 +20,37 @@ import {defer} from './utils/defer';
 import {
   RemoteTestServer,
   startRemoteTestServer,
-} from './utils/mockServer/control';
+} from '../../test-server/client';
 
 const environment = detect();
 
 (
   [
-    ['grpcwebproxy', 'fetch'],
-    ['grpcwebproxy', 'websocket'],
-    ['envoy', 'fetch'],
+    ['grpcwebproxy', 'fetch', 'http'],
+    ['grpcwebproxy', 'fetch', 'https'],
+    ['grpcwebproxy', 'websocket', 'http'],
+    ['envoy', 'fetch', 'http'],
+    ['envoy', 'fetch', 'https'],
   ] as const
-).forEach(([proxyType, transport]) => {
+).forEach(([proxyType, transport, protocol]) => {
   if (
     process.env.FORCE_ALL_TESTS !== 'true' &&
+    transport === 'fetch' &&
     (environment?.name === 'safari' ||
       environment?.name === 'ios' ||
       environment?.name === 'firefox' ||
-      (environment?.name === 'chrome' && environment?.os === 'Android OS')) &&
-    transport === 'fetch'
+      (environment?.name === 'chrome' && environment?.os === 'Android OS') ||
+      (environment?.name === 'chrome' && protocol === 'http'))
   ) {
     // safari does not support constructing readable streams
     // most browsers don't not support sending readable streams
 
+    // chrome requires http2 (hence https) to send client streams
+
     return;
   }
 
-  describe(`clientStreaming / ${proxyType} / ${transport}`, () => {
+  describe(`clientStreaming / ${proxyType} / ${transport} / ${protocol}`, () => {
     type Context = {
       server?: RemoteTestServer;
       init(
@@ -55,7 +60,7 @@ const environment = detect();
 
     beforeEach(function (this: Context) {
       this.init = async impl => {
-        this.server = await startRemoteTestServer(impl, proxyType);
+        this.server = await startRemoteTestServer(impl, proxyType, protocol);
 
         return createClient(
           TestDefinition,

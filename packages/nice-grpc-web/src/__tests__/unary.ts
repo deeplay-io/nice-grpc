@@ -20,18 +20,20 @@ import {defer} from './utils/defer';
 import {
   RemoteTestServer,
   startRemoteTestServer,
-} from './utils/mockServer/control';
+} from '../../test-server/client';
 
 const environment = detect();
 
 (
   [
-    ['grpcwebproxy', 'fetch'],
-    ['grpcwebproxy', 'websocket'],
-    ['envoy', 'fetch'],
+    ['grpcwebproxy', 'fetch', 'http'],
+    ['grpcwebproxy', 'fetch', 'https'],
+    ['grpcwebproxy', 'websocket', 'http'],
+    ['envoy', 'fetch', 'http'],
+    ['envoy', 'fetch', 'https'],
   ] as const
-).forEach(([proxyType, transport]) => {
-  describe(`unary / ${proxyType} / ${transport}`, () => {
+).forEach(([proxyType, transport, protocol]) => {
+  describe(`unary / ${proxyType} / ${transport} / ${protocol}`, () => {
     type Context = {
       server?: RemoteTestServer;
       init(
@@ -41,7 +43,7 @@ const environment = detect();
 
     beforeEach(function (this: Context) {
       this.init = async impl => {
-        this.server = await startRemoteTestServer(impl, proxyType);
+        this.server = await startRemoteTestServer(impl, proxyType, protocol);
 
         return createClient(
           TestDefinition,

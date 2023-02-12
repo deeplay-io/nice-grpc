@@ -6,15 +6,15 @@ import {
   spawn,
   waitForEvent,
 } from 'abort-controller-x';
-import {CallContext, Metadata, ServerError, Status} from 'nice-grpc-common';
-import {AsyncSink} from '../../../utils/AsyncSink';
-import {metadataFromJson, metadataToJson} from './metadata';
-import {MockServerCommand, MockServerEvent} from './types';
 import WebSocket, {MessageEvent} from 'isomorphic-ws';
+import {CallContext, Metadata, ServerError, Status} from 'nice-grpc-common';
 import {
   TestRequest,
   TestServiceImplementation,
-} from '../../../../fixtures/ts-proto/test';
+} from '../fixtures/ts-proto/test';
+import {AsyncSink} from '../src/utils/AsyncSink';
+import {metadataFromJson, metadataToJson} from './metadata';
+import {MockServerCommand, MockServerEvent} from './types';
 
 export type RemoteTestServer = {
   address: string;
@@ -24,12 +24,12 @@ export type RemoteTestServer = {
 export async function startRemoteTestServer(
   implementation: Partial<TestServiceImplementation>,
   proxyType: 'grpcwebproxy' | 'envoy' = 'grpcwebproxy',
+  protocol: 'http' | 'https' = 'http',
 ): Promise<RemoteTestServer> {
-  const mockServerHost = globalThis.location?.host ?? 'localhost:18283';
-  const protocol = globalThis.location?.protocol === 'https:' ? 'wss' : 'ws';
+  const hostname = globalThis.location?.hostname ?? 'localhost';
 
   const ws = new WebSocket(
-    `${protocol}://${mockServerHost}/mock-server?proxy=${proxyType}`,
+    `ws://${hostname}:18283/mock-server?proxy=${proxyType}&protocol=${protocol}`,
   );
 
   let nextSeq = 0;
@@ -247,14 +247,14 @@ export async function startRemoteTestServer(
     }),
   );
 
-  await new Promise<void>(resolve => {
-    onEventOnce('listening', () => {
-      resolve();
+  const address = await new Promise<string>(resolve => {
+    onEventOnce('listening', event => {
+      resolve(event.address);
     });
   });
 
   return {
-    address: globalThis.location?.origin ?? 'http://localhost:48080',
+    address,
     shutdown() {
       stop();
     },

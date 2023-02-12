@@ -89,7 +89,7 @@ jobs:
 
     strategy:
       fail-fast: false
-      max-parallel: 3
+      max-parallel: 5
       matrix:
         environment:
           - {browserName: chrome, browserVersion: '106'}
@@ -110,6 +110,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: azure/setup-kubectl@v3
+      - uses: azure/k8s-set-context@v3
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+      - name: Export TLS secret for test server
+        run: test-server/cert/export.sh
       - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
@@ -125,7 +132,6 @@ jobs:
           BROWSER_NAME: ${{ matrix.environment.browserName }}
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_KEY: ${{ secrets.BROWSERSTACK_KEY }}
-          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
           BROWSERSTACK_BROWSER_VERSION: ${{ matrix.environment.browserVersion }}
           BROWSERSTACK_OS_VERSION: ${{ matrix.environment.osVersion }}
         run: yarn lerna run test:browserstack --scope nice-grpc-web

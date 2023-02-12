@@ -8,7 +8,7 @@ import {
   WebsocketTransport,
 } from '../..';
 import {TestDefinition} from '../../../fixtures/ts-proto/test';
-import {startRemoteTestServer} from '../utils/mockServer/control';
+import {startRemoteTestServer} from '../../../test-server/client';
 import {createTestClientMiddleware} from '../utils/testClientMiddleware';
 
 describe('clientMiddleware / serverStreaming', () => {

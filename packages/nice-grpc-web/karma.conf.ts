@@ -1,12 +1,13 @@
-import * as http2 from 'http2';
-import proxy from 'http2-proxy';
+import * as fs from 'fs';
+import * as path from 'path';
 import {Config, CustomLauncher} from 'karma';
 import {KarmaTypescriptConfig} from 'karma-typescript';
-import ngrok from 'ngrok';
 import * as selfsigned from 'selfsigned';
 import * as wdio from 'webdriverio';
+import {randomUUID} from 'crypto';
 
-import {startMockServer} from './src/__tests__/utils/mockServer/server';
+import {startMockServer} from './test-server/server';
+import {startBrowserstackLocal} from './test-server/browserstack-local';
 
 declare module 'karma' {
   export interface ConfigOptions {
@@ -28,11 +29,6 @@ declare module 'karma' {
   }
 }
 
-const proxies = {
-  '/mock-server': 18283,
-  '/nice_grpc.test.Test': 48080,
-};
-
 const BROWSERSTACK_USERNAME = process.env.BROWSERSTACK_USERNAME;
 const BROWSERSTACK_KEY = process.env.BROWSERSTACK_KEY;
 const BROWSER_NAME = process.env.BROWSER_NAME;
@@ -40,52 +36,51 @@ const BROWSERSTACK_BROWSER_VERSION = process.env.BROWSERSTACK_BROWSER_VERSION;
 const BROWSERSTACK_OS = process.env.BROWSERSTACK_OS;
 const BROWSERSTACK_OS_VERSION = process.env.BROWSERSTACK_OS_VERSION;
 const FORCE_ALL_TESTS = process.env.FORCE_ALL_TESTS;
-const NGROK_AUTHTOKEN = process.env.NGROK_AUTHTOKEN;
 
 export default (config: Config & Record<string, unknown>) => {
-  const hostname = 'localhost';
+  let hostname: string;
+  let certPath: string;
+  let keyPath: string;
 
-  const certs = selfsigned.generate([{name: 'commonName', value: hostname}], {
-    keySize: 2048,
-  });
+  if (config.browserstack) {
+    hostname = 'nice-grpc-web-tests.deeplay.io';
+    certPath = path.resolve(__dirname, './test-server/cert/tls.crt');
+    keyPath = path.resolve(__dirname, './test-server/cert/tls.key');
+  } else {
+    hostname = 'localhost';
+    certPath = path.resolve(__dirname, './test-server/cert/self-signed.crt');
+    keyPath = path.resolve(__dirname, './test-server/cert/self-signed.key');
+
+    const cert = selfsigned.generate([{name: 'commonName', value: hostname}], {
+      keySize: 2048,
+    });
+
+    fs.writeFileSync(certPath, cert.cert);
+    fs.writeFileSync(keyPath, cert.private);
+
+    process.on('beforeExit', () => {
+      fs.unlinkSync(certPath);
+      fs.unlinkSync(keyPath);
+    });
+  }
 
   config.set({
     // logLevel: config.LOG_DEBUG,
 
-    frameworks: [
-      'jasmine',
-      'karma-typescript',
-      'mock-server',
-      'websocket-proxy',
-    ],
-    files: ['src/**/*.ts', 'fixtures/**/*.ts', 'fixtures/**/*.js'],
-    exclude: [
-      'src/__tests__/utils/envoyProxy.ts',
-      'src/__tests__/utils/grpcwebproxy.ts',
-      'src/__tests__/utils/browserstack-local.ts',
-      'src/__tests__/utils/mockServer/server.ts',
+    frameworks: ['jasmine', 'karma-typescript', 'mock-server'],
+    files: [
+      'src/**/*.ts',
+      'test-server/client.ts',
+      'test-server/metadata.ts',
+      'fixtures/**/*.ts',
+      'fixtures/**/*.js',
     ],
     preprocessors: {
       '**/*.ts': 'karma-typescript',
       '**/*.js': 'karma-typescript',
     },
     reporters: ['spec', 'karma-typescript'],
-    protocol: 'https:',
-    httpModule: {
-      createServer(options: http2.SecureServerOptions, handler: any) {
-        return http2.createSecureServer(
-          {
-            ...options,
-            key: certs.private,
-            cert: certs.cert,
-            allowHTTP1: true,
-          },
-          handler,
-        );
-      },
-    } as any,
     hostname,
-    beforeMiddleware: ['proxy'],
     browsers: ['CustomWebdriverIO'],
     customLaunchers: {
       CustomWebdriverIO: {
@@ -100,9 +95,17 @@ export default (config: Config & Record<string, unknown>) => {
             : {}),
           capabilities: {
             browserName: BROWSER_NAME ?? 'chrome',
+            acceptInsecureCerts: true,
+            'goog:chromeOptions': {
+              args: ['--allow-insecure-localhost'],
+            },
             'bstack:options': {
+              // disableCorsRestrictions: true,
+              local: true,
+              localIdentifier: randomUUID(),
               idleTimeout: 300,
-              networkLogs: true,
+              // wsLocalSupport: true,
+              // networkLogs: true,
               browserVersion: BROWSERSTACK_BROWSER_VERSION,
               os: BROWSERSTACK_OS,
               osVersion: BROWSERSTACK_OS_VERSION,
@@ -127,14 +130,15 @@ export default (config: Config & Record<string, unknown>) => {
         'framework:mock-server': [
           'factory',
           function (args, config, logger) {
-            startMockServer(logger.create('framework.mock-server'), {
-              port: 18283,
-            });
+            startMockServer(
+              logger.create('framework.mock-server'),
+              hostname,
+              certPath,
+              keyPath,
+            );
           },
         ],
         'launcher:WebdriverIO': ['type', WebdriverIOLauncher],
-        'middleware:proxy': ['factory', ProxyMiddleware],
-        'framework:websocket-proxy': ['factory', WebsocketProxy],
       },
     ],
 
@@ -155,58 +159,6 @@ export default (config: Config & Record<string, unknown>) => {
   });
 };
 
-function getProxyDestinationPort(req: http2.Http2ServerRequest) {
-  for (const [path, port] of Object.entries(proxies)) {
-    if (req.url.startsWith(path)) {
-      return port;
-    }
-  }
-
-  return null;
-}
-
-WebsocketProxy.$inject = ['webServer'];
-function WebsocketProxy(server: http2.Http2Server) {
-  server.on('upgrade', (req: http2.Http2ServerRequest, socket, head) => {
-    const port = getProxyDestinationPort(req);
-
-    if (port != null) {
-      proxy.ws(req, socket, head, {
-        hostname: 'localhost',
-        port,
-      });
-    }
-  });
-}
-
-function ProxyMiddleware() {
-  return (
-    req: http2.Http2ServerRequest,
-    res: http2.Http2ServerResponse,
-    next: (err?: unknown) => void,
-  ): void => {
-    const port = getProxyDestinationPort(req);
-
-    if (port != null) {
-      proxy.web(
-        req,
-        res,
-        {
-          hostname: 'localhost',
-          port,
-        },
-        err => {
-          if (err) {
-            next(err);
-          }
-        },
-      );
-    } else {
-      next();
-    }
-  };
-}
-
 WebdriverIOLauncher.$inject = ['baseBrowserDecorator', 'args'];
 function WebdriverIOLauncher(
   this: {
@@ -226,20 +178,12 @@ function WebdriverIOLauncher(
     name: 'WebdriverIO',
     _start: (url: string) => {
       Promise.resolve().then(async () => {
-        const parsedUrl = new URL(url);
-
-        await ngrok.kill();
-        const proxiedAddress = await retry(() =>
-          ngrok.connect({
-            addr: parsedUrl.origin,
-            authtoken: NGROK_AUTHTOKEN,
-          }),
-        );
-
-        const parsedProxiedUrl = new URL(proxiedAddress);
-        parsedProxiedUrl.pathname = parsedUrl.pathname;
-        parsedProxiedUrl.search = parsedUrl.search;
-        const proxiedUrl = parsedProxiedUrl.toString();
+        const browserstackLocal = options.key
+          ? await startBrowserstackLocal(
+              options.key,
+              (options.capabilities as any)['bstack:options']?.localIdentifier,
+            )
+          : null;
 
         try {
           const browser = await wdio.remote(options);
@@ -248,40 +192,20 @@ function WebdriverIOLauncher(
             Promise.resolve()
               .then(async () => {
                 await browser.deleteSession();
-                await ngrok.disconnect(proxiedAddress);
+                browserstackLocal?.stop();
               })
               .finally(() => {
                 done();
               });
           });
 
-          await browser.url(proxiedUrl);
-
-          // confirm on ngrok page
-          const button = await browser.$('button');
-          await button.click();
+          await browser.url(url);
         } catch (err) {
-          await ngrok.disconnect(proxiedAddress);
+          browserstackLocal?.stop();
 
           this._done(err);
         }
       });
     },
   });
-}
-
-async function retry<T>(fn: () => Promise<T>, retries = 5): Promise<T> {
-  let attempt = 0;
-
-  while (true) {
-    try {
-      return await fn();
-    } catch (err) {
-      if (attempt++ >= retries) {
-        throw err;
-      }
-
-      await new Promise(resolve => setTimeout(resolve, 2000));
-    }
-  }
 }

@@ -1,10 +1,12 @@
 import {CallContext, createServer, ServerError} from 'nice-grpc';
-import {ServerOptions, WebSocketServer} from 'ws';
+import {WebSocketServer} from 'ws';
 import {waitUntilFree} from 'tcp-port-used';
-import {TestDefinition} from '../../../../fixtures/ts-proto/test';
-import {AsyncSink} from '../../../utils/AsyncSink';
-import {startEnvoyProxy} from '../envoyProxy';
-import {startGrpcWebProxy} from '../grpcwebproxy';
+import getPort from 'get-port';
+import assert from 'assert';
+import {TestDefinition} from '../fixtures/ts-proto/test';
+import {AsyncSink} from '../src/utils/AsyncSink';
+import {startEnvoyProxy} from './envoyProxy';
+import {startGrpcWebProxy} from './grpcwebproxy';
 import {metadataFromJson, metadataToJson} from './metadata';
 import {MockServerCommand, MockServerEvent} from './types';
 
@@ -17,15 +19,24 @@ export type MockServerLogger = {
 
 export function startMockServer(
   logger: MockServerLogger,
-  options: ServerOptions,
-) {
-  const wsServer = new WebSocketServer(options);
+  hostname: string,
+  certPath: string,
+  keyPath: string,
+): WebSocketServer {
+  const wsServer = new WebSocketServer({port: 18283});
 
   wsServer.on('connection', (ws, request) => {
     logger.debug('server connection', request.url);
 
-    const searchParams = new URLSearchParams(request.url?.slice(1));
+    const searchParams = new URLSearchParams(
+      request.url!.slice(request.url!.indexOf('?') + 1),
+    );
+
     const proxyType = searchParams.get('proxy') ?? 'grpcwebproxy';
+    assert(proxyType === 'grpcwebproxy' || proxyType === 'envoy');
+
+    const protocol = searchParams.get('protocol') ?? 'https';
+    assert(protocol === 'http' || protocol === 'https');
 
     let nextSeq = 0;
 
@@ -194,13 +205,20 @@ export function startMockServer(
       const startProxy =
         proxyType === 'envoy' ? startEnvoyProxy : startGrpcWebProxy;
 
-      const proxyPort = 48080;
+      const proxyPort = await getPort();
 
       await waitUntilFree(proxyPort);
 
-      const proxy = await startProxy(proxyPort, listenPort);
+      const proxy = await startProxy(
+        proxyPort,
+        listenPort,
+        protocol === 'https' ? {certPath, keyPath} : undefined,
+      );
 
-      sendEvent({type: 'listening'});
+      sendEvent({
+        type: 'listening',
+        address: `${protocol}://${hostname}:${proxyPort}`,
+      });
 
       await closePromise;
 
@@ -208,4 +226,6 @@ export function startMockServer(
       await server.shutdown();
     });
   });
+
+  return wsServer;
 }
