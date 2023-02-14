@@ -13,7 +13,7 @@ export type RetryOptions = {
    *
    *     option idempotency_level = IDEMPOTENT;
    *
-   * then the default is `true`. Otherwise the default is `false`.
+   * then the default is `true`. Otherwise, the default is `false`.
    *
    * Method options currently work only when compiling with `ts-proto`.
    */
@@ -24,7 +24,7 @@ export type RetryOptions = {
    * Defaults to 1000.
    *
    * Example: if `retryBaseDelayMs` is 100, then retries will be attempted in
-   * 100ms, 200ms, 400ms etc (not counting jitter).
+   * 100ms, 200ms, 400ms etc. (not counting jitter).
    */
   retryBaseDelayMs?: number;
   /**
@@ -33,7 +33,7 @@ export type RetryOptions = {
    * Defaults to 30 seconds.
    *
    * Example: if `retryBaseDelayMs` is 1000 and `retryMaxDelayMs` is 3000, then
-   * retries will be attempted in 1000ms, 2000ms, 3000ms, 3000ms etc (not
+   * retries will be attempted in 1000ms, 2000ms, 3000ms, 3000ms etc. (not
    * counting jitter).
    */
   retryMaxDelayMs?: number;
@@ -72,7 +72,7 @@ const defaultRetryableStatuses: Status[] = [
  */
 export const retryMiddleware: ClientMiddleware<RetryOptions> =
   async function* retryMiddleware(call, options) {
-    const {idempotencyLevel} = call.method.options;
+    const {idempotencyLevel} = call.method.options ?? {};
     const isIdempotent =
       idempotencyLevel === 'IDEMPOTENT' ||
       idempotencyLevel === 'NO_SIDE_EFFECTS';
