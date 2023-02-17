@@ -45,7 +45,7 @@ jobs:
       - env:
           NODE_OPTIONS: ${{ matrix.environment.node-options }}
         run:
-          yarn test --ignore nice-grpc-web --since ${{ github.base_ref	||
+          yarn test --ignore nice-grpc-web --since origin/${{ github.base_ref	||
           github.event.before }}
 
   nice-grpc-web-nodejs:
@@ -81,7 +81,7 @@ jobs:
       - env:
           NODE_OPTIONS: ${{ matrix.environment.node-options }}
         run:
-          yarn test --scope nice-grpc-web --since ${{ github.base_ref	||
+          yarn test --scope nice-grpc-web --since origin/${{ github.base_ref	||
           github.event.before }}
 
   nice-grpc-web-browsers:
@@ -136,5 +136,5 @@ jobs:
           BROWSERSTACK_BROWSER_VERSION: ${{ matrix.environment.browserVersion }}
           BROWSERSTACK_OS_VERSION: ${{ matrix.environment.osVersion }}
         run:
-          yarn lerna run test:browserstack --scope nice-grpc-web --since ${{
-          github.base_ref	|| github.event.before }}
+          yarn lerna run test:browserstack --scope nice-grpc-web --since
+          origin/${{ github.base_ref	|| github.event.before }}
