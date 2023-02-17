@@ -23,7 +23,6 @@ import {
 } from '../../test-server/client';
 
 const environment = detect();
-console.log(environment);
 
 (
   [
@@ -40,12 +39,13 @@ console.log(environment);
     (environment?.name === 'safari' ||
       environment?.name === 'ios' ||
       environment?.name === 'firefox' ||
-      (environment?.name === 'chrome' && environment?.os === 'Android OS') ||
+      (environment?.name === 'chrome' && environment.os === 'Android OS') ||
+      (environment?.name === 'chrome' && parseInt(environment.version) < 105) ||
       (environment?.name === 'chrome' && protocol === 'http') ||
       (environment?.name === 'edge-chromium' && protocol === 'http'))
   ) {
     // safari does not support constructing readable streams
-    // most browsers don't not support sending readable streams
+    // most browsers do not support sending readable streams
 
     // chromium requires http2 (hence https) to send client streams
 

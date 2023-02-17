@@ -153,7 +153,21 @@ export default (config: Config & Record<string, unknown>) => {
         acornOptions: {
           ecmaVersion: 11,
         },
-        transforms: [require('karma-typescript-es6-transform')()],
+        transforms: [
+          require('karma-typescript-es6-transform')({
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  targets: {
+                    chrome: '71',
+                    safari: '5.1',
+                  },
+                },
+              ],
+            ],
+          }),
+        ],
       },
     },
   });
