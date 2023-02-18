@@ -82,6 +82,7 @@ export default (config: Config & Record<string, unknown>) => {
     reporters: ['spec', 'karma-typescript'],
     hostname,
     browsers: ['CustomWebdriverIO'],
+    captureTimeout: 120000,
     customLaunchers: {
       CustomWebdriverIO: {
         base: 'WebdriverIO',
@@ -100,7 +101,6 @@ export default (config: Config & Record<string, unknown>) => {
               args: ['--allow-insecure-localhost'],
             },
             'bstack:options': {
-              // disableCorsRestrictions: true,
               local: true,
               localIdentifier: randomUUID(),
               idleTimeout: 300,
@@ -162,6 +162,8 @@ export default (config: Config & Record<string, unknown>) => {
                   targets: {
                     chrome: '71',
                     safari: '5.1',
+                    ios: '11',
+                    firefox: '73',
                   },
                 },
               ],

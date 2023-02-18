@@ -110,8 +110,8 @@ jobs:
           - {browserName: safari, browserVersion: '16.0'}
           - {browserName: android, osVersion: '6.0'}
           - {browserName: android, osVersion: '13.0'}
-          - {browserName: iphone, osVersion: '13.3'}
-          - {browserName: iphone, osVersion: '16.3'}
+          - {browserName: iphone, osVersion: '11'}
+          - {browserName: iphone, osVersion: '15'}
 
     steps:
       - uses: actions/checkout@v3
