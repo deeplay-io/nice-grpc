@@ -1,6 +1,12 @@
 import getPort = require('get-port');
 import {randomBytes} from 'crypto';
-import {createChannel, createServer, waitForChannelReady, Channel, ChannelCredentials} from '..';
+import {
+  createChannel,
+  createServer,
+  waitForChannelReady,
+  Channel,
+  ChannelCredentials,
+} from '..';
 
 test('implicit protocol', async () => {
   const address = `localhost:${await getPort()}`;
@@ -52,7 +58,7 @@ test('implicit protocol, secure credentials', () => {
 });
 
 test('implicit protocol, secure credentials, custom port', () => {
-  const port = "8080"
+  const port = '8080';
   const address = 'private.host.private';
   const credentials = ChannelCredentials.createSsl();
   const channel = createChannel(`${address}:${port}`, credentials);
@@ -71,7 +77,7 @@ test('implicit protocol, insecure credentials', () => {
 });
 
 test('implicit protocol, insecure credentials, custom port', () => {
-  const port = "8080"
+  const port = '8080';
   const address = 'private.host.private';
   const credentials = ChannelCredentials.createInsecure();
   const channel = createChannel(`${address}:${port}`, credentials);
@@ -89,7 +95,7 @@ test('implicit protocol, no credentials', () => {
 });
 
 test('explicit protocol, insecure credentials', () => {
-  const protocol = 'https://'
+  const protocol = 'https://';
   const address = 'private.host.private';
   const credentials = ChannelCredentials.createInsecure();
   const channel = createChannel(`${protocol}${address}`, credentials);
@@ -99,8 +105,8 @@ test('explicit protocol, insecure credentials', () => {
 });
 
 test('explicit protocol, insecure credentials, custom port', () => {
-  const protocol = 'http://'
-  const port = "8080"
+  const protocol = 'http://';
+  const port = '8080';
   const address = 'private.host.private';
   const credentials = ChannelCredentials.createInsecure();
   const channel = createChannel(`${protocol}${address}:${port}`, credentials);
@@ -110,7 +116,7 @@ test('explicit protocol, insecure credentials, custom port', () => {
 });
 
 test('explicit protocol, secure credentials', () => {
-  const protocol = 'http://'
+  const protocol = 'http://';
   const address = 'private.host.private';
   const credentials = ChannelCredentials.createSsl();
   const channel = createChannel(`${protocol}${address}`, credentials);
@@ -120,8 +126,8 @@ test('explicit protocol, secure credentials', () => {
 });
 
 test('explicit protocol, secure credentials, custom port', () => {
-  const protocol = 'http://'
-  const port = "8080"
+  const protocol = 'http://';
+  const port = '8080';
   const address = 'private.host.private';
   const credentials = ChannelCredentials.createSsl();
   const channel = createChannel(`${protocol}${address}:${port}`, credentials);
@@ -131,7 +137,7 @@ test('explicit protocol, secure credentials, custom port', () => {
 });
 
 test('explicit protocol, no credentials', () => {
-  const protocol = 'https://'
+  const protocol = 'https://';
   const address = 'private.host.private';
   const channel = createChannel(`${protocol}${address}`);
 
@@ -148,45 +154,53 @@ test('unknown protocol, no credentials', () => {
 });
 
 test('unknown protocol, insecure credentials', () => {
-  const protocol = 'consul://'
+  const protocol = 'consul://';
   const address = 'private.host.private';
   const credentials = ChannelCredentials.createInsecure();
   const channel = createChannel(`${protocol}${address}`, credentials);
 
   expect(channel).toBeInstanceOf(Channel);
-  expect(channel.getTarget()).toMatchInlineSnapshot(`"dns:${protocol}${address}"`);
+  expect(channel.getTarget()).toMatchInlineSnapshot(
+    `"dns:${protocol}${address}"`,
+  );
 });
 
 test('unknown protocol, insecure credentials, custom port', () => {
-  const protocol = 'consul://'
-  const port = "8080"
+  const protocol = 'consul://';
+  const port = '8080';
   const address = 'private.host.private';
   const credentials = ChannelCredentials.createInsecure();
   const channel = createChannel(`${protocol}${address}:${port}`, credentials);
 
   expect(channel).toBeInstanceOf(Channel);
-  expect(channel.getTarget()).toMatchInlineSnapshot(`"dns:${protocol}${address}:${port}"`);
+  expect(channel.getTarget()).toMatchInlineSnapshot(
+    `"dns:${protocol}${address}:${port}"`,
+  );
 });
 
 test('unknown protocol, secure credentials', () => {
-  const protocol = 'consul://'
+  const protocol = 'consul://';
   const address = 'private.host.private';
   const credentials = ChannelCredentials.createSsl();
   const channel = createChannel(`${protocol}${address}`, credentials);
 
   expect(channel).toBeInstanceOf(Channel);
-  expect(channel.getTarget()).toMatchInlineSnapshot(`"dns:${protocol}${address}"`);
+  expect(channel.getTarget()).toMatchInlineSnapshot(
+    `"dns:${protocol}${address}"`,
+  );
 });
 
 test('unknown protocol, secure credentials, custom port', () => {
-  const protocol = 'consul://'
-  const port = "8080"
+  const protocol = 'consul://';
+  const port = '8080';
   const address = 'private.host.private';
   const credentials = ChannelCredentials.createSsl();
   const channel = createChannel(`${protocol}${address}:${port}`, credentials);
 
   expect(channel).toBeInstanceOf(Channel);
-  expect(channel.getTarget()).toMatchInlineSnapshot(`"dns:${protocol}${address}:${port}"`);
+  expect(channel.getTarget()).toMatchInlineSnapshot(
+    `"dns:${protocol}${address}:${port}"`,
+  );
 });
 
 test('waitForChannelReady deadline', async () => {

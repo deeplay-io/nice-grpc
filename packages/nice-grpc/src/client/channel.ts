@@ -5,7 +5,7 @@ import {
   connectivityState,
 } from '@grpc/grpc-js';
 
-const knownProtocols = new Set(["http", "https"]);
+const knownProtocols = new Set(['http', 'https']);
 
 export function createChannel(
   address: string,
@@ -18,9 +18,11 @@ export function createChannel(
   let [, protocol, host, port] = match;
 
   const knownProtocol = !protocol || knownProtocols.has(protocol);
-  const isSecure = credentials?._isSecure() || protocol?.includes("https");
+  const isSecure = credentials?._isSecure() || protocol?.includes('https');
 
-  credentials ??= isSecure ? ChannelCredentials.createSsl() : ChannelCredentials.createInsecure();
+  credentials ??= isSecure
+    ? ChannelCredentials.createSsl()
+    : ChannelCredentials.createInsecure();
   port ??= isSecure ? '443' : '80';
 
   let target = knownProtocol ? `${host}:${port}` : address;
