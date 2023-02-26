@@ -51,6 +51,7 @@
     "jasmine": "^4.5.0",
     "jasmine-spec-reporter": "^7.0.0",
     "karma": "^6.4.1",
+    "karma-babel-preprocessor": "^8.0.2",
     "karma-jasmine": "^5.1.0",
     "karma-spec-reporter": "^0.0.36",
     "karma-typescript": "^5.5.3",

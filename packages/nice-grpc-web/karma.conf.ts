@@ -12,6 +12,9 @@ import {startBrowserstackLocal} from './test-server/browserstack-local';
 declare module 'karma' {
   export interface ConfigOptions {
     karmaTypescriptConfig?: KarmaTypescriptConfig;
+    babelPreprocessor?: {
+      options: any;
+    };
   }
 
   export interface ClientOptions {
@@ -78,11 +81,13 @@ export default (config: Config & Record<string, unknown>) => {
     preprocessors: {
       '**/*.ts': 'karma-typescript',
       '**/*.js': 'karma-typescript',
+      '../../node_modules/jasmine-core/lib/**/*.js': ['babel'],
     },
     reporters: ['spec', 'karma-typescript'],
     hostname,
     browsers: ['CustomWebdriverIO'],
     captureTimeout: 120000,
+    browserNoActivityTimeout: 120000,
     customLaunchers: {
       CustomWebdriverIO: {
         base: 'WebdriverIO',
@@ -142,32 +147,27 @@ export default (config: Config & Record<string, unknown>) => {
       },
     ],
 
+    babelPreprocessor: {
+      options: {
+        presets: [['@babel/preset-env', {modules: false}]],
+      },
+    },
+
     karmaTypescriptConfig: {
       tsconfig: 'tsconfig.json',
+      compilerOptions: {
+        target: 'ES2015',
+        lib: ['ES2015', 'DOM', 'DOM.Iterable'],
+      },
       bundlerOptions: {
         constants: {
           'process.env': {
             FORCE_ALL_TESTS,
           },
         },
-        acornOptions: {
-          ecmaVersion: 11,
-        },
         transforms: [
           require('karma-typescript-es6-transform')({
-            presets: [
-              [
-                '@babel/preset-env',
-                {
-                  targets: {
-                    chrome: '71',
-                    safari: '5.1',
-                    ios: '11',
-                    firefox: '73',
-                  },
-                },
-              ],
-            ],
+            presets: [['@babel/preset-env']],
           }),
         ],
       },

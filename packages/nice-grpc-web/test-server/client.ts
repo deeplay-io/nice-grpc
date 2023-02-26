@@ -29,7 +29,7 @@ export async function startRemoteTestServer(
   const hostname = globalThis.location?.hostname ?? 'localhost';
 
   const ws = new WebSocket(
-    `ws://${hostname}:18283/mock-server?proxy=${proxyType}&protocol=${protocol}`,
+    `ws://${hostname}:3000/mock-server?proxy=${proxyType}&protocol=${protocol}`,
   );
 
   let nextSeq = 0;

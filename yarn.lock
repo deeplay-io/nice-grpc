@@ -7361,6 +7361,11 @@ just-diff@^5.0.1:
   resolved "https://registry.npmjs.org/just-diff/-/just-diff-5.1.1.tgz"
   integrity sha512-u8HXJ3HlNrTzY7zrYYKjNEfBlyjqhdBkoyTVdjtn7p02RJD5NvR8rIClzeGA7t+UYP1/7eAkWNLU0+P3QrEqKQ==
 
+karma-babel-preprocessor@^8.0.2:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/karma-babel-preprocessor/-/karma-babel-preprocessor-8.0.2.tgz#4daff4cfbfcd58c635bf321e135525f608d2d621"
+  integrity sha512-6ZUnHwaK2EyhgxbgeSJW6n6WZUYSEdekHIV/qDUnPgMkVzQBHEvd07d2mTL5AQjV8uTUgH6XslhaPrp+fHWH2A==
+
 karma-jasmine@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/karma-jasmine/-/karma-jasmine-5.1.0.tgz#3af4558a6502fa16856a0f346ec2193d4b884b2f"

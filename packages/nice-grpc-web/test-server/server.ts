@@ -23,7 +23,7 @@ export function startMockServer(
   certPath: string,
   keyPath: string,
 ): WebSocketServer {
-  const wsServer = new WebSocketServer({port: 18283});
+  const wsServer = new WebSocketServer({port: 3000});
 
   wsServer.on('connection', (ws, request) => {
     logger.debug('server connection', request.url);
