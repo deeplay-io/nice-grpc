@@ -91,9 +91,7 @@ jobs:
   nice-grpc-web-browsers:
     name: nice-grpc-web
 
-    runs-on:
-      - self-hosted
-      - kube-common
+    runs-on: ubuntu-latest
 
     timeout-minutes: 15
 
