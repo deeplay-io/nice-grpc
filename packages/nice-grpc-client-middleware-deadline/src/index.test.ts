@@ -6,31 +6,53 @@ import {
   ServerError,
   Status,
 } from 'nice-grpc';
-import {forever, isAbortError} from 'abort-controller-x';
+import {delay, forever} from 'abort-controller-x';
 import {TestService} from '../fixtures/test_grpc_pb';
-import {TestRequest} from '../fixtures/test_pb';
+import {TestRequest, TestResponse} from '../fixtures/test_pb';
 import {deadlineMiddleware} from '.';
 
 function throwUnimplemented(): never {
   throw new ServerError(Status.UNIMPLEMENTED, '');
 }
 
-test('unary', async () => {
+test('successful call', async () => {
   const server = createServer();
-
-  const serverAbortDeferred = defer<void>();
 
   server.add(TestService, {
     async testUnary(request: TestRequest, {signal}) {
-      try {
-        return await forever(signal);
-      } catch (err) {
-        if (isAbortError(err)) {
-          serverAbortDeferred.resolve();
-        }
+      await delay(signal, 100);
 
-        throw err;
-      }
+      return new TestResponse();
+    },
+    testServerStream: throwUnimplemented,
+    testClientStream: throwUnimplemented,
+    testBidiStream: throwUnimplemented,
+  });
+
+  const port = await server.listen('localhost:0');
+
+  const channel = createChannel(`localhost:${port}`);
+  const client = createClientFactory()
+    .use(deadlineMiddleware)
+    .create(TestService, channel);
+
+  const promise = client.testUnary(new TestRequest(), {
+    deadline: new Date(Date.now() + 200),
+  });
+
+  await expect(promise).resolves.toEqual(new TestResponse());
+
+  channel.close();
+
+  await server.shutdown();
+});
+
+test('unary', async () => {
+  const server = createServer();
+
+  server.add(TestService, {
+    async testUnary(request: TestRequest, {signal}) {
+      return await forever(signal);
     },
     testServerStream: throwUnimplemented,
     testClientStream: throwUnimplemented,
@@ -52,8 +74,6 @@ test('unary', async () => {
     `[ClientError: /nice_grpc.test.Test/TestUnary DEADLINE_EXCEEDED: Deadline exceeded]`,
   );
 
-  await serverAbortDeferred.promise;
-
   channel.close();
 
   await server.shutdown();
@@ -62,20 +82,10 @@ test('unary', async () => {
 test('server streaming', async () => {
   const server = createServer();
 
-  const serverAbortDeferred = defer<void>();
-
   server.add(TestService, {
     testUnary: throwUnimplemented,
     async *testServerStream(request: TestRequest, {signal}) {
-      try {
-        return await forever(signal);
-      } catch (err) {
-        if (isAbortError(err)) {
-          serverAbortDeferred.resolve();
-        }
-
-        throw err;
-      }
+      return await forever(signal);
     },
     testClientStream: throwUnimplemented,
     testBidiStream: throwUnimplemented,
@@ -105,8 +115,6 @@ test('server streaming', async () => {
     `[ClientError: /nice_grpc.test.Test/TestServerStream DEADLINE_EXCEEDED: Deadline exceeded]`,
   );
 
-  await serverAbortDeferred.promise;
-
   channel.close();
 
   await server.shutdown();
@@ -115,21 +123,11 @@ test('server streaming', async () => {
 test('client streaming', async () => {
   const server = createServer();
 
-  const serverAbortDeferred = defer<void>();
-
   server.add(TestService, {
     testUnary: throwUnimplemented,
     testServerStream: throwUnimplemented,
     async testClientStream(request: AsyncIterable<TestRequest>, {signal}) {
-      try {
-        return await forever(signal);
-      } catch (err) {
-        if (isAbortError(err)) {
-          serverAbortDeferred.resolve();
-        }
-
-        throw err;
-      }
+      return await forever(signal);
     },
     testBidiStream: throwUnimplemented,
   });
@@ -167,8 +165,6 @@ test('client streaming', async () => {
     `[ClientError: /nice_grpc.test.Test/TestClientStream DEADLINE_EXCEEDED: Deadline exceeded]`,
   );
 
-  await serverAbortDeferred.promise;
-
   await requestIterableFinish.promise;
 
   channel.close();
@@ -179,22 +175,12 @@ test('client streaming', async () => {
 test('bidirectional streaming', async () => {
   const server = createServer();
 
-  const serverAbortDeferred = defer<void>();
-
   server.add(TestService, {
     testUnary: throwUnimplemented,
     testServerStream: throwUnimplemented,
     testClientStream: throwUnimplemented,
     async *testBidiStream(request: AsyncIterable<TestRequest>, {signal}) {
-      try {
-        await forever(signal);
-      } catch (err) {
-        if (isAbortError(err)) {
-          serverAbortDeferred.resolve();
-        }
-
-        throw err;
-      }
+      await forever(signal);
     },
   });
 
@@ -240,8 +226,6 @@ test('bidirectional streaming', async () => {
     `[ClientError: /nice_grpc.test.Test/TestBidiStream DEADLINE_EXCEEDED: Deadline exceeded]`,
   );
 
-  await serverAbortDeferred.promise;
-
   await requestIterableFinish.promise;
 
   channel.close();
@@ -252,19 +236,9 @@ test('bidirectional streaming', async () => {
 test('absolute deadline', async () => {
   const server = createServer();
 
-  const serverAbortDeferred = defer<void>();
-
   server.add(TestService, {
     async testUnary(request: TestRequest, {signal}) {
-      try {
-        return await forever(signal);
-      } catch (err) {
-        if (isAbortError(err)) {
-          serverAbortDeferred.resolve();
-        }
-
-        throw err;
-      }
+      return await forever(signal);
     },
     testServerStream: throwUnimplemented,
     testClientStream: throwUnimplemented,
@@ -285,8 +259,6 @@ test('absolute deadline', async () => {
   await expect(promise).rejects.toMatchInlineSnapshot(
     `[ClientError: /nice_grpc.test.Test/TestUnary DEADLINE_EXCEEDED: Deadline exceeded]`,
   );
-
-  await serverAbortDeferred.promise;
 
   channel.close();
 
