@@ -1,7 +1,6 @@
 # nice-grpc-web [![npm version][npm-image]][npm-url] <!-- omit in toc -->
 
-A Browser gRPC client library that is nice to you. Built on top of
-[`@improbable-eng/grpc-web`](https://www.npmjs.com/package/@improbable-eng/grpc-web).
+A Browser gRPC client library that is nice to you.
 
 - [Features](#features)
 - [Installation](#installation)
@@ -20,6 +19,7 @@ A Browser gRPC client library that is nice to you. Built on top of
     - [Client streaming](#client-streaming)
     - [Middleware](#middleware)
       - [Example: Logging](#example-logging)
+- [Compatibility](#compatibility)
 
 ## Features
 
@@ -28,13 +28,6 @@ A Browser gRPC client library that is nice to you. Built on top of
 - Cancelling calls using
   [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal).
 - Middleware support via concise API that uses Async Generators.
-
-## Prerequisites
-
-Global
-[`AbortController`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)
-is required. A [polyfill](https://www.npmjs.com/package/abort-controller) is
-available for older browsers.
 
 ## Installation
 
@@ -98,19 +91,29 @@ definitions into directory `./compiled_proto`:
 
 ### Preparing the server
 
-Browsers can't talk directly to a gRPC server, so a proxy is required.
+Browsers can't talk directly to a gRPC server and require a specialized proxy.
 
 It is recommended to use [Envoy proxy](https://www.envoyproxy.io/) with
 [`grpc_web` filter](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/grpc_web_filter).
+For an example of how to configure Envoy, see the
+[config that we use in our tests](/packages/nice-grpc-web/test-server/envoy-tls.yaml).
+
+gRPC-Web is
+[supported natively](https://learn.microsoft.com/en-us/aspnet/core/grpc/grpcweb?view=aspnetcore-7.0)
+by ASP.NET Core.
 
 In Kubernetes, use [Contour ingress controller](https://projectcontour.io/),
 which is based on Envoy and has `grpc_web` filter enabled by default.
 
-Note that with Envoy, only unary and server streaming calls are supported. If
-you require client streaming and bidirectional streaming calls, use
-[grpcwebproxy](https://github.com/improbable-eng/grpc-web/tree/master/go/grpcwebproxy)
-and
-[websocket transport](https://github.com/improbable-eng/grpc-web/blob/master/client/grpc-web/docs/transport.md#socket-based-transports).
+Another option is to use
+[improbable-eng grpcwebproxy](https://github.com/improbable-eng/grpc-web/tree/master/go/grpcwebproxy)
+which is not recommended unless you require [Websocket transport](#channels).
+Even if you do, we advise you to use
+[`grpcwebproxy` binaries from our fork](https://github.com/aikoven/grpc-web/releases/tag/v0.0.1)
+which contain a few fixes.
+
+In all cases, it is highly recommended to use `http2`, which in turn requires
+`https`.
 
 ### Client
 
@@ -225,14 +228,18 @@ A channel is constructed from an address and optional transport. The following
 are equivalent:
 
 ```ts
-import {createChannel} from 'nice-grpc-web';
-import {grpc} from '@improbable-eng/grpc-web';
+import {createChannel, FetchTransport} from 'nice-grpc-web';
 
 createChannel('https://example.com:8080');
-createChannel('https://example.com:8080', grpc.CrossBrowserHttpTransport());
+createChannel('https://example.com:8080', FetchTransport());
 ```
 
 If the port is omitted, it defaults to `80` for `http`, and `443` for `https`.
+
+A non-standard `WebsocketTransport` is also available, that only works with
+[improbable-eng grpcwebproxy](https://github.com/improbable-eng/grpc-web/tree/master/go/grpcwebproxy)
+and allows to overcome some limitations (see [Compatibility](#compatibility)).
+It is still recommended to use `FetchTransport` whenever possible.
 
 #### Metadata
 
@@ -251,6 +258,12 @@ const response = await client.exampleUnaryMethod(request, {
   },
 });
 ```
+
+> **Note:** Most `fetch` implementations only receive response header when the
+> first chunk of the response body is received. This means that `onHeader` will
+> be called just before the response (or the first response message in case of
+> server streaming) is received, even if the server sends the header before
+> sending the response.
 
 #### Errors
 
@@ -319,6 +332,9 @@ for await (const response of client.exampleStreamingMethod(request)) {
 ```
 
 #### Client streaming
+
+> **Note:** Most browsers don't support streaming request bodies. See
+> [Compatibility](#compatibility) for more details.
 
 Given a client streaming method:
 
@@ -470,6 +486,58 @@ async function* loggingMiddleware<Request, Response>(
   }
 }
 ```
+
+## Compatibility
+
+This library was tested against:
+
+- Chrome 71+
+- Firefox 73+
+- Safari 12.1+
+- Android 6+
+- iOS 10.3+
+- NodeJS 16+
+
+It might work in older browsers as well.
+
+The library requires
+[`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/fetch) to be
+available globally and support for reading a `ReadableStream` from a `Response`
+body. See [compatibility table](https://caniuse.com/mdn-api_response_body).
+There is no polyfill for this, so this requirement defines the minimum browser
+versions. That said, the [Websocket transport with `grpcwebproxy`](#channels)
+should work in even older browsers.
+
+Global
+[`AbortController`](https://developer.mozilla.org/en-US/docs/Web/API/AbortController)
+is required. A [polyfill](https://www.npmjs.com/package/abort-controller) is
+available.
+
+This library works in NodeJS 18+ out of the box. It can also be used in NodeJS
+16 with the `--experimental-fetch` flag; client streams require global
+`ReadableStream` constructor which can be added manually:
+
+```ts
+global.ReadableStream ??= require('stream/web').ReadableStream;
+```
+
+Most browsers do not support sending streams in `fetch` requests. This means
+that [client streaming](#client-streaming) and bidirectional streaming will not
+work. The only browser that supports client streams is Chrome 105+ (and other
+Chromium-based browsers, see
+[compatibility table](https://caniuse.com/mdn-api_request_request_request_body_readablestream)),
+and only over `http2`, which in turn requires `https`. Client streams work in
+NodeJS native `fetch` implementation as well. Note, however, that `fetch`
+streams are currently
+[half-duplex](https://github.com/whatwg/fetch/issues/1254), which means that any
+response data will be buffered until the request stream is sent until the end.
+This unfortunately makes it impossible to use infinite bidirectional streaming.
+To overcome this limitation, it is recommended to design your API to use only
+unary and server streaming methods. If you still need to use client streams, you
+can use a [Websocket transport with `grpcwebproxy`](#channels).
+
+Browser compatibility is tested with help of
+[BrowserStack](https://www.browserstack.com/).
 
 [npm-image]: https://badge.fury.io/js/nice-grpc-web.svg
 [npm-url]: https://badge.fury.io/js/nice-grpc-web
