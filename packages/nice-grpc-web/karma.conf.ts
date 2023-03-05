@@ -72,6 +72,7 @@ export default (config: Config & Record<string, unknown>) => {
 
     frameworks: ['jasmine', 'karma-typescript', 'mock-server'],
     files: [
+      '../../node_modules/@babel/polyfill/dist/polyfill.js',
       'src/**/*.ts',
       'test-server/client.ts',
       'test-server/metadata.ts',

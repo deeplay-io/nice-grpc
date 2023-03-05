@@ -106,7 +106,7 @@ jobs:
           - {browserName: edge, browserVersion: '109'}
           - {browserName: firefox, browserVersion: '73'}
           - {browserName: firefox, browserVersion: '109'}
-          - {browserName: safari, browserVersion: '5.1'}
+          - {browserName: safari, browserVersion: '12.1'}
           - {browserName: safari, browserVersion: '16.0'}
           - {browserName: android, osVersion: '6.0'}
           - {browserName: android, osVersion: '13.0'}

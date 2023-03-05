@@ -36,6 +36,9 @@
   "author": "Daniel Lytkin <aikoven@deeplay.io>",
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.21.0",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.20.2",
     "@improbable-eng/grpc-web": "^0.15.0",
     "@tsconfig/recommended": "^1.0.1",
     "@types/google-protobuf": "^3.15.2",
