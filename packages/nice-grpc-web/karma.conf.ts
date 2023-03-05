@@ -68,7 +68,8 @@ export default (config: Config & Record<string, unknown>) => {
   }
 
   config.set({
-    // logLevel: config.LOG_DEBUG,
+    // TODO:
+    logLevel: config.LOG_DEBUG,
 
     frameworks: ['jasmine', 'karma-typescript', 'mock-server'],
     files: [
