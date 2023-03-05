@@ -7,6 +7,10 @@ This package enables you to use tools like
 [grpc-health-probe](https://github.com/grpc-ecosystem/grpc-health-probe) with
 your gRPC server.
 
+In Kubernetes,
+[gRPC probes](https://kubernetes.io/blog/2022/05/13/grpc-probes-now-in-beta/)
+are supported natively.
+
 ## Installation
 
     npm install nice-grpc-server-health
