@@ -1,5 +1,7 @@
-// borrowed from IxJS
+// Credit: IxJS authors
 // https://github.com/ReactiveX/IxJS/blob/v4.5.1/src/asynciterable/asyncsink.ts
+// This implementation has a slight change: it silently ignores items pushed
+// after end instead of throwing an error.
 
 const ARRAY_VALUE = 'value';
 const ARRAY_ERROR = 'error';
