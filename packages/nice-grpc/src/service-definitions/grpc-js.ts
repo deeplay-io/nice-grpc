@@ -62,5 +62,10 @@ export function fromGrpcJsServiceDefinition(
 export function isGrpcJsServiceDefinition(
   definition: CompatServiceDefinition,
 ): definition is grpc.ServiceDefinition {
-  return 'prototype' in definition;
+  return Object.values(definition).every(
+    value =>
+      typeof value === 'object' &&
+      value != null &&
+      typeof value.path === 'string',
+  );
 }
