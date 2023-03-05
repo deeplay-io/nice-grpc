@@ -4,6 +4,7 @@
   "description": "A Browser gRPC library that is nice to you",
   "keywords": [
     "grpc",
+    "grpc-web",
     "promise",
     "async-iterable",
     "abort-controller",
