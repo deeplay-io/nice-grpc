@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  common:
+  nice-grpc:
     name: nice-grpc
 
     runs-on: ubuntu-latest
@@ -115,3 +115,16 @@ jobs:
       - run:
           yarn lerna run test:local-browser-headless --scope nice-grpc-web
           --since origin/${{ github.base_ref || github.event.before }}
+
+  # Empty job that finishes after all required jobs finish.
+  # Needed to not have to specify every single required job in branch protection.
+  success:
+    needs:
+      - nice-grpc
+      - nice-grpc-web-nodejs
+      - nice-grpc-web-browser
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo "Done"
