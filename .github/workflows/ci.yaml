@@ -47,8 +47,9 @@ jobs:
       - env:
           NODE_OPTIONS: ${{ matrix.environment.node-options }}
         run:
-          yarn test --ignore nice-grpc-web --since origin/${{ github.base_ref ||
-          github.event.before }}
+          yarn test --ignore nice-grpc-web --since ${{ github.ref ==
+          'refs/heads/master' && github.event.before || format('origin/{0}',
+          github.base_ref) }}
 
   nice-grpc-web-nodejs:
     name: nice-grpc-web NodeJS
@@ -85,8 +86,9 @@ jobs:
       - env:
           NODE_OPTIONS: ${{ matrix.environment.node-options }}
         run:
-          yarn test --scope nice-grpc-web --since origin/${{ github.base_ref ||
-          github.event.before }}
+          yarn test --scope nice-grpc-web --since ${{ github.ref ==
+          'refs/heads/master' && github.event.before || format('origin/{0}',
+          github.base_ref) }}
 
   nice-grpc-web-browser:
     name: nice-grpc-web Browser
@@ -113,8 +115,9 @@ jobs:
       - run: yarn --frozen-lockfile
       - run: yarn build
       - run:
-          yarn lerna run test:local-browser-headless --scope nice-grpc-web
-          --since origin/${{ github.base_ref || github.event.before }}
+          yarn lerna run test:local-browser-headless--scope nice-grpc-web
+          --since ${{ github.ref == 'refs/heads/master' && github.event.before
+          || format('origin/{0}', github.base_ref) }}
 
   # Empty job that finishes after all required jobs finish.
   # Needed to not have to specify every single required job in branch protection.
