@@ -19,7 +19,6 @@ export type MockServerLogger = {
 
 export function startMockServer(
   logger: MockServerLogger,
-  hostname: string,
   certPath: string,
   keyPath: string,
 ): WebSocketServer {
@@ -205,7 +204,9 @@ export function startMockServer(
       const startProxy =
         proxyType === 'envoy' ? startEnvoyProxy : startGrpcWebProxy;
 
-      const proxyPort = await getPort();
+      const proxyPort = await getPort({
+        port: allowedPorts,
+      });
 
       await waitUntilFree(proxyPort);
 
@@ -217,7 +218,8 @@ export function startMockServer(
 
       sendEvent({
         type: 'listening',
-        address: `${protocol}://${hostname}:${proxyPort}`,
+        protocol,
+        port: proxyPort,
       });
 
       await closePromise;
@@ -228,4 +230,11 @@ export function startMockServer(
   });
 
   return wsServer;
+}
+
+// https://www.browserstack.com/question/39572
+const allowedPorts: number[] = [];
+
+for (let i = 9900; i <= 9999; i++) {
+  allowedPorts.push(i);
 }

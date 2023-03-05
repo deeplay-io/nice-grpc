@@ -108,6 +108,7 @@ export default (config: Config & Record<string, unknown>) => {
             },
             'bstack:options': {
               local: true,
+              disableCorsRestrictions: true,
               localIdentifier: randomUUID(),
               idleTimeout: 300,
               // wsLocalSupport: true,
@@ -138,7 +139,6 @@ export default (config: Config & Record<string, unknown>) => {
           function (args, config, logger) {
             startMockServer(
               logger.create('framework.mock-server'),
-              hostname,
               certPath,
               keyPath,
             );

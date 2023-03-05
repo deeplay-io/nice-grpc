@@ -1,7 +1,7 @@
 import {Status} from 'nice-grpc-common';
 
 export type MockServerEvent =
-  | {type: 'listening'; address: string}
+  | {type: 'listening'; protocol: string; port: number}
   | {type: 'call-started'; method: string; metadata: Record<string, string[]>}
   | {type: 'request'; id: string}
   | {type: 'finish'}

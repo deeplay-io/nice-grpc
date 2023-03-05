@@ -249,7 +249,9 @@ export async function startRemoteTestServer(
 
   const address = await new Promise<string>(resolve => {
     onEventOnce('listening', event => {
-      resolve(event.address);
+      const {protocol, port} = event;
+
+      resolve(`${protocol}://${hostname}:${port}`);
     });
   });
 

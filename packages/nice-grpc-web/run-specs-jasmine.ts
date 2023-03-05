@@ -42,12 +42,7 @@ process.on('beforeExit', () => {
   fs.unlinkSync(keyPath);
 });
 
-const server = startMockServer(
-  createLogger(LogLevel.info),
-  hostname,
-  certPath,
-  keyPath,
-);
+const server = startMockServer(createLogger(LogLevel.info), certPath, keyPath);
 
 jasmine.execute().finally(() => {
   server.close();
