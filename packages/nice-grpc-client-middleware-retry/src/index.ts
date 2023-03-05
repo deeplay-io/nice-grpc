@@ -62,7 +62,6 @@ export type RetryOptions = {
 
 const defaultRetryableStatuses: Status[] = [
   Status.UNKNOWN,
-  Status.RESOURCE_EXHAUSTED,
   Status.INTERNAL,
   Status.UNAVAILABLE,
 ];
