@@ -113,5 +113,5 @@ jobs:
       - run: yarn --frozen-lockfile
       - run: yarn build
       - run:
-          yarn lerna run test:local-browser --scope nice-grpc-web --since
-          origin/${{ github.base_ref	|| github.event.before }}
+          yarn lerna run test:local-browser-headless --scope nice-grpc-web
+          --since origin/${{ github.base_ref	|| github.event.before }}

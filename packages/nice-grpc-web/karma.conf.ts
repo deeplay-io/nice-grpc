@@ -68,8 +68,7 @@ export default (config: Config & Record<string, unknown>) => {
   }
 
   config.set({
-    // TODO:
-    logLevel: config.LOG_DEBUG,
+    // logLevel: config.LOG_DEBUG,
 
     frameworks: ['jasmine', 'karma-typescript', 'mock-server'],
     files: [
@@ -105,7 +104,12 @@ export default (config: Config & Record<string, unknown>) => {
             browserName: BROWSER_NAME ?? 'chrome',
             acceptInsecureCerts: true,
             'goog:chromeOptions': {
-              args: ['--allow-insecure-localhost'],
+              args: [
+                '--allow-insecure-localhost',
+                ...(config.headless
+                  ? ['--headless', '--disable-gpu', '--disable-dev-shm-usage']
+                  : []),
+              ],
             },
             'bstack:options': {
               local: true,
