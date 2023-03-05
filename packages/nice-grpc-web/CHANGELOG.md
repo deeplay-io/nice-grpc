@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@2.0.2...nice-grpc-web@3.0.0) (2023-03-05)
+
+### ⚠ BREAKING CHANGES
+
+- `@improbable-eng/grpc-web` transports are replaced by built-in analogs
+
+- feat!(nice-grpc-web): rewrite from scratch, removing
+  `@improbable-eng/grpc-web` dependency (#274)
+  ([82881b7](https://github.com/deeplay-io/nice-grpc/commit/82881b7eebdf143a5ad088289690b6d6581cfb64)),
+  closes [#274](https://github.com/deeplay-io/nice-grpc/issues/274)
+  [#199](https://github.com/deeplay-io/nice-grpc/issues/199)
+  [#226](https://github.com/deeplay-io/nice-grpc/issues/226)
+  [#232](https://github.com/deeplay-io/nice-grpc/issues/232)
+  [#246](https://github.com/deeplay-io/nice-grpc/issues/246)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.0.2](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@2.0.1...nice-grpc-web@2.0.2) (2023-01-18)
 
 ### Bug Fixes

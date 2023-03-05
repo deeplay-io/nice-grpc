@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-retry@2.0.2...nice-grpc-client-middleware-retry@3.0.0) (2023-03-05)
+
+### ⚠ BREAKING CHANGES
+
+- **nice-grpc-client-middleware-retry:** don't retry `RESOURCE_EXHAUSTED`
+
+### Bug Fixes
+
+- **nice-grpc-client-middleware-retry:** update docstring
+  ([7274d10](https://github.com/deeplay-io/nice-grpc/commit/7274d10af8c5bd3911331aec66d30536d4dc0868))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.0.2](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-retry@2.0.1...nice-grpc-client-middleware-retry@2.0.2) (2023-01-18)
 
 **Note:** Version bump only for package nice-grpc-client-middleware-retry

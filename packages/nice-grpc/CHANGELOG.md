@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.0...nice-grpc@2.1.1) (2023-03-05)
+
+### Bug Fixes
+
+- **nice-grpc:** ensure header is sent with first response even if
+  `context.sendHeader()` is not called
+  ([#273](https://github.com/deeplay-io/nice-grpc/issues/273))
+  ([e236796](https://github.com/deeplay-io/nice-grpc/commit/e236796e0797be439bd597d0dc42ec3aac54137f))
+- **nice-grpc:** fix runtime detection of grpc-js service definitions
+  ([#305](https://github.com/deeplay-io/nice-grpc/issues/305))
+  ([083acec](https://github.com/deeplay-io/nice-grpc/commit/083acec990c26b65daddf31511f75440196cefa3)),
+  closes [#291](https://github.com/deeplay-io/nice-grpc/issues/291)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.1.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.0.1...nice-grpc@2.1.0) (2023-01-18)
 
 ### Features
