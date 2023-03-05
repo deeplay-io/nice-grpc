@@ -1,9 +1,12 @@
 admin:
-  access_log_path: /tmp/admin_access.log
   address:
     socket_address:
       address: 127.0.0.1
       port_value: 9901
+  access_log:
+    - name: envoy.access_loggers.stdout
+      typed_config:
+        '@type': type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog
 static_resources:
   listeners:
     - name: listener_0
@@ -31,13 +34,14 @@ static_resources:
                             timeout: 0s
                             max_stream_duration:
                               grpc_timeout_header_max: 0s
-                      cors:
-                        # TODO: deprecated
-                        allow_origin_string_match:
-                          - prefix: '*'
-                        allow_methods: POST, OPTIONS
-                        allow_headers: '*'
-                        expose_headers: '*'
+                      typed_per_filter_config:
+                        envoy.filters.http.cors:
+                          '@type': type.googleapis.com/envoy.extensions.filters.http.cors.v3.CorsPolicy
+                          allow_origin_string_match:
+                            - prefix: '*'
+                          allow_methods: POST, OPTIONS
+                          allow_headers: '*'
+                          expose_headers: '*'
                 http_filters:
                   - name: envoy.filters.http.grpc_web
                     typed_config:
