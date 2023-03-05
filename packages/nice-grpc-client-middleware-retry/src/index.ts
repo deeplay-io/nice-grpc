@@ -46,7 +46,7 @@ export type RetryOptions = {
   /**
    * Array of retryable status codes.
    *
-   * Default is `[UNKNOWN, RESOURCE_EXHAUSTED, INTERNAL, UNAVAILABLE]`.
+   * Default is `[UNKNOWN, INTERNAL, UNAVAILABLE]`.
    */
   retryableStatuses?: Status[];
   /**
