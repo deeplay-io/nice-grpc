@@ -62,7 +62,7 @@ const response = await client.exampleMethod(request, {
   retry: true,
   // defaults to 1
   retryMaxAttempts: 5,
-  // defaults to [UNKNOWN, RESOURCE_EXHAUSTED, INTERNAL, UNAVAILABLE]
+  // defaults to [UNKNOWN, INTERNAL, UNAVAILABLE]
   retryableStatuses: [Status.UNAVAILABLE],
   onRetryableError(error: ClientError, attempt: number, delayMs: number) {
     logger.error(error, `Call failed (${attempt}), retrying in ${delayMs}ms`);
