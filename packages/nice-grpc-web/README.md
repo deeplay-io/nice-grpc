@@ -25,7 +25,7 @@ A Browser gRPC client library that is nice to you.
 
 - Written in TypeScript for TypeScript.
 - Modern API that uses Promises and Async Iterables for streaming.
-- Cancelling calls using
+- Easy cancellation propagation with
   [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal).
 - Middleware support via concise API that uses Async Generators.
 
