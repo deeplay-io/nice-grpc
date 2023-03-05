@@ -1,0 +1,59 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nice-grpc-web-tests
+  namespace: nice-grpc
+spec:
+  commonName: nice-grpc-web-tests.deeplay.io
+  dnsNames:
+    - nice-grpc-web-tests.deeplay.io
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  secretName: nice-grpc-web-tests
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: nice-grpc-web-tests
+  namespace: nice-grpc
+spec:
+  endpoints:
+    - dnsName: nice-grpc-web-tests.deeplay.io
+      recordTTL: 180
+      recordType: A
+      targets:
+        - 127.0.0.1
+---
+# Export kubeconfig using
+# https://github.com/superbrothers/kubectl-view-serviceaccount-kubeconfig-plugin
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nice-grpc-web-tests
+  namespace: nice-grpc
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: nice-grpc-web-tests
+  namespace: nice-grpc
+rules:
+  - apiGroups: ['']
+    resources: [secrets]
+    resourceNames: [nice-grpc-web-tests]
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: nice-grpc-web-tests
+  namespace: nice-grpc
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: nice-grpc-web-tests
+subjects:
+  - kind: ServiceAccount
+    name: nice-grpc-web-tests
+    namespace: nice-grpc

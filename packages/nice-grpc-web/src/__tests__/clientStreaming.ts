@@ -1,385 +1,373 @@
-import getPort = require('get-port');
-import defer = require('defer-promise');
 import {forever, isAbortError} from 'abort-controller-x';
-import {createServer, ServerError} from 'nice-grpc';
-import {createChannel, createClient, Metadata, Status} from '..';
-import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';
-import {TestRequest, TestResponse} from '../../fixtures/grpc-js/test_pb';
-import {Test} from '../../fixtures/grpc-web/test_pb_service';
-import {startGrpcWebProxy} from './utils/grpcwebproxy';
-import {throwUnimplemented} from './utils/throwUnimplemented';
-import {WebsocketTransport} from './utils/WebsocketTransport';
+import {detect} from 'detect-browser';
+import {ServerError} from 'nice-grpc-common';
+import {
+  ClientError,
+  createChannel,
+  createClient,
+  Metadata,
+  Status,
+  FetchTransport,
+  WebsocketTransport,
+} from '..';
+import {
+  TestClient,
+  TestDefinition,
+  TestRequest,
+  TestServiceImplementation,
+} from '../../fixtures/ts-proto/test';
+import {defer} from './utils/defer';
+import {
+  RemoteTestServer,
+  startRemoteTestServer,
+} from '../../test-server/client';
 
-test('basic', async () => {
-  const server = createServer();
+const environment = detect();
 
-  server.add(TestService, {
-    testUnary: throwUnimplemented,
-    testServerStream: throwUnimplemented,
-    async testClientStream(request: AsyncIterable<TestRequest>) {
-      const requests: TestRequest[] = [];
+(
+  [
+    ['grpcwebproxy', 'fetch', 'http'],
+    ['grpcwebproxy', 'fetch', 'https'],
+    ['grpcwebproxy', 'websocket', 'http'],
+    ['envoy', 'fetch', 'http'],
+    ['envoy', 'fetch', 'https'],
+  ] as const
+).forEach(([proxyType, transport, protocol]) => {
+  if (
+    process.env.FORCE_ALL_TESTS !== 'true' &&
+    transport === 'fetch' &&
+    (environment?.name === 'safari' ||
+      environment?.name === 'ios' ||
+      environment?.name === 'firefox' ||
+      (environment?.name === 'chrome' && environment.os === 'Android OS') ||
+      (environment?.name === 'chrome' && parseInt(environment.version) < 105) ||
+      (environment?.name === 'chrome' && protocol === 'http') ||
+      (environment?.name === 'edge-chromium' && protocol === 'http'))
+  ) {
+    // safari does not support constructing readable streams
+    // most browsers do not support sending readable streams
 
-      for await (const req of request) {
-        requests.push(req);
-      }
+    // chromium requires http2 (hence https) to send client streams
 
-      return new TestResponse().setId(
-        requests.map(request => request.getId()).join(' '),
-      );
-    },
-    testBidiStream: throwUnimplemented,
-  });
-
-  const listenPort = await server.listen('0.0.0.0:0');
-
-  const proxyPort = await getPort();
-  const proxy = await startGrpcWebProxy(proxyPort, listenPort);
-
-  const channel = createChannel(
-    `http://localhost:${proxyPort}`,
-    WebsocketTransport(),
-  );
-  const client = createClient(Test, channel);
-
-  async function* createRequest() {
-    yield new TestRequest().setId('test-1');
-    yield new TestRequest().setId('test-2');
+    return;
   }
 
-  const res = await client.testClientStream(createRequest());
+  describe(`clientStreaming / ${proxyType} / ${transport} / ${protocol}`, () => {
+    type Context = {
+      server?: RemoteTestServer;
+      init(
+        mockImplementation: Partial<TestServiceImplementation>,
+      ): Promise<TestClient>;
+    };
 
-  expect(res).toMatchInlineSnapshot(`
-    nice_grpc.test.TestResponse {
-      "id": "test-1 test-2",
-    }
-  `);
+    beforeEach(function (this: Context) {
+      this.init = async impl => {
+        this.server = await startRemoteTestServer(impl, proxyType, protocol);
 
-  proxy.stop();
-  await server.shutdown();
-});
+        return createClient(
+          TestDefinition,
+          createChannel(
+            this.server.address,
+            transport === 'fetch' ? FetchTransport() : WebsocketTransport(),
+          ),
+        );
+      };
+    });
 
-test('metadata', async () => {
-  const server = createServer();
+    afterEach(function (this: Context) {
+      this.server?.shutdown();
+    });
 
-  const responseDeferred = defer<TestResponse>();
+    it('sends multiple requests and receives a response', async function (this: Context) {
+      const client = await this.init({
+        async testClientStream(request, context) {
+          context.header.set('test', 'test-header');
+          context.trailer.set('test', 'test-trailer');
 
-  server.add(TestService, {
-    testUnary: throwUnimplemented,
-    testServerStream: throwUnimplemented,
-    async testClientStream(request: AsyncIterable<TestRequest>, context) {
-      const values = context.metadata.getAll('test');
+          const requests: TestRequest[] = [];
 
-      context.header.set('test', values);
+          for await (const req of request) {
+            requests.push(req);
+          }
 
-      context.sendHeader();
+          return {
+            id: requests.map(request => request.id).join(' '),
+          };
+        },
+      });
 
-      const response = await responseDeferred.promise;
+      let header: Metadata | undefined;
+      let trailer: Metadata | undefined;
 
-      context.trailer.set('test', values);
-
-      return response;
-    },
-    testBidiStream: throwUnimplemented,
-  });
-
-  const listenPort = await server.listen('0.0.0.0:0');
-
-  const proxyPort = await getPort();
-  const proxy = await startGrpcWebProxy(proxyPort, listenPort);
-
-  const channel = createChannel(
-    `http://localhost:${proxyPort}`,
-    WebsocketTransport(),
-  );
-  const client = createClient(Test, channel);
-
-  const headerDeferred = defer<Metadata>();
-  const trailerDeferred = defer<Metadata>();
-
-  const metadata = Metadata();
-  metadata.append('test', 'test-value-1');
-  metadata.append('test', 'test-value-2');
-
-  async function* createRequest() {
-    yield new TestRequest();
-  }
-
-  client.testClientStream(createRequest(), {
-    metadata,
-    onHeader(header) {
-      headerDeferred.resolve(header);
-    },
-    onTrailer(trailer) {
-      trailerDeferred.resolve(trailer);
-    },
-  });
-
-  await expect(headerDeferred.promise.then(header => header.getAll('test')))
-    .resolves.toMatchInlineSnapshot(`
-    [
-      "test-value-1, test-value-2",
-    ]
-  `);
-
-  responseDeferred.resolve(new TestResponse());
-
-  await expect(trailerDeferred.promise.then(header => header.getAll('test')))
-    .resolves.toMatchInlineSnapshot(`
-    [
-      "test-value-1, test-value-2",
-    ]
-  `);
-
-  proxy.stop();
-  await server.shutdown();
-});
-
-test('error', async () => {
-  const server = createServer();
-
-  server.add(TestService, {
-    testUnary: throwUnimplemented,
-    testServerStream: throwUnimplemented,
-    async testClientStream(request: AsyncIterable<TestRequest>, context) {
-      context.trailer.set('test', ['test-value-1', 'test-value-2']);
-
-      for await (const item of request) {
-        throw new ServerError(Status.NOT_FOUND, item.getId());
+      async function* createRequest() {
+        yield {id: 'test-1'};
+        yield {id: 'test-2'};
       }
 
-      return new TestResponse();
-    },
-    testBidiStream: throwUnimplemented,
-  });
+      expect(
+        await client.testClientStream(createRequest(), {
+          onHeader(header_) {
+            header = header_;
+          },
+          onTrailer(trailer_) {
+            trailer = trailer_;
+          },
+        }),
+      ).toEqual({
+        id: 'test-1 test-2',
+      });
 
-  const listenPort = await server.listen('0.0.0.0:0');
+      expect(header?.get('test')).toEqual('test-header');
+      expect(trailer?.get('test')).toEqual('test-trailer');
+    });
 
-  const proxyPort = await getPort();
-  const proxy = await startGrpcWebProxy(proxyPort, listenPort);
+    it('receives an error', async function (this: Context) {
+      const client = await this.init({
+        async testClientStream(request, context) {
+          context.header.set('test', 'test-header');
+          context.trailer.set('test', 'test-trailer');
 
-  const channel = createChannel(
-    `http://localhost:${proxyPort}`,
-    WebsocketTransport(),
-  );
-  const client = createClient(Test, channel);
+          for await (const item of request) {
+            throw new ServerError(Status.NOT_FOUND, item.id);
+          }
 
-  let trailer: Metadata | undefined;
+          return {};
+        },
+      });
 
-  const requestIterableFinish = defer<void>();
+      let header: Metadata | undefined;
+      let trailer: Metadata | undefined;
+      let error: unknown;
 
-  async function* createRequest() {
-    let i = 0;
-
-    try {
-      while (true) {
-        yield new TestRequest().setId(`test-${i++}`);
-        await new Promise(resolve => setTimeout(resolve, 50));
+      async function* createRequest() {
+        yield {id: 'test-1'};
+        yield {id: 'test-2'};
       }
-    } catch (err) {
-      requestIterableFinish.reject(err);
-      throw err;
-    } finally {
-      requestIterableFinish.resolve();
-    }
-  }
-
-  await expect(
-    client.testClientStream(createRequest(), {
-      onTrailer(metadata) {
-        trailer = metadata;
-      },
-    }),
-  ).rejects.toMatchInlineSnapshot(
-    `[ClientError: /nice_grpc.test.Test/TestClientStream NOT_FOUND: test-0]`,
-  );
-
-  await requestIterableFinish.promise;
-
-  expect(trailer?.getAll('test')).toMatchInlineSnapshot(`
-    [
-      "test-value-1, test-value-2",
-    ]
-  `);
-
-  proxy.stop();
-  await server.shutdown();
-});
-
-test('cancel', async () => {
-  const server = createServer();
-
-  const serverRequestStartDeferred = defer<void>();
-  const serverAbortDeferred = defer<void>();
-
-  server.add(TestService, {
-    testUnary: throwUnimplemented,
-    testServerStream: throwUnimplemented,
-    async testClientStream(request: AsyncIterable<TestRequest>, {signal}) {
-      serverRequestStartDeferred.resolve();
 
       try {
-        return await forever(signal);
+        await client.testClientStream(createRequest(), {
+          onHeader(header_) {
+            header = header_;
+          },
+          onTrailer(trailer_) {
+            trailer = trailer_;
+          },
+        });
       } catch (err) {
-        if (isAbortError(err)) {
-          serverAbortDeferred.resolve();
+        error = err;
+      }
+
+      expect(error).toEqual(
+        new ClientError(
+          '/nice_grpc.test.Test/TestClientStream',
+          Status.NOT_FOUND,
+          'test-1',
+        ),
+      );
+
+      expect(header?.get('test')).toEqual('test-header');
+      expect(trailer?.get('test')).toEqual('test-trailer');
+    });
+
+    if (process.env.FORCE_ALL_TESTS !== 'true' && transport === 'fetch') {
+      // full duplex is not supported by fetch
+    } else {
+      it('receives a response before finishing sending request', async function (this: Context) {
+        const client = await this.init({
+          async testClientStream() {
+            return {id: 'test'};
+          },
+        });
+
+        const requestIterableFinish = defer<void>();
+
+        async function* createRequest() {
+          await requestIterableFinish.promise;
         }
 
-        throw err;
-      }
-    },
-    testBidiStream: throwUnimplemented,
-  });
+        expect(await client.testClientStream(createRequest())).toEqual({
+          id: 'test',
+        });
 
-  const listenPort = await server.listen('0.0.0.0:0');
+        requestIterableFinish.resolve();
+      });
 
-  const proxyPort = await getPort();
-  const proxy = await startGrpcWebProxy(proxyPort, listenPort);
+      it('stops reading request iterable on response', async function (this: Context) {
+        const client = await this.init({
+          async testClientStream() {
+            return {id: 'test'};
+          },
+        });
 
-  const channel = createChannel(
-    `http://localhost:${proxyPort}`,
-    WebsocketTransport(),
-  );
-  const client = createClient(Test, channel);
+        const responseFinish = defer<void>();
 
-  const abortController = new AbortController();
+        let continuedReading = false;
 
-  const requestIterableFinish = defer<void>();
+        async function* createRequest() {
+          await responseFinish.promise;
 
-  async function* createRequest() {
-    let i = 0;
+          yield {id: 'test'};
 
-    try {
-      while (true) {
-        yield new TestRequest().setId(`test-${i++}`);
-        await new Promise(resolve => setTimeout(resolve, 50));
-      }
-    } catch (err) {
-      requestIterableFinish.reject(err);
-      throw err;
-    } finally {
-      requestIterableFinish.resolve();
+          continuedReading = true;
+        }
+
+        expect(await client.testClientStream(createRequest())).toEqual({
+          id: 'test',
+        });
+
+        responseFinish.resolve();
+
+        expect(continuedReading).toEqual(false);
+      });
     }
-  }
 
-  const promise = client.testClientStream(createRequest(), {
-    signal: abortController.signal,
-  });
+    it('cancels a call', async function (this: Context) {
+      const serverRequestStartDeferred = defer<void>();
+      const serverAbortDeferred = defer<void>();
 
-  await serverRequestStartDeferred.promise;
+      const client = await this.init({
+        async testClientStream(request, {signal}) {
+          serverRequestStartDeferred.resolve();
 
-  abortController.abort();
+          try {
+            return await forever(signal);
+          } catch (err) {
+            if (isAbortError(err)) {
+              serverAbortDeferred.resolve();
+            }
 
-  await expect(promise).rejects.toMatchInlineSnapshot(
-    `[AbortError: The operation has been aborted]`,
-  );
+            throw err;
+          }
+        },
+      });
 
-  await serverAbortDeferred.promise;
+      const abortController = new AbortController();
 
-  await requestIterableFinish.promise;
+      const requestIterableFinish = defer<void>();
 
-  proxy.stop();
-  await server.shutdown();
-});
+      async function* createRequest() {
+        // fetch may not send request until the first request is sent
+        yield {id: 'test'};
 
-test('early response', async () => {
-  const server = createServer();
-
-  server.add(TestService, {
-    testUnary: throwUnimplemented,
-    testServerStream: throwUnimplemented,
-    async testClientStream(request: AsyncIterable<TestRequest>) {
-      for await (const item of request) {
-        return new TestResponse().setId(item.getId());
+        await requestIterableFinish.promise;
       }
 
-      return new TestResponse();
-    },
-    testBidiStream: throwUnimplemented,
-  });
+      await Promise.all([
+        Promise.resolve().then(async () => {
+          let error: unknown;
 
-  const listenPort = await server.listen('0.0.0.0:0');
+          try {
+            await client.testClientStream(createRequest(), {
+              signal: abortController.signal,
+            });
+          } catch (err) {
+            error = err;
+          }
 
-  const proxyPort = await getPort();
-  const proxy = await startGrpcWebProxy(proxyPort, listenPort);
+          expect(isAbortError(error))
+            .withContext(`Expected AbortError, got ${error}`)
+            .toBe(true);
+          requestIterableFinish.resolve();
 
-  const channel = createChannel(
-    `http://localhost:${proxyPort}`,
-    WebsocketTransport(),
-  );
-  const client = createClient(Test, channel);
+          await serverAbortDeferred.promise;
+        }),
+        Promise.resolve().then(async () => {
+          await serverRequestStartDeferred.promise;
 
-  const requestIterableFinish = defer<void>();
+          abortController.abort();
+        }),
+      ]);
+    });
 
-  async function* createRequest() {
-    let i = 0;
+    it('handles request iterable error', async function (this: Context) {
+      const serverRequestStartDeferred = defer<void>();
 
-    try {
-      while (true) {
-        yield new TestRequest().setId(`test-${i++}`);
-        await new Promise(resolve => setTimeout(resolve, 50));
+      const client = await this.init({
+        async testClientStream(request) {
+          for await (const _ of request) {
+            serverRequestStartDeferred.resolve();
+          }
+          return {};
+        },
+      });
+
+      async function* createRequest() {
+        yield {id: 'test-1'};
+
+        await serverRequestStartDeferred.promise;
+
+        throw new Error('test');
       }
-    } catch (err) {
-      requestIterableFinish.reject(err);
-      throw err;
-    } finally {
-      requestIterableFinish.resolve();
+
+      let error: unknown;
+
+      try {
+        await client.testClientStream(createRequest());
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error).toEqual(new Error('test'));
+    });
+
+    if (
+      process.env.FORCE_ALL_TESTS !== 'true' &&
+      (environment?.name === 'chrome' ||
+        environment?.name === 'safari' ||
+        environment?.name === 'ios' ||
+        environment?.name === 'edge-chromium' ||
+        environment?.name === 'firefox') &&
+      transport === 'fetch'
+    ) {
+      // most browsers only receive headers after the first message is sent
+    } else {
+      it('receives early header', async function (this: Context) {
+        const endDeferred = defer();
+
+        const client = await this.init({
+          async testClientStream(request, context) {
+            context.header.set('test', 'test-value');
+            context.sendHeader();
+
+            await endDeferred.promise;
+
+            const requests: TestRequest[] = [];
+
+            for await (const req of request) {
+              requests.push(req);
+            }
+
+            return {
+              id: requests.map(request => request.id).join(' '),
+            };
+          },
+        });
+
+        const headerDeferred = defer<Metadata>();
+
+        async function* createRequest() {
+          yield {id: 'test-1'};
+          yield {id: 'test-2'};
+        }
+
+        await Promise.all([
+          Promise.resolve().then(async () => {
+            expect((await headerDeferred.promise).get('test')).toEqual(
+              'test-value',
+            );
+            endDeferred.resolve();
+          }),
+          Promise.resolve().then(async () => {
+            expect(
+              await client.testClientStream(createRequest(), {
+                onHeader(header) {
+                  headerDeferred.resolve(header);
+                },
+              }),
+            ).toEqual({id: 'test-1 test-2'});
+          }),
+        ]);
+      });
     }
-  }
-
-  const response = await client.testClientStream(createRequest());
-
-  expect(response).toMatchInlineSnapshot(`
-    nice_grpc.test.TestResponse {
-      "id": "test-0",
-    }
-  `);
-
-  await requestIterableFinish.promise;
-
-  proxy.stop();
-  await server.shutdown();
-});
-
-test('request iterable error', async () => {
-  const server = createServer();
-
-  const serverRequestStartDeferred = defer<void>();
-
-  server.add(TestService, {
-    testUnary: throwUnimplemented,
-    testServerStream: throwUnimplemented,
-    async testClientStream(request: AsyncIterable<TestRequest>) {
-      for await (const _ of request) {
-        serverRequestStartDeferred.resolve();
-      }
-      return new TestResponse();
-    },
-    testBidiStream: throwUnimplemented,
   });
-
-  const listenPort = await server.listen('0.0.0.0:0');
-
-  const proxyPort = await getPort();
-  const proxy = await startGrpcWebProxy(proxyPort, listenPort);
-
-  const channel = createChannel(
-    `http://localhost:${proxyPort}`,
-    WebsocketTransport(),
-  );
-  const client = createClient(Test, channel);
-
-  async function* createRequest() {
-    yield new TestRequest().setId('test-1');
-
-    await serverRequestStartDeferred.promise;
-
-    throw new Error('test');
-  }
-
-  await expect(
-    client.testClientStream(createRequest()),
-  ).rejects.toMatchInlineSnapshot(`[Error: test]`);
-
-  proxy.stop();
-  await server.shutdown();
 });

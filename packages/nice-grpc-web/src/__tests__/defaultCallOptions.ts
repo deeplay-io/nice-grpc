@@ -1,84 +1,64 @@
-import getPort = require('get-port');
-import {createServer, Server} from 'nice-grpc';
-import {Channel, createChannel, createClient, Metadata} from '..';
-import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';
-import {TestRequest, TestResponse} from '../../fixtures/grpc-js/test_pb';
-import {Test} from '../../fixtures/grpc-web/test_pb_service';
-import {startGrpcWebProxy} from './utils/grpcwebproxy';
-import {throwUnimplemented} from './utils/throwUnimplemented';
-import {WebsocketTransport} from './utils/WebsocketTransport';
+import {
+  Channel,
+  createChannel,
+  createClient,
+  Metadata,
+  WebsocketTransport,
+} from '..';
+import {TestDefinition} from '../../fixtures/ts-proto/test';
+import {
+  RemoteTestServer,
+  startRemoteTestServer,
+} from '../../test-server/client';
 
-let server: Server;
-let proxy: {stop(): void};
-let channel: Channel;
+describe('defaultCallOptions', () => {
+  let server: RemoteTestServer;
+  let channel: Channel;
 
-beforeEach(async () => {
-  server = createServer();
+  beforeEach(async () => {
+    server = await startRemoteTestServer({
+      async testUnary(request, context) {
+        const metadataValue = context.metadata.get('test') ?? '';
+        return {id: metadataValue};
+      },
+    });
 
-  server.add(TestService, {
-    async testUnary(request: TestRequest, context) {
-      const metadataValue = context.metadata.get('test') ?? '';
-      return new TestResponse().setId(metadataValue);
-    },
-    testServerStream: throwUnimplemented,
-    testClientStream: throwUnimplemented,
-    testBidiStream: throwUnimplemented,
+    channel = createChannel(server.address, WebsocketTransport());
   });
 
-  const listenPort = await server.listen('0.0.0.0:0');
-
-  const proxyPort = await getPort();
-  proxy = await startGrpcWebProxy(proxyPort, listenPort);
-
-  channel = createChannel(
-    `http://localhost:${proxyPort}`,
-    WebsocketTransport(),
-  );
-});
-
-afterEach(async () => {
-  proxy.stop();
-  await server.shutdown();
-});
-
-test('all methods', async () => {
-  const metadata = Metadata();
-  metadata.set('test', 'test-value');
-
-  const client = createClient(Test, channel, {
-    '*': {
-      metadata,
-    },
+  afterEach(async () => {
+    server.shutdown();
   });
 
-  await expect(client.testUnary(new TestRequest())).resolves
-    .toMatchInlineSnapshot(`
-          nice_grpc.test.TestResponse {
-            "id": "test-value",
-          }
-        `);
-});
+  it('all methods', async () => {
+    const metadata = Metadata();
+    metadata.set('test', 'test-value');
 
-test('particular method', async () => {
-  const defaultMetadata = Metadata();
-  defaultMetadata.set('test', 'test-default-value');
+    const client = createClient(TestDefinition, channel, {
+      '*': {
+        metadata,
+      },
+    });
 
-  const metadata = Metadata();
-  metadata.set('test', 'test-value');
-
-  const client = createClient(Test, channel, {
-    '*': {
-      metadata: defaultMetadata,
-    },
-    testUnary: {
-      metadata,
-    },
+    expect(await client.testUnary({})).toEqual({id: 'test-value'});
   });
 
-  await expect(client.testUnary(new TestRequest())).resolves
-    .toMatchInlineSnapshot(`
-          nice_grpc.test.TestResponse {
-            "id": "test-value",
-          }
-        `);
+  it('particular method', async () => {
+    const defaultMetadata = Metadata();
+    defaultMetadata.set('test', 'test-default-value');
+
+    const metadata = Metadata();
+    metadata.set('test', 'test-value');
+
+    const client = createClient(TestDefinition, channel, {
+      '*': {
+        metadata: defaultMetadata,
+      },
+      testUnary: {
+        metadata,
+      },
+    });
+
+    expect(await client.testUnary({})).toEqual({id: 'test-value'});
+  });
 });

@@ -1,7 +1,6 @@
 import fs from 'fs/promises';
 import * as path from 'path';
 import {env} from 'string-env-interpolation';
-import {waitUntilUsed} from 'tcp-port-used';
 import {GenericContainer} from 'testcontainers';
 
 let nextId = 0;
@@ -9,15 +8,27 @@ let nextId = 0;
 export async function startEnvoyProxy(
   listenPort: number,
   backendPort: number,
+  tls?: {
+    certPath: string;
+    keyPath: string;
+  },
 ): Promise<{stop(): void}> {
   const internalListenPort = 8080;
+  const backendHost = 'host.docker.internal';
+  const internalCertPath = '/etc/certs/tls.crt';
+  const internalKeyPath = '/etc/certs/tls.key';
 
   const config = env(
-    await fs.readFile(path.join(__dirname, 'envoy.yaml'), 'utf8'),
+    await fs.readFile(
+      path.join(__dirname, tls ? 'envoy-tls.yaml' : 'envoy.yaml'),
+      'utf8',
+    ),
     {
       LISTEN_PORT: internalListenPort.toString(),
-      BACKEND_HOST: 'host.docker.internal',
+      BACKEND_HOST: backendHost,
       BACKEND_PORT: backendPort.toString(),
+      TLS_CERT_PATH: internalCertPath,
+      TLS_KEY_PATH: internalKeyPath,
     },
   );
 
@@ -29,6 +40,20 @@ export async function startEnvoyProxy(
       '--base-id',
       (nextId++).toString(),
     ])
+    .withBindMounts(
+      tls
+        ? [
+            {
+              source: tls.certPath,
+              target: internalCertPath,
+            },
+            {
+              source: tls.keyPath,
+              target: internalKeyPath,
+            },
+          ]
+        : [],
+    )
     .withExposedPorts({
       container: internalListenPort,
       host: listenPort,
@@ -41,7 +66,11 @@ export async function startEnvoyProxy(
     ])
     .start();
 
-  await waitUntilUsed(listenPort, 200, 3_000);
+  // const logStream = await container.logs();
+
+  // logStream.on('data', data => {
+  //   console.log('envoy:', data.toString());
+  // });
 
   return {
     stop() {

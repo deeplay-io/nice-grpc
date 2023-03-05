@@ -9,14 +9,15 @@ on:
       - master
 
 jobs:
-  build:
-    name: Test and Build
+  nice-grpc:
+    name: nice-grpc
 
     runs-on: ubuntu-latest
 
     timeout-minutes: 5
 
     strategy:
+      fail-fast: false
       matrix:
         environment:
           - node-version: '14.15'
@@ -28,6 +29,46 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Use Node.js ${{ matrix.environment.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.environment.node-version }}
+      - name: Restore Cache
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key:
+            modules-${{ runner.os }}-${{ matrix.environment.node-version }}-${{
+            hashFiles('yarn.lock') }}
+      - run: yarn --frozen-lockfile --ignore-engines
+      - run: yarn build --ignore nice-grpc-web
+      - env:
+          NODE_OPTIONS: ${{ matrix.environment.node-options }}
+        run:
+          yarn test --ignore nice-grpc-web --since origin/${{ github.base_ref ||
+          github.event.before }}
+
+  nice-grpc-web-nodejs:
+    name: nice-grpc-web NodeJS
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 5
+
+    strategy:
+      fail-fast: false
+      matrix:
+        environment:
+          - node-version: 16.x
+            node-options: --experimental-fetch
+          - node-version: 18.x
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Use Node.js ${{ matrix.environment.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -43,4 +84,47 @@ jobs:
       - run: yarn build
       - env:
           NODE_OPTIONS: ${{ matrix.environment.node-options }}
-        run: yarn test
+        run:
+          yarn test --scope nice-grpc-web --since origin/${{ github.base_ref ||
+          github.event.before }}
+
+  nice-grpc-web-browser:
+    name: nice-grpc-web Browser
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@v1
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - name: Restore Cache
+        uses: actions/cache@v3
+        with:
+          path: '**/node_modules'
+          key: modules-${{ runner.os }}-18.x-${{ hashFiles('yarn.lock') }}
+      - run: yarn --frozen-lockfile
+      - run: yarn build
+      - run:
+          yarn lerna run test:local-browser-headless --scope nice-grpc-web
+          --since origin/${{ github.base_ref || github.event.before }}
+
+  # Empty job that finishes after all required jobs finish.
+  # Needed to not have to specify every single required job in branch protection.
+  success:
+    needs:
+      - nice-grpc
+      - nice-grpc-web-nodejs
+      - nice-grpc-web-browser
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo "Done"

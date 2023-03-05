@@ -1,5 +1,7 @@
-// borrowed from IxJS
+// Credit: IxJS authors
 // https://github.com/ReactiveX/IxJS/blob/v4.5.1/src/asynciterable/asyncsink.ts
+// This implementation has a slight change: it silently ignores items pushed
+// after end instead of throwing an error.
 
 const ARRAY_VALUE = 'value';
 const ARRAY_ERROR = 'error';
@@ -15,6 +17,7 @@ interface AsyncResolver<T> {
   reject: (reason: any) => void;
 }
 
+/** @internal */
 export class AsyncSink<TSource> implements AsyncIterableIterator<TSource> {
   private _ended: boolean;
   private _values: AsyncSinkItem<TSource>[];
@@ -40,7 +43,7 @@ export class AsyncSink<TSource> implements AsyncIterableIterator<TSource> {
 
   private _push(item: AsyncSinkItem<TSource>) {
     if (this._ended) {
-      throw new Error('AsyncSink already ended');
+      return;
     }
 
     if (this._resolvers.length > 0) {

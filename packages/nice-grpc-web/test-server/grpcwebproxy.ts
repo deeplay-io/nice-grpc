@@ -5,8 +5,6 @@ import {waitUntilUsed} from 'tcp-port-used';
 const executablePath = path.join(
   __dirname,
   '..',
-  '..',
-  '..',
   'grpcwebproxy',
   process.platform === 'win32' ? `grpcwebproxy.exe` : 'grpcwebproxy',
 );
@@ -14,13 +12,24 @@ const executablePath = path.join(
 export async function startGrpcWebProxy(
   listenPort: number,
   backendPort: number,
+  tls?: {
+    certPath: string;
+    keyPath: string;
+  },
 ): Promise<{stop(): void}> {
   const childProcess = spawn(
     executablePath,
     [
+      ...(tls
+        ? [
+            `--server_http_tls_port=${listenPort}`,
+            `--server_tls_cert_file=${tls.certPath}`,
+            `--server_tls_key_file=${tls.keyPath}`,
+            `--run_http_server=false`,
+          ]
+        : [`--server_http_debug_port=${listenPort}`, `--run_tls_server=false`]),
+
       `--server_bind_address=0.0.0.0`,
-      `--server_http_debug_port=${listenPort}`,
-      `--run_tls_server=false`,
       `--backend_addr=localhost:${backendPort}`,
       `--use_websockets=true`,
       `--allow_all_origins=true`,

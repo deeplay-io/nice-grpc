@@ -1,23 +1,57 @@
-import {grpc} from '@improbable-eng/grpc-web';
 import {CompatServiceDefinition, MethodDefinition, ServiceDefinition} from '.';
 
+export interface GrpcWebServiceDefinition {
+  serviceName: string;
+}
+
+export interface GrpcWebMethodDefinition<
+  TRequest extends ProtobufMessage,
+  TResponse extends ProtobufMessage,
+> {
+  methodName: string;
+  service: GrpcWebServiceDefinition;
+  requestStream: boolean;
+  responseStream: boolean;
+  requestType: ProtobufMessageClass<TRequest>;
+  responseType: ProtobufMessageClass<TResponse>;
+}
+
+export interface GrpcWebUnaryMethodDefinition<
+  TRequest extends ProtobufMessage,
+  TResponse extends ProtobufMessage,
+> extends GrpcWebMethodDefinition<TRequest, TResponse> {
+  requestStream: false;
+  responseStream: false;
+}
+
+export interface ProtobufMessageClass<T extends ProtobufMessage> {
+  new (): T;
+  deserializeBinary(bytes: Uint8Array): T;
+}
+
+export interface ProtobufMessage {
+  toObject(): {};
+  serializeBinary(): Uint8Array;
+}
+
 export type FromGrpcWebServiceDefinition<
-  Service extends grpc.ServiceDefinition,
+  Service extends GrpcWebServiceDefinition,
 > = {
   [M in GrpcWebServiceMethodKeys<Service> as Uncapitalize<M>]: FromGrpcWebMethodDefinition<
     Service[M]
   >;
 };
 
-export type GrpcWebServiceMethodKeys<Service extends grpc.ServiceDefinition> = {
-  [K in keyof Service]: Service[K] extends grpc.MethodDefinition<any, any>
-    ? K
-    : never;
-}[keyof Service] &
-  string;
+export type GrpcWebServiceMethodKeys<Service extends GrpcWebServiceDefinition> =
+  {
+    [K in keyof Service]: Service[K] extends GrpcWebMethodDefinition<any, any>
+      ? K
+      : never;
+  }[keyof Service] &
+    string;
 
 export type FromGrpcWebMethodDefinition<Method> =
-  Method extends grpc.MethodDefinition<infer Request, infer Response>
+  Method extends GrpcWebMethodDefinition<infer Request, infer Response>
     ? MethodDefinition<
         Request,
         Request,
@@ -29,7 +63,7 @@ export type FromGrpcWebMethodDefinition<Method> =
     : never;
 
 export function fromGrpcWebServiceDefinition(
-  definition: grpc.ServiceDefinition,
+  definition: GrpcWebServiceDefinition,
 ): ServiceDefinition {
   const result: ServiceDefinition = {};
 
@@ -38,18 +72,16 @@ export function fromGrpcWebServiceDefinition(
       continue;
     }
 
-    const method = value as grpc.MethodDefinition<any, any>;
+    const method = value as GrpcWebMethodDefinition<any, any>;
 
     result[uncapitalize(key)] = {
       path: `/${definition.serviceName}/${key}`,
       requestStream: method.requestStream,
       responseStream: method.responseStream,
       requestDeserialize: method.requestType.deserializeBinary,
-      requestSerialize: (value: grpc.ProtobufMessage) =>
-        value.serializeBinary(),
+      requestSerialize: (value: ProtobufMessage) => value.serializeBinary(),
       responseDeserialize: method.responseType.deserializeBinary,
-      responseSerialize: (value: grpc.ProtobufMessage) =>
-        value.serializeBinary(),
+      responseSerialize: (value: ProtobufMessage) => value.serializeBinary(),
       options: {},
     };
   }
@@ -59,7 +91,7 @@ export function fromGrpcWebServiceDefinition(
 
 export function isGrpcWebServiceDefinition(
   definition: CompatServiceDefinition,
-): definition is grpc.ServiceDefinition {
+): definition is GrpcWebServiceDefinition {
   return 'prototype' in definition;
 }
 

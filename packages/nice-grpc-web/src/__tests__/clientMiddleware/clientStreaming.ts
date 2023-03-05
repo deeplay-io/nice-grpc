@@ -1,183 +1,166 @@
-import getPort = require('get-port');
-import {createServer, ServerError} from 'nice-grpc';
-import {createChannel, createClientFactory, Metadata, Status} from '../..';
-import {TestService} from '../../../fixtures/grpc-js/test_grpc_pb';
-import {TestRequest, TestResponse} from '../../../fixtures/grpc-js/test_pb';
-import {Test} from '../../../fixtures/grpc-web/test_pb_service';
-import {startGrpcWebProxy} from '../utils/grpcwebproxy';
+import {ServerError} from 'nice-grpc-common';
+import {
+  ClientError,
+  createChannel,
+  createClientFactory,
+  Metadata,
+  Status,
+  WebsocketTransport,
+} from '../..';
+import {TestDefinition, TestRequest} from '../../../fixtures/ts-proto/test';
+import {startRemoteTestServer} from '../../../test-server/client';
 import {createTestClientMiddleware} from '../utils/testClientMiddleware';
-import {throwUnimplemented} from '../utils/throwUnimplemented';
-import {WebsocketTransport} from '../utils/WebsocketTransport';
 
-test('basic', async () => {
-  const actions: any[] = [];
-  let metadataValue: string | undefined;
+describe('clientMiddleware / clientStreaming', () => {
+  it('passes a successful call through middleware', async () => {
+    const actions: any[] = [];
+    let metadataValue: string | undefined;
 
-  const server = createServer();
+    const server = await startRemoteTestServer({
+      async testClientStream(request, context) {
+        metadataValue = context.metadata.get('test');
 
-  server.add(TestService, {
-    testUnary: throwUnimplemented,
-    testServerStream: throwUnimplemented,
-    async testClientStream(request: AsyncIterable<TestRequest>, context) {
-      metadataValue = context.metadata.get('test');
+        const requests: TestRequest[] = [];
 
-      const requests: TestRequest[] = [];
+        for await (const req of request) {
+          requests.push(req);
+        }
 
-      for await (const req of request) {
-        requests.push(req);
-      }
+        return {
+          id: requests.map(request => request.id).join(' '),
+        };
+      },
+    });
 
-      return new TestResponse().setId(
-        requests.map(request => request.getId()).join(' '),
-      );
-    },
-    testBidiStream: throwUnimplemented,
+    const channel = createChannel(server.address, WebsocketTransport());
+
+    const client = createClientFactory()
+      .use(createTestClientMiddleware('testOption', actions))
+      .create(TestDefinition, channel);
+
+    const metadata = Metadata();
+    metadata.set('test', 'test-metadata-value');
+
+    async function* createRequest() {
+      yield {id: 'test-1'};
+      yield {id: 'test-2'};
+    }
+
+    expect(
+      await client.testClientStream(createRequest(), {
+        testOption: 'test-value',
+        metadata,
+      }),
+    ).toEqual({
+      id: 'test-1 test-2',
+    });
+
+    expect(metadataValue).toEqual('test-metadata-value');
+
+    expect(actions).toEqual([
+      {
+        options: {
+          testOption: 'test-value',
+        },
+        requestStream: true,
+        responseStream: false,
+        type: 'start',
+      },
+      {
+        request: {
+          id: 'test-1',
+        },
+        type: 'request',
+      },
+      {
+        request: {
+          id: 'test-2',
+        },
+        type: 'request',
+      },
+      {
+        response: {
+          id: 'test-1 test-2',
+        },
+        type: 'response',
+      },
+    ]);
+
+    server.shutdown();
   });
 
-  const listenPort = await server.listen('0.0.0.0:0');
+  it('passes an erroneous call through middleware', async () => {
+    const actions: any[] = [];
 
-  const proxyPort = await getPort();
-  const proxy = await startGrpcWebProxy(proxyPort, listenPort);
+    const server = await startRemoteTestServer({
+      async testClientStream(request) {
+        for await (const item of request) {
+          throw new ServerError(Status.NOT_FOUND, item.id);
+        }
 
-  const channel = createChannel(
-    `http://localhost:${proxyPort}`,
-    WebsocketTransport(),
-  );
+        return {};
+      },
+    });
 
-  const client = createClientFactory()
-    .use(createTestClientMiddleware('testOption', actions))
-    .create(Test, channel);
+    const channel = createChannel(server.address, WebsocketTransport());
 
-  const metadata = Metadata();
-  metadata.set('test', 'test-metadata-value');
+    const client = createClientFactory()
+      .use(createTestClientMiddleware('testOption', actions))
+      .create(TestDefinition, channel);
 
-  async function* createRequest() {
-    yield new TestRequest().setId('test-1');
-    yield new TestRequest().setId('test-2');
-  }
+    async function* createRequest() {
+      yield {id: 'test-1'};
+      yield {id: 'test-2'};
+    }
 
-  await expect(
-    client.testClientStream(createRequest(), {
-      testOption: 'test-value',
-      metadata,
-    }),
-  ).resolves.toMatchInlineSnapshot(`
-            nice_grpc.test.TestResponse {
-              "id": "test-1 test-2",
-            }
-          `);
+    expect(
+      await client
+        .testClientStream(createRequest(), {
+          testOption: 'test-value',
+        })
+        .then(
+          () => {},
+          err => err,
+        ),
+    ).toEqual(
+      new ClientError(
+        '/nice_grpc.test.Test/TestClientStream',
+        Status.NOT_FOUND,
+        'test-1',
+      ),
+    );
 
-  expect(metadataValue).toMatchInlineSnapshot(`"test-metadata-value"`);
-
-  expect(actions).toMatchInlineSnapshot(`
-    [
+    expect(actions).toEqual([
       {
-        "options": {
-          "testOption": "test-value",
+        options: {
+          testOption: 'test-value',
         },
-        "requestStream": true,
-        "responseStream": false,
-        "type": "start",
+        requestStream: true,
+        responseStream: false,
+        type: 'start',
       },
       {
-        "request": nice_grpc.test.TestRequest {
-          "id": "test-1",
+        request: {
+          id: 'test-1',
         },
-        "type": "request",
+        type: 'request',
       },
       {
-        "request": nice_grpc.test.TestRequest {
-          "id": "test-2",
+        request: {
+          id: 'test-2',
         },
-        "type": "request",
+        type: 'request',
       },
       {
-        "response": nice_grpc.test.TestResponse {
-          "id": "test-1 test-2",
-        },
-        "type": "response",
+        error: new ClientError(
+          '/nice_grpc.test.Test/TestClientStream',
+          Status.NOT_FOUND,
+          'test-1',
+        ),
+        type: 'error',
       },
-    ]
-  `);
+    ]);
 
-  proxy.stop();
-  await server.shutdown();
-});
-
-test('error', async () => {
-  const actions: any[] = [];
-
-  const server = createServer();
-
-  server.add(TestService, {
-    testUnary: throwUnimplemented,
-    testServerStream: throwUnimplemented,
-    async testClientStream(request: AsyncIterable<TestRequest>) {
-      for await (const item of request) {
-        throw new ServerError(Status.NOT_FOUND, item.getId());
-      }
-
-      return new TestResponse();
-    },
-    testBidiStream: throwUnimplemented,
+    server.shutdown();
   });
-
-  const listenPort = await server.listen('0.0.0.0:0');
-
-  const proxyPort = await getPort();
-  const proxy = await startGrpcWebProxy(proxyPort, listenPort);
-
-  const channel = createChannel(
-    `http://localhost:${proxyPort}`,
-    WebsocketTransport(),
-  );
-
-  const client = createClientFactory()
-    .use(createTestClientMiddleware('testOption', actions))
-    .create(Test, channel);
-
-  async function* createRequest() {
-    yield new TestRequest().setId('test-1');
-    yield new TestRequest().setId('test-2');
-  }
-
-  await expect(
-    client.testClientStream(createRequest(), {
-      testOption: 'test-value',
-    }),
-  ).rejects.toMatchInlineSnapshot(
-    `[ClientError: /nice_grpc.test.Test/TestClientStream NOT_FOUND: test-1]`,
-  );
-
-  expect(actions).toMatchInlineSnapshot(`
-    [
-      {
-        "options": {
-          "testOption": "test-value",
-        },
-        "requestStream": true,
-        "responseStream": false,
-        "type": "start",
-      },
-      {
-        "request": nice_grpc.test.TestRequest {
-          "id": "test-1",
-        },
-        "type": "request",
-      },
-      {
-        "request": nice_grpc.test.TestRequest {
-          "id": "test-2",
-        },
-        "type": "request",
-      },
-      {
-        "error": [ClientError: /nice_grpc.test.Test/TestClientStream NOT_FOUND: test-1],
-        "type": "error",
-      },
-    ]
-  `);
-
-  proxy.stop();
-  await server.shutdown();
 });
