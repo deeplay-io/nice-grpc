@@ -98,10 +98,6 @@ It is recommended to use [Envoy proxy](https://www.envoyproxy.io/) with
 For an example of how to configure Envoy, see the
 [config that we use in our tests](/packages/nice-grpc-web/test-server/envoy-tls.yaml).
 
-gRPC-Web is
-[supported natively](https://learn.microsoft.com/en-us/aspnet/core/grpc/grpcweb?view=aspnetcore-7.0)
-by ASP.NET Core.
-
 In Kubernetes, use [Contour ingress controller](https://projectcontour.io/),
 which is based on Envoy and has `grpc_web` filter enabled by default.
 
@@ -112,8 +108,12 @@ Even if you do, we advise you to use
 [`grpcwebproxy` binaries from our fork](https://github.com/aikoven/grpc-web/releases/tag/v0.0.1)
 which contain a few fixes.
 
+gRPC-Web is
+[supported natively](https://learn.microsoft.com/en-us/aspnet/core/grpc/grpcweb?view=aspnetcore-7.0)
+by ASP.NET Core.
+
 In all cases, it is highly recommended to use `http2`, which in turn requires
-`https`.
+`https` in all browsers.
 
 ### Client
 
@@ -259,7 +259,7 @@ const response = await client.exampleUnaryMethod(request, {
 });
 ```
 
-> **Note:** Most `fetch` implementations only receive response header when the
+> **Note** Most `fetch` implementations only receive response header when the
 > first chunk of the response body is received. This means that `onHeader` will
 > be called just before the response (or the first response message in case of
 > server streaming) is received, even if the server sends the header before
@@ -333,7 +333,7 @@ for await (const response of client.exampleStreamingMethod(request)) {
 
 #### Client streaming
 
-> **Note:** Most browsers don't support streaming request bodies. See
+> **Note** Most browsers don't support streaming request bodies. See
 > [Compatibility](#compatibility) for more details.
 
 Given a client streaming method:
