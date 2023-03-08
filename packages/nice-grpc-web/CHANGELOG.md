@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.0.0...nice-grpc-web@3.1.0) (2023-03-08)
+
+### Features
+
+- **nice-grpc-web:** add FetchTransportConfig to support credentials in
+  FetchTransport ([#313](https://github.com/deeplay-io/nice-grpc/issues/313))
+  ([c531c95](https://github.com/deeplay-io/nice-grpc/commit/c531c9538c7eee13eb07f2a852ac2ddce10a76a4)),
+  closes [#312](https://github.com/deeplay-io/nice-grpc/issues/312)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [3.0.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@2.0.2...nice-grpc-web@3.0.0) (2023-03-05)
 
 ### ⚠ BREAKING CHANGES
