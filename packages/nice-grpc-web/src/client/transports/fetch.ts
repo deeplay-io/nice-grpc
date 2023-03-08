@@ -3,7 +3,11 @@ import {Base64} from 'js-base64';
 import {ClientError, Metadata, Status} from 'nice-grpc-common';
 import {Transport} from '../Transport';
 
-export function FetchTransport(): Transport {
+export interface FetchTransportConfig {
+  credentials?: RequestCredentials,
+}
+
+export function FetchTransport(config?: FetchTransportConfig): Transport {
   return async function* fetchTransport({url, body, metadata, signal, method}) {
     let requestBody: BodyInit;
 
@@ -48,6 +52,7 @@ export function FetchTransport(): Transport {
       signal,
       cache: 'no-cache',
       ['duplex' as any]: 'half',
+      credentials: config?.credentials,
     });
 
     yield {
