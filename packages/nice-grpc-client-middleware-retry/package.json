@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-client-middleware-retry",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Retry client middleware for nice-grpc",
   "repository": "deeplay-io/nice-grpc",
   "main": "lib/index.js",

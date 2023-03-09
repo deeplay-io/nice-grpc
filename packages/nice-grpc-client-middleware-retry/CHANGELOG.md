@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-retry@3.0.0...nice-grpc-client-middleware-retry@3.1.0) (2023-03-09)
+
+### Features
+
+- **nice-grpc-client-middleware-retry:** add `CANCELLED` to retryable codes
+  ([#315](https://github.com/deeplay-io/nice-grpc/issues/315))
+  ([d962422](https://github.com/deeplay-io/nice-grpc/commit/d96242236586565b4e2b47b7e03837cd8e5f8a1e))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [3.0.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-retry@2.0.2...nice-grpc-client-middleware-retry@3.0.0) (2023-03-05)
 
 ### ⚠ BREAKING CHANGES
