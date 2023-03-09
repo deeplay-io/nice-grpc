@@ -46,7 +46,7 @@ export type RetryOptions = {
   /**
    * Array of retryable status codes.
    *
-   * Default is `[UNKNOWN, INTERNAL, UNAVAILABLE]`.
+   * Default is `[UNKNOWN, INTERNAL, UNAVAILABLE, CANCELLED]`.
    */
   retryableStatuses?: Status[];
   /**
@@ -64,6 +64,10 @@ const defaultRetryableStatuses: Status[] = [
   Status.UNKNOWN,
   Status.INTERNAL,
   Status.UNAVAILABLE,
+  // Server may return `CANCELLED` if it is shutting down. We can distinguish
+  // this from client-initiated cancellations because these are returned as
+  // `AbortError`s.
+  Status.CANCELLED,
 ];
 
 /**
