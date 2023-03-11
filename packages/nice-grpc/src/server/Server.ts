@@ -176,6 +176,7 @@ function createServerWithMiddleware<CallContextExt = {}>(
           credentials ?? ServerCredentials.createInsecure(),
           (err, port) => {
             if (err != null) {
+              server = undefined;
               reject(err);
             } else {
               resolve(port);
