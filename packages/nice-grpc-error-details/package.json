@@ -25,7 +25,7 @@
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
     "grpc-tools": "^1.10.0",
-    "nice-grpc": "^2.1.2",
+    "nice-grpc": "*",
     "ts-proto": "^1.112.0"
   },
   "dependencies": {

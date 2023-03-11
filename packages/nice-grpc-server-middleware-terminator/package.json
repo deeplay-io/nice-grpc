@@ -27,7 +27,7 @@
     "abort-controller-x": "^0.4.0",
     "defer-promise": "^2.0.1",
     "grpc-tools": "^1.10.0",
-    "nice-grpc": "^2.1.2",
+    "nice-grpc": "*",
     "ts-proto": "^1.112.0"
   },
   "dependencies": {
