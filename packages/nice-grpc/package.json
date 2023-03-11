@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A Node.js gRPC library that is nice to you",
   "keywords": [
     "grpc",

@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.2](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.1...nice-grpc@2.1.2) (2023-03-11)
+
+### Bug Fixes
+
+- **nice-grpc:** support retrying `Server.listen()`
+  ([#318](https://github.com/deeplay-io/nice-grpc/issues/318))
+  ([e41bfe1](https://github.com/deeplay-io/nice-grpc/commit/e41bfe1a1576974364505349e738bb119d8b179c)),
+  closes [#316](https://github.com/deeplay-io/nice-grpc/issues/316)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.1.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.0...nice-grpc@2.1.1) (2023-03-05)
 
 ### Bug Fixes
