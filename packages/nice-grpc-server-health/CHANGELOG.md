@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.5](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-health@2.0.4...nice-grpc-server-health@2.0.5) (2023-03-11)
+
+### Reverts
+
+- Revert "chore: remove packages from `devDependencies`"
+  ([71fab34](https://github.com/deeplay-io/nice-grpc/commit/71fab34517b689aabadf42cef9cce796ea86647a))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.0.4](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-health@2.0.3...nice-grpc-server-health@2.0.4) (2023-03-11)
 
 **Note:** Version bump only for package nice-grpc-server-health

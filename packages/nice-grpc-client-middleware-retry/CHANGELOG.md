@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.2](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-retry@3.1.1...nice-grpc-client-middleware-retry@3.1.2) (2023-03-11)
+
+### Reverts
+
+- Revert "chore: remove packages from `devDependencies`"
+  ([71fab34](https://github.com/deeplay-io/nice-grpc/commit/71fab34517b689aabadf42cef9cce796ea86647a))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [3.1.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-retry@3.1.0...nice-grpc-client-middleware-retry@3.1.1) (2023-03-11)
 
 **Note:** Version bump only for package nice-grpc-client-middleware-retry
