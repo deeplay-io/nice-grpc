@@ -68,6 +68,13 @@ directory `./compiled_proto`:
 > You can omit the `--plugin` flag if you invoke this command via
 > [npm script](https://docs.npmjs.com/cli/v7/using-npm/scripts).
 
+When running on Windows command line, you may need to wrap the `ts_proto_opt`
+value with double quotes:
+
+```
+--ts_proto_opt="outputServices=nice-grpc,outputServices=generic-definitions,useExactTypes=false"
+```
+
 #### Using `google-protobuf`
 
 Install necessary tools:
