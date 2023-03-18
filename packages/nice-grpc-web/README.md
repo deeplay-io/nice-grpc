@@ -496,7 +496,7 @@ This library was tested against:
 - Safari 12.1+
 - Android 6+
 - iOS 10.3+
-- NodeJS 16+
+- NodeJS 16.15+
 
 It might work in older browsers as well.
 
@@ -514,7 +514,7 @@ is required. A [polyfill](https://www.npmjs.com/package/abort-controller) is
 available.
 
 This library works in NodeJS 18+ out of the box. It can also be used in NodeJS
-16 with the `--experimental-fetch` flag; client streams require global
+16.15 with the `--experimental-fetch` flag; also client streams require global
 `ReadableStream` constructor which can be added manually:
 
 ```ts
