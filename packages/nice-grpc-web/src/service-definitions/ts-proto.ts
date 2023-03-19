@@ -16,6 +16,7 @@ export type TsProtoMethodDefinition<Request, Response> = {
   responseStream: boolean;
   options: {
     idempotencyLevel?: 'IDEMPOTENT' | 'NO_SIDE_EFFECTS';
+    _unknownFields?: {};
   };
 };
 
