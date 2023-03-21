@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.5](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-middleware-terminator@2.0.4...nice-grpc-server-middleware-terminator@2.0.5) (2023-03-21)
+
+**Note:** Version bump only for package nice-grpc-server-middleware-terminator
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.0.4](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-middleware-terminator@2.0.3...nice-grpc-server-middleware-terminator@2.0.4) (2023-03-11)
 
 **Note:** Version bump only for package nice-grpc-server-middleware-terminator
