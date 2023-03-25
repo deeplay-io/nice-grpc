@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.3](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.2...nice-grpc@2.1.3) (2023-03-21)
+
+### Bug Fixes
+
+- support unknown options in ts-proto method definitions
+  ([#323](https://github.com/deeplay-io/nice-grpc/issues/323))
+  ([dadeb0a](https://github.com/deeplay-io/nice-grpc/commit/dadeb0aff28b1bf686f2e1f8403b7abb42440816))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.1.2](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.1...nice-grpc@2.1.2) (2023-03-11)
 
 ### Bug Fixes
