@@ -13,12 +13,6 @@
   ],
   "repository": "deeplay-io/nice-grpc",
   "main": "lib/index.js",
-  "exports": {
-    ".": "./lib/index.js",
-    "./lib/client/transports/nodeHttp.js": {
-      "browser": "./lib/client/transports/nodeHttp.browser.js"
-    }
-  },
   "typings": "lib/index.d.ts",
   "files": [
     "lib",
