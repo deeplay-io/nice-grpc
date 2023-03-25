@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.1.0...nice-grpc-web@3.2.0) (2023-03-25)
+
+### Features
+
+- **nice-grpc-web:** add new `NodeHttpTransport` based on NodeJS `http` module
+  ([#324](https://github.com/deeplay-io/nice-grpc/issues/324))
+  ([6e1a1d3](https://github.com/deeplay-io/nice-grpc/commit/6e1a1d3abfc00cb1968f8ea393a23bd22f93885c))
+
+### Bug Fixes
+
+- support unknown options in ts-proto method definitions
+  ([#323](https://github.com/deeplay-io/nice-grpc/issues/323))
+  ([dadeb0a](https://github.com/deeplay-io/nice-grpc/commit/dadeb0aff28b1bf686f2e1f8403b7abb42440816))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [3.1.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.1.0...nice-grpc-web@3.1.1) (2023-03-21)
 
 ### Bug Fixes
