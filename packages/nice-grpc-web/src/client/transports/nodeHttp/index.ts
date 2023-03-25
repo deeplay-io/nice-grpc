@@ -6,6 +6,11 @@ import {Base64} from 'js-base64';
 import {ClientError, Metadata, Status} from 'nice-grpc-common';
 import {Transport} from '../../Transport';
 
+/**
+ * Transport for NodeJS based on `http` and `https` modules.
+ *
+ * Note that for NodeJS 18+ you can use the default `FetchTransport`.
+ */
 export function NodeHttpTransport(): Transport {
   return async function* nodeHttpTransport({
     url,
