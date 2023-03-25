@@ -1,10 +1,10 @@
-import {Transport} from '../Transport';
+import {throwIfAborted, waitForEvent} from 'abort-controller-x';
+import assert from 'assert';
 import http from 'http';
 import https from 'https';
-import assert from 'assert';
-import {ClientError, Metadata, Status} from 'nice-grpc-common';
 import {Base64} from 'js-base64';
-import {throwIfAborted, waitForEvent} from 'abort-controller-x';
+import {ClientError, Metadata, Status} from 'nice-grpc-common';
+import {Transport} from '../../Transport';
 
 export function NodeHttpTransport(): Transport {
   return async function* nodeHttpTransport({

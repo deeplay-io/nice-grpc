@@ -22,3 +22,4 @@ export * from './client/Client';
 
 export {FetchTransport} from './client/transports/fetch';
 export {WebsocketTransport} from './client/transports/websocket';
+export {NodeHttpTransport} from './client/transports/nodeHttp';
