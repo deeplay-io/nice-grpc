@@ -248,6 +248,9 @@ A non-standard `WebsocketTransport` is also available, that only works with
 and allows to overcome some limitations (see [Compatibility](#compatibility)).
 It is still recommended to use `FetchTransport` whenever possible.
 
+To support older NodeJS versions, we also provide `NodeHttpTransport` which is
+based on `http` and `https` modules (see [Compatibility](#compatibility)).
+
 #### Metadata
 
 Client can send request metadata and receive response header and trailer:
@@ -507,7 +510,7 @@ This library was tested against:
 
 It might work in older browsers as well.
 
-The library requires
+The library's default `FetchTransport` requires
 [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/fetch) to be
 available globally and support for reading a `ReadableStream` from a `Response`
 body. See [compatibility table](https://caniuse.com/mdn-api_response_body).
@@ -528,6 +531,12 @@ This library works in NodeJS 18+ out of the box. It can also be used in NodeJS
 global.ReadableStream ??= require('stream/web').ReadableStream;
 ```
 
+It does **not** work with `node-fetch`, because it does not support
+`ReadableStream` in `Response` body.
+
+For older NodeJS versions we provide `NodeHttpTransport` which is based on
+`http` and `https` modules.
+
 Most browsers do not support sending streams in `fetch` requests. This means
 that [client streaming](#client-streaming) and bidirectional streaming will not
 work. The only browser that supports client streams is Chrome 105+ (and other
@@ -540,8 +549,8 @@ streams are currently
 response data will be buffered until the request stream is sent until the end.
 This unfortunately makes it impossible to use infinite bidirectional streaming.
 To overcome this limitation, it is recommended to design your API to use only
-unary and server streaming methods. If you still need to use client streams, you
-can use a [Websocket transport with `grpcwebproxy`](#channels).
+unary and server streaming methods. If you still need to use client streams in
+the browser, you can use a [Websocket transport with `grpcwebproxy`](#channels).
 
 Browser compatibility is tested with help of
 [BrowserStack](https://www.browserstack.com/).

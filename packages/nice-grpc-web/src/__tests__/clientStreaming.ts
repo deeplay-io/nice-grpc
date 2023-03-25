@@ -1,13 +1,15 @@
 import {forever, isAbortError} from 'abort-controller-x';
+import {assertNever} from 'assert-never';
 import {detect} from 'detect-browser';
+import cartesianProduct from 'just-cartesian-product';
 import {ServerError} from 'nice-grpc-common';
 import {
   ClientError,
   createChannel,
   createClient,
+  FetchTransport,
   Metadata,
   Status,
-  FetchTransport,
   WebsocketTransport,
 } from '..';
 import {
@@ -16,23 +18,23 @@ import {
   TestRequest,
   TestServiceImplementation,
 } from '../../fixtures/ts-proto/test';
-import {defer} from './utils/defer';
 import {
   RemoteTestServer,
   startRemoteTestServer,
 } from '../../test-server/client';
+import {NodeHttpTransport} from '../client/transports/nodeHttp';
+import {defer} from './utils/defer';
 
 const environment = detect();
 
-(
-  [
-    ['grpcwebproxy', 'fetch', 'http'],
-    ['grpcwebproxy', 'fetch', 'https'],
-    ['grpcwebproxy', 'websocket', 'http'],
-    ['envoy', 'fetch', 'http'],
-    ['envoy', 'fetch', 'https'],
-  ] as const
-).forEach(([proxyType, transport, protocol]) => {
+[
+  ...cartesianProduct([
+    ['envoy' as const, 'grpcwebproxy' as const],
+    ['fetch' as const, 'node-http' as const],
+    ['http' as const, 'https' as const],
+  ]),
+  ['grpcwebproxy', 'websocket', 'http'] as const,
+].forEach(([proxyType, transport, protocol]) => {
   if (
     process.env.FORCE_ALL_TESTS !== 'true' &&
     transport === 'fetch' &&
@@ -52,6 +54,10 @@ const environment = detect();
     return;
   }
 
+  if (transport === 'node-http' && environment?.type !== 'node') {
+    return;
+  }
+
   describe(`clientStreaming / ${proxyType} / ${transport} / ${protocol}`, () => {
     type Context = {
       server?: RemoteTestServer;
@@ -68,7 +74,13 @@ const environment = detect();
           TestDefinition,
           createChannel(
             this.server.address,
-            transport === 'fetch' ? FetchTransport() : WebsocketTransport(),
+            transport === 'fetch'
+              ? FetchTransport()
+              : transport === 'websocket'
+              ? WebsocketTransport()
+              : transport === 'node-http'
+              ? NodeHttpTransport()
+              : assertNever(transport),
           ),
         );
       };
@@ -169,8 +181,13 @@ const environment = detect();
       expect(trailer?.get('test')).toEqual('test-trailer');
     });
 
-    if (process.env.FORCE_ALL_TESTS !== 'true' && transport === 'fetch') {
+    if (
+      process.env.FORCE_ALL_TESTS !== 'true' &&
+      (transport === 'fetch' ||
+        (proxyType === 'grpcwebproxy' && transport !== 'websocket'))
+    ) {
       // full duplex is not supported by fetch
+      // grpcwebproxy does not send response before request is finished
     } else {
       it('receives a response before finishing sending request', async function (this: Context) {
         const client = await this.init({
