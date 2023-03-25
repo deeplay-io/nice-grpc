@@ -29,17 +29,10 @@ export function NodeHttpTransport(): Transport {
       pipeAbortController = new AbortController();
     }
 
-    const {req, res, removeAbortListener} = await new Promise<{
-      req: http.ClientRequest;
+    const {res, removeAbortListener} = await new Promise<{
       res: http.IncomingMessage;
       removeAbortListener: () => void;
     }>((resolve, reject) => {
-      const headers = metadataToHeaders(metadata);
-
-      if (bodyBuffer != null) {
-        headers['Content-Length'] = bodyBuffer.byteLength.toString();
-      }
-
       const abortListener = () => {
         pipeAbortController?.abort();
         req.destroy();
@@ -49,11 +42,10 @@ export function NodeHttpTransport(): Transport {
         url,
         {
           method: 'POST',
-          headers,
+          headers: metadataToHeaders(metadata),
         },
         res => {
           resolve({
-            req,
             res,
             removeAbortListener() {
               signal.removeEventListener('abort', abortListener);
@@ -69,6 +61,7 @@ export function NodeHttpTransport(): Transport {
       });
 
       if (bodyBuffer != null) {
+        req.setHeader('Content-Length', bodyBuffer.byteLength);
         req.write(bodyBuffer);
         req.end();
       } else {
@@ -81,6 +74,9 @@ export function NodeHttpTransport(): Transport {
           },
         );
       }
+    }).catch(err => {
+      throwIfAborted(signal);
+      throw err;
     });
 
     yield {
@@ -131,10 +127,9 @@ function metadataToHeaders(metadata: Metadata): http.OutgoingHttpHeaders {
   const headers: http.OutgoingHttpHeaders = {};
 
   for (const [key, values] of metadata) {
-    for (const value of values) {
-      headers[key] =
-        typeof value === 'string' ? value : Base64.fromUint8Array(value);
-    }
+    headers[key] = values.map(value =>
+      typeof value === 'string' ? value : Base64.fromUint8Array(value),
+    );
   }
 
   return headers;
@@ -148,7 +143,9 @@ function headersToMetadata(headers: http.IncomingHttpHeaders): Metadata {
       continue;
     }
 
-    const value = Array.isArray(headerValue) ? headerValue : [headerValue];
+    const value = Array.isArray(headerValue)
+      ? headerValue
+      : headerValue.split(/,\s?/);
 
     if (key.endsWith('-bin')) {
       for (const item of value) {
@@ -199,6 +196,8 @@ async function pipeBody(
   body: AsyncIterable<Uint8Array>,
   request: http.ClientRequest,
 ): Promise<void> {
+  request.flushHeaders();
+
   for await (const item of body) {
     throwIfAborted(signal);
 

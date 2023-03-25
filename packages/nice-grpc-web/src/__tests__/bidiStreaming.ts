@@ -54,6 +54,10 @@ const environment = detect();
     return;
   }
 
+  if (transport === 'node-http' && environment?.type !== 'node') {
+    return;
+  }
+
   describe(`bidiStreaming / ${proxyType} / ${transport} / ${protocol}`, () => {
     type Context = {
       server?: RemoteTestServer;
@@ -179,8 +183,13 @@ const environment = detect();
       expect(trailer?.get('test')).toEqual('test-trailer');
     });
 
-    if (process.env.FORCE_ALL_TESTS !== 'true' && transport === 'fetch') {
+    if (
+      process.env.FORCE_ALL_TESTS !== 'true' &&
+      (transport === 'fetch' ||
+        (proxyType === 'grpcwebproxy' && transport !== 'websocket'))
+    ) {
       // full duplex is not supported by fetch
+      // grpcwebproxy does not send response before request is finished
     } else {
       it('receives a response before finishing sending request', async function (this: Context) {
         const serverResponseFinish = defer<void>();

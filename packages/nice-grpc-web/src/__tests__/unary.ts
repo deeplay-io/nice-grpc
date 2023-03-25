@@ -35,6 +35,10 @@ const environment = detect();
   ]),
   ['grpcwebproxy', 'websocket', 'http'] as const,
 ].forEach(([proxyType, transport, protocol]) => {
+  if (transport === 'node-http' && environment?.type !== 'node') {
+    return;
+  }
+
   describe(`unary / ${proxyType} / ${transport} / ${protocol}`, () => {
     type Context = {
       server?: RemoteTestServer;
