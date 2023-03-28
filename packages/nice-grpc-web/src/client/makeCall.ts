@@ -1,4 +1,4 @@
-import {isAbortError} from 'abort-controller-x';
+import {isAbortError, rethrowAbortError} from 'abort-controller-x';
 import {CallOptions, ClientError, Metadata, Status} from 'nice-grpc-common';
 import {MethodDefinition} from '../service-definitions';
 import {Channel} from './channel';
@@ -63,17 +63,31 @@ export async function* makeCall<Request, Response>(
     }
   }
 
+  async function* handleTransportErrors() {
+    try {
+      return yield* channel.transport({
+        url: channel.address + definition.path,
+        metadata: finalMetadata,
+        body: encodeRequest({
+          request: interceptRequestError(),
+          encode: definition.requestSerialize,
+        }),
+        signal: innerAbortController.signal,
+        method: definition,
+      });
+    } catch (err) {
+      rethrowAbortError(err);
+
+      throw new ClientError(
+        definition.path,
+        Status.UNKNOWN,
+        `Transport error: ${makeInternalErrorMessage(err)}`,
+      );
+    }
+  }
+
   const response = decodeResponse({
-    response: channel.transport({
-      url: channel.address + definition.path,
-      metadata: finalMetadata,
-      body: encodeRequest({
-        request: interceptRequestError(),
-        encode: definition.requestSerialize,
-      }),
-      signal: innerAbortController.signal,
-      method: definition,
-    }),
+    response: handleTransportErrors(),
     decode: definition.responseDeserialize,
     onHeader(header) {
       const isTrailerOnly = header.has('grpc-status');
@@ -111,8 +125,8 @@ export async function* makeCall<Request, Response>(
   if (status == null) {
     throw new ClientError(
       definition.path,
-      Status.INTERNAL,
-      'Server did not return a status',
+      Status.UNKNOWN,
+      'Response stream closed without gRPC status',
     );
   } else if (status !== Status.OK) {
     throw new ClientError(definition.path, status, message ?? '');
