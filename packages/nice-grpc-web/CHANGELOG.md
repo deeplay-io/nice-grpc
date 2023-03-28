@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.2.0...nice-grpc-web@3.2.1) (2023-03-28)
+
+### Bug Fixes
+
+- **nice-grpc-web:** fix delayed empty emissions in server stream
+  ([#325](https://github.com/deeplay-io/nice-grpc/issues/325))
+  ([4b3bf1c](https://github.com/deeplay-io/nice-grpc/commit/4b3bf1c0a7d111d27f7fbee25a0abafdb9ec47a1))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [3.2.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.1.0...nice-grpc-web@3.2.0) (2023-03-25)
 
 ### Features
