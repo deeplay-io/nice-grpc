@@ -107,6 +107,28 @@ const environment = detect();
       expect(trailer?.get('test')).toEqual('test-trailer');
     });
 
+    it('receives empty response', async function (this: Context) {
+      const endDeferred = defer();
+
+      const client = await this.init({
+        async *testServerStream(request, context) {
+          yield {};
+
+          await endDeferred.promise;
+        },
+      });
+
+      const iterable = client.testServerStream({});
+
+      for await (const response of iterable) {
+        expect(response).toEqual({id: ''});
+
+        break;
+      }
+
+      endDeferred.resolve();
+    });
+
     it('receives error', async function (this: Context) {
       const client = await this.init({
         async *testServerStream(request, context) {
