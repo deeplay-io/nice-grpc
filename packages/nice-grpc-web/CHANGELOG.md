@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.2](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.2.1...nice-grpc-web@3.2.2) (2023-03-28)
+
+### Bug Fixes
+
+- **nice-grpc-web:** return `UNKNOWN` status on transport errors
+  ([#326](https://github.com/deeplay-io/nice-grpc/issues/326))
+  ([a0e1b31](https://github.com/deeplay-io/nice-grpc/commit/a0e1b316df8a578078b06f676780618d27c9e5f9))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [3.2.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.2.0...nice-grpc-web@3.2.1) (2023-03-28)
 
 ### Bug Fixes
