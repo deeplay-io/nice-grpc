@@ -44,7 +44,7 @@ export async function* decodeResponse<T>({
 
       let {data} = frame;
 
-      while (data.length > 0 || lpmHeader != null) {
+      while (data.length > 0 || lpmHeader?.length === 0) {
         const position = Math.min(
           data.length,
           buffer.targetLength - buffer.totalLength,
