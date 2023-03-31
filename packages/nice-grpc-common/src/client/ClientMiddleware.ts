@@ -1,6 +1,29 @@
 import {MethodDescriptor} from '../MethodDescriptor';
 import {CallOptions} from './CallOptions';
 
+/**
+ * Client middleware.
+ *
+ * Defined as an async generator function. The most basic no-op middleware looks
+ * like this:
+ *
+ * ```ts
+ * import {ClientMiddlewareCall, CallOptions} from 'nice-grpc-common';
+ *
+ * async function* middleware<Request, Response>(
+ *   call: ClientMiddlewareCall<Request, Response>,
+ *   options: CallOptions,
+ * ) {
+ *   return yield* call.next(call.request, options);
+ * }
+ * ```
+ *
+ * @template CallOptionsExt Extra call options properties that are consumed by
+ *     this middleware.
+ * @template RequiredCallOptionsExt Extra call options properties that are
+ *     required by this middleware. Must be added by a middleware that is
+ *     attached to the client before this middleware.
+ */
 export type ClientMiddleware<
   CallOptionsExt = {},
   RequiredCallOptionsExt = {},

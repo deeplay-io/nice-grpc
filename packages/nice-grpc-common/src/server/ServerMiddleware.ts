@@ -1,6 +1,29 @@
 import {MethodDescriptor} from '../MethodDescriptor';
 import {CallContext} from './CallContext';
 
+/**
+ * Server middleware.
+ *
+ * Defined as an async generator function. The most basic no-op middleware looks
+ * like this:
+ *
+ * ```ts
+ * import {ServerMiddlewareCall, CallContext} from 'nice-grpc-common';
+ *
+ * async function* middleware<Request, Response>(
+ *   call: ServerMiddlewareCall<Request, Response>,
+ *   context: CallContext,
+ * ) {
+ *   return yield* call.next(call.request, context);
+ * }
+ * ```
+ *
+ * @template CallContextExt Extra call context properties that are added by this
+ *     middleware.
+ * @template RequiredCallContextExt Extra call context properties that are
+ *     required by this middleware. Must be added by a middleware that is
+ *     attached to the server before this middleware.
+ */
 export type ServerMiddleware<
   CallContextExt = {},
   RequiredCallContextExt = {},
