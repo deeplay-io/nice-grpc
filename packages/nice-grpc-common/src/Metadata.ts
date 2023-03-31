@@ -10,7 +10,8 @@ export type Metadata = {
    * The value must be binary if and only if the key ends with '-bin'.
    *
    * Multiple string metadata values are always joined to a single string with
-   * a comma.
+   * a comma. It is not recommended to use multiple binary metadata values
+   * either, because some gRPC implementations may not support it.
    */
   set<Key extends string>(
     key: Key,
@@ -22,7 +23,8 @@ export type Metadata = {
    * The value must be binary if and only if the key ends with '-bin'.
    *
    * Multiple string metadata values are always joined to a single string with
-   * a comma.
+   * a comma. It is not recommended to use multiple binary metadata values
+   * either, because some gRPC implementations may not support it.
    */
   append<Key extends string>(key: Key, value: MetadataValue<Key>): Metadata;
   /**
@@ -35,14 +37,16 @@ export type Metadata = {
    * If there are multiple binary values, the first one is returned.
    *
    * Multiple string metadata values are always joined to a single string with
-   * a comma.
+   * a comma. It is not recommended to use multiple binary metadata values
+   * either, because some gRPC implementations may not support it.
    */
   get<Key extends string>(key: Key): MetadataValue<Key> | undefined;
   /**
    * Returns an array of all the values of a metadata with a given key.
    *
    * Multiple string metadata values are always joined to a single string with
-   * a comma.
+   * a comma. It is not recommended to use multiple binary metadata values
+   * either, because some gRPC implementations may not support it.
    */
   getAll<Key extends string>(key: Key): Array<MetadataValue<Key>>;
   /**
