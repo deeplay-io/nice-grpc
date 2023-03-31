@@ -7,10 +7,24 @@ import {
 } from 'nice-grpc-common';
 
 export type TerminatorContext = {
+  /**
+   * Mark the call as one that should be aborted when the server is shutting
+   * down.
+   */
   abortOnTerminate(): void;
 };
 
+/**
+ * Server middleware that makes it possible to prevent long-running calls from
+ * blocking server graceful shutdown.
+ */
 export type TerminatorMiddleware = ServerMiddleware<TerminatorContext> & {
+  /**
+   * Aborts all calls that have called `abortOnTerminate` and make them return
+   * gRPC errors with status `UNAVAILABLE`.
+   *
+   * Call this method right before calling `server.shutdown()`.
+   */
   terminate(): void;
 };
 
