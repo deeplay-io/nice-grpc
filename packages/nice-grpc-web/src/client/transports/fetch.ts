@@ -4,9 +4,12 @@ import {ClientError, Metadata, Status} from 'nice-grpc-common';
 import {Transport} from '../Transport';
 
 export interface FetchTransportConfig {
-  credentials?: RequestCredentials,
+  credentials?: RequestCredentials;
 }
 
+/**
+ * Transport for browsers based on `fetch` API.
+ */
 export function FetchTransport(config?: FetchTransportConfig): Transport {
   return async function* fetchTransport({url, body, metadata, signal, method}) {
     let requestBody: BodyInit;

@@ -10,6 +10,9 @@ import {Metadata} from 'nice-grpc-common';
 import {AsyncSink} from '../../utils/AsyncSink';
 import {Frame, Transport} from '../Transport';
 
+/**
+ * Transport based on WebSockets. Works only with `grpcwebproxy`.
+ */
 export function WebsocketTransport(): Transport {
   return async function* ({url, body, metadata, signal}) {
     if (signal.aborted) {
