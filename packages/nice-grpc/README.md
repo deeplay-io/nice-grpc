@@ -739,17 +739,37 @@ Call options may be augmented by [Middleware](#middleware-1).
 
 When creating a client, you may specify default call options per method, or for
 all methods. This doesn't make much sense for built-in options, but may do for
-middleware.
+middleware, for example,
+[nice-grpc-client-middleware-deadline](/packages/nice-grpc-client-middleware-deadline):
 
 ```ts
 const client = createClient(ExampleServiceDefinition, channel, {
   '*': {
     // applies for all methods
+    deadline: 30_000,
   },
   exampleUnaryMethod: {
     // applies for single method
+    deadline: 10_000,
   },
 });
+```
+
+To add default metadata, instead use a middleware that merges it with the
+metadata passed to the call:
+
+```ts
+const token = '...';
+
+const client = createClientFactory().use((call, options) =>
+  call.next(call.request, {
+    ...options,
+    metadata: Metadata(options.metadata).set(
+      'Authorization',
+      `Bearer ${token}`,
+    ),
+  }),
+);
 ```
 
 #### Channels
