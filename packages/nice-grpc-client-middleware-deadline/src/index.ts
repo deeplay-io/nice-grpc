@@ -1,9 +1,21 @@
 import {ClientError, ClientMiddleware, Status} from 'nice-grpc-common';
 
 export type DeadlineOptions = {
+  /**
+   * Deadline for the call.
+   *
+   * If `Date`, it will be interpreted as an absolute time.
+   * If number, it will be interpreted as a relative time in milliseconds.
+   * By default, there is no deadline.
+   */
   deadline?: Date | number;
 };
 
+/**
+ * Client middleware that adds support for setting deadline for a call, after
+ * which the call will get cancelled, and a `ClientError` with status code
+ * `DEADLINE_EXCEEDED` will be thrown.
+ */
 export const deadlineMiddleware: ClientMiddleware<DeadlineOptions> =
   async function* deadlineMiddleware(call, options) {
     if (options.deadline == null) {
