@@ -1,0 +1,32 @@
+http:
+  middlewares:
+    corspreflight-m:
+      plugin:
+        corspreflight:
+          code: 200
+          method: OPTIONS
+    cors:
+      headers:
+        accessControlAllowOriginList: '*'
+        accessControlAllowHeaders: '*'
+    grpcweb:
+      grpcWeb:
+        allowOrigins:
+          - '*'
+
+  routers:
+    local-route:
+      rule: 'PathPrefix(`/`)'
+
+      middlewares:
+        - cors
+        - corspreflight-m
+        - grpcweb
+
+      service: myservice
+
+  services:
+    myservice:
+      loadBalancer:
+        servers:
+          - url: h2c://${BACKEND_HOST}:${BACKEND_PORT}

@@ -1,0 +1,18 @@
+entryPoints:
+  web:
+    address: :${LISTEN_PORT}
+
+providers:
+  file:
+    directory: /etc/traefik/
+
+experimental:
+  plugins:
+    corspreflight:
+      moduleName: github.com/Medzoner/traefik-plugin-cors-preflight
+      version: v1.0.6
+
+api: {}
+
+log:
+  level: DEBUG

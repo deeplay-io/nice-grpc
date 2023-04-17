@@ -29,7 +29,7 @@ const environment = detect();
 
 [
   ...cartesianProduct([
-    ['envoy' as const, 'grpcwebproxy' as const],
+    ['envoy' as const, 'grpcwebproxy' as const, 'traefik' as const],
     ['fetch' as const, 'node-http' as const],
     ['http' as const, 'https' as const],
   ]),
