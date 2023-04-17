@@ -108,6 +108,10 @@ For an example of how to configure Envoy, see the
 In Kubernetes, use [Contour ingress controller](https://projectcontour.io/),
 which is based on Envoy and has `grpc_web` filter enabled by default.
 
+Another option is to use [traefik](https://traefik.io/traefik/) with
+[`GrpcWeb` middleware](https://doc.traefik.io/traefik/master/middlewares/http/grpcweb/)
+(available in traefik 3.0.0-beta1).
+
 Another option is to use
 [improbable-eng grpcwebproxy](https://github.com/improbable-eng/grpc-web/tree/master/go/grpcwebproxy)
 which is not recommended unless you require [Websocket transport](#channels).

@@ -9,6 +9,7 @@ import {startEnvoyProxy} from './envoyProxy';
 import {startGrpcWebProxy} from './grpcwebproxy';
 import {metadataFromJson, metadataToJson} from './metadata';
 import {MockServerCommand, MockServerEvent} from './types';
+import {startTraefikProxy} from './traefik';
 
 export type MockServerLogger = {
   debug(message: any, ...args: any[]): void;
@@ -32,7 +33,11 @@ export function startMockServer(
     );
 
     const proxyType = searchParams.get('proxy') ?? 'grpcwebproxy';
-    assert(proxyType === 'grpcwebproxy' || proxyType === 'envoy');
+    assert(
+      proxyType === 'grpcwebproxy' ||
+        proxyType === 'envoy' ||
+        proxyType === 'traefik',
+    );
 
     const protocol = searchParams.get('protocol') ?? 'https';
     assert(protocol === 'http' || protocol === 'https');
@@ -201,8 +206,17 @@ export function startMockServer(
     Promise.resolve().then(async () => {
       const listenPort = await server.listen('0.0.0.0:0');
 
-      const startProxy =
-        proxyType === 'envoy' ? startEnvoyProxy : startGrpcWebProxy;
+      let startProxy: typeof startEnvoyProxy;
+
+      if (proxyType === 'envoy') {
+        startProxy = startEnvoyProxy;
+      } else if (proxyType === 'traefik') {
+        startProxy = startTraefikProxy;
+      } else if (proxyType === 'grpcwebproxy') {
+        startProxy = startGrpcWebProxy;
+      } else {
+        throw new Error(`Unknown proxy type: ${proxyType}`);
+      }
 
       const proxyPort = await getPort({
         port: allowedPorts,

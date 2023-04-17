@@ -23,7 +23,7 @@ export type RemoteTestServer = {
 
 export async function startRemoteTestServer(
   implementation: Partial<TestServiceImplementation>,
-  proxyType: 'grpcwebproxy' | 'envoy' = 'grpcwebproxy',
+  proxyType: 'grpcwebproxy' | 'envoy' | 'traefik' = 'grpcwebproxy',
   protocol: 'http' | 'https' = 'http',
 ): Promise<RemoteTestServer> {
   const hostname = globalThis.location?.hostname ?? 'localhost';

@@ -29,7 +29,7 @@ const environment = detect();
 
 [
   ...cartesianProduct([
-    ['envoy' as const, 'grpcwebproxy' as const],
+    ['envoy' as const, 'grpcwebproxy' as const, 'traefik' as const],
     ['fetch' as const, 'node-http' as const],
     ['http' as const, 'https' as const],
   ]),
@@ -184,10 +184,11 @@ const environment = detect();
     if (
       process.env.FORCE_ALL_TESTS !== 'true' &&
       (transport === 'fetch' ||
-        (proxyType === 'grpcwebproxy' && transport !== 'websocket'))
+        (proxyType === 'grpcwebproxy' && transport !== 'websocket') ||
+        proxyType === 'traefik')
     ) {
       // full duplex is not supported by fetch
-      // grpcwebproxy does not send response before request is finished
+      // grpcwebproxy and traefik do not send response before request is finished
     } else {
       it('receives a response before finishing sending request', async function (this: Context) {
         const client = await this.init({
