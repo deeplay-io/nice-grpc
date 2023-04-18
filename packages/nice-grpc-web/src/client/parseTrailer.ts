@@ -27,7 +27,15 @@ export function parseTrailer(trailer: Metadata): ParsedTrailer {
     throw new Error('Received no status code from server');
   }
 
-  const message = trailer.get('grpc-message');
+  let message = trailer.get('grpc-message');
+
+  if (message != null) {
+    try {
+      message = decodeURIComponent(message);
+    } catch {
+      // ignore
+    }
+  }
 
   const trailerCopy = Metadata(trailer);
   trailerCopy.delete('grpc-status');

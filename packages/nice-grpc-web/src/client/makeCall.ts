@@ -21,10 +21,23 @@ export async function* makeCall<Request, Response>(
     onTrailer,
   } = options;
 
+  let receivedTrailersOnly = false;
   let status: Status | undefined;
   let message: string | undefined;
 
   function handleTrailer(trailer: Metadata) {
+    if (receivedTrailersOnly) {
+      if (new Map(trailer).size > 0) {
+        throw new ClientError(
+          definition.path,
+          Status.INTERNAL,
+          'Received non-empty trailer after trailers-only response',
+        );
+      } else {
+        return;
+      }
+    }
+
     const parsedTrailer = parseTrailer(trailer);
 
     ({status, message} = parsedTrailer);
@@ -90,10 +103,12 @@ export async function* makeCall<Request, Response>(
     response: handleTransportErrors(),
     decode: definition.responseDeserialize,
     onHeader(header) {
-      const isTrailerOnly = header.has('grpc-status');
+      const isTrailersOnly = header.has('grpc-status');
 
-      if (isTrailerOnly) {
+      if (isTrailersOnly) {
         handleTrailer(header);
+
+        receivedTrailersOnly = true;
       } else {
         onHeader?.(header);
       }
@@ -120,6 +135,10 @@ export async function* makeCall<Request, Response>(
   } finally {
     finished = true;
     signal.removeEventListener('abort', abortListener);
+
+    if (status != null && status !== Status.OK) {
+      throw new ClientError(definition.path, status, message ?? '');
+    }
   }
 
   if (status == null) {
@@ -128,7 +147,5 @@ export async function* makeCall<Request, Response>(
       Status.UNKNOWN,
       'Response stream closed without gRPC status',
     );
-  } else if (status !== Status.OK) {
-    throw new ClientError(definition.path, status, message ?? '');
   }
 }
