@@ -15,6 +15,7 @@ import {
 import {
   TestClient,
   TestDefinition,
+  TestRequest,
   TestResponse,
   TestServiceImplementation,
 } from '../../fixtures/ts-proto/test';
@@ -417,6 +418,60 @@ const environment = detect();
         new TextEncoder().encode('test-value-1'),
         new TextEncoder().encode('test-value-2'),
       ]);
+    });
+
+    it('receives trailers-only response', async function (this: Context) {
+      // Calling non-existent method will produce trailers-only response in
+      // grpc-js. But note that some proxies will still send a response with
+      // both headers and trailers. We can only test that the grpc status code
+      // and message are handled correctly.
+
+      this.server = await startRemoteTestServer({}, proxyType, protocol);
+
+      const FakeDefinition = {
+        name: 'Test2',
+        fullName: 'nice_grpc.test.Test2',
+        methods: {
+          testUnary: {
+            name: 'TestUnary',
+            requestType: TestRequest,
+            requestStream: false,
+            responseType: TestResponse,
+            responseStream: false,
+            options: {},
+          },
+        },
+      } as const;
+
+      const client = createClient(
+        FakeDefinition,
+        createChannel(
+          this.server.address,
+          transport === 'fetch'
+            ? FetchTransport()
+            : transport === 'websocket'
+            ? WebsocketTransport()
+            : transport === 'node-http'
+            ? NodeHttpTransport()
+            : assertNever(transport),
+        ),
+      );
+
+      let error: unknown;
+
+      try {
+        await client.testUnary({});
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error).toEqual(
+        new ClientError(
+          '/nice_grpc.test.Test2/TestUnary',
+          Status.UNIMPLEMENTED,
+          '[object Object]', // this is a bug in grpc-js
+        ),
+      );
     });
   });
 });
