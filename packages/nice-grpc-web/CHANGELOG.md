@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.2.4](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.2.3...nice-grpc-web@3.2.4) (2023-04-18)
+
+### Bug Fixes
+
+- **nice-grpc-web:** correctly handle trailers-only responses
+  ([#347](https://github.com/deeplay-io/nice-grpc/issues/347))
+  ([2beeafc](https://github.com/deeplay-io/nice-grpc/commit/2beeafcd63ccd7bb0d32755d6680f400a94fb984)),
+  closes [#345](https://github.com/deeplay-io/nice-grpc/issues/345)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [3.2.3](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.2.2...nice-grpc-web@3.2.3) (2023-03-31)
 
 **Note:** Version bump only for package nice-grpc-web
