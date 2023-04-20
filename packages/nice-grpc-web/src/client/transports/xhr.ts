@@ -1,7 +1,7 @@
 import {throwIfAborted} from 'abort-controller-x';
 import {Base64} from 'js-base64';
 import {ClientError, Metadata, Status} from 'nice-grpc-common';
-import {Transport} from "nice-grpc-web/lib/client/Transport";
+import {Transport} from "../Transport";
 
 class GrpcCallData {
     responseHeaders: Metadata = new Metadata();
