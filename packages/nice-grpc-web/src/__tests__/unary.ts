@@ -63,8 +63,10 @@ const environment = detect();
               ? WebsocketTransport()
               : transport === 'node-http'
               ? NodeHttpTransport()
-              : transport === "xhr"
+              : transport === 'xhr'
               ? XHRTransport()
+              : transport === 'fetch-blob'
+              ? FetchTransport({blobMode: true})
               : assertNever(transport),
           ),
         );
