@@ -25,13 +25,14 @@ import {
 } from '../../test-server/client';
 import {NodeHttpTransport} from '../client/transports/nodeHttp';
 import {defer} from './utils/defer';
+import {XHRTransport} from "../client/transports/xhr";
 
 const environment = detect();
 
 [
   ...cartesianProduct([
     ['envoy' as const, 'grpcwebproxy' as const, 'traefik' as const],
-    ['fetch' as const, 'node-http' as const],
+    ['fetch' as const, 'node-http' as const, 'xhr' as const],
     ['http' as const, 'https' as const],
   ]),
   ['grpcwebproxy', 'websocket', 'http'] as const,
@@ -62,6 +63,8 @@ const environment = detect();
               ? WebsocketTransport()
               : transport === 'node-http'
               ? NodeHttpTransport()
+              : transport === "xhr"
+              ? XHRTransport()
               : assertNever(transport),
           ),
         );
