@@ -32,7 +32,7 @@ const environment = detect();
 [
   ...cartesianProduct([
     ['envoy' as const, 'grpcwebproxy' as const, 'traefik' as const],
-    ['fetch' as const, 'node-http' as const, 'xhr' as const],
+    ['fetch' as const, 'node-http' as const, 'xhr' as const, 'fetch-blob' as const],
     ['http' as const, 'https' as const],
   ]),
   ['grpcwebproxy', 'websocket', 'http'] as const,
@@ -456,6 +456,10 @@ const environment = detect();
             ? WebsocketTransport()
             : transport === 'node-http'
             ? NodeHttpTransport()
+            : transport === 'fetch-blob'
+            ? FetchTransport({blobMode: true})
+            : transport === 'xhr'
+            ? XHRTransport()
             : assertNever(transport),
         ),
       );

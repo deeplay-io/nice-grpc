@@ -5,7 +5,7 @@ import {Transport} from '../Transport';
 
 export interface FetchTransportConfig {
   credentials?: RequestCredentials;
-  reactNativeMode?: boolean; // TODO - Name this blobMode?
+  blobMode?: boolean;
 }
 
 /**
@@ -97,7 +97,7 @@ export function FetchTransport(config?: FetchTransportConfig): Transport {
     let value: Uint8Array | undefined = undefined;
     let done: boolean = false;
     let abortListener: any;
-    if (config?.reactNativeMode ?? false) {
+    if (config?.blobMode ?? false) {
       const dataBlob = await response.blob();
       value = await blobReaderAsync(dataBlob);
       done = true;
@@ -114,7 +114,7 @@ export function FetchTransport(config?: FetchTransportConfig): Transport {
 
     try {
       while (true) {
-        if (config?.reactNativeMode ?? false) {
+        if (config?.blobMode ?? false) {
           const readResult = await reader!.read();
           value = readResult.value;
           done = readResult.done;
@@ -132,7 +132,7 @@ export function FetchTransport(config?: FetchTransportConfig): Transport {
         }
       }
     } finally {
-      if (config?.reactNativeMode ?? false) {
+      if (config?.blobMode ?? false) {
         signal.removeEventListener('abort', abortListener);
       }
 
