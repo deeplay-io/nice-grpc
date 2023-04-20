@@ -1,12 +1,13 @@
 import {throwIfAborted} from 'abort-controller-x';
 import {Base64} from 'js-base64';
 import {ClientError, Metadata, Status} from 'nice-grpc-common';
-import {Transport} from "../Transport";
+import {Transport} from "nice-grpc-web/lib/client/Transport";
 
 class GrpcCallData {
     responseHeaders: Metadata = new Metadata();
     responseChunks: Uint8Array[] = [];
     grpcStatus: Status = Status.UNKNOWN;
+    statusMessage: string = "";
 }
 
 export interface XHRTransportConfig {
@@ -16,6 +17,7 @@ export interface XHRTransportConfig {
 async function xhrPost(url: string, metadata: Metadata, requestBody: BodyInit, config?: XHRTransportConfig): Promise<GrpcCallData> {
     const callData: GrpcCallData = new GrpcCallData();
     return new Promise(function(resolve, reject) {
+        // TODO - Support fallback for node?
         const xhr = new XMLHttpRequest();
         xhr.open("POST", url, true);
         xhr.withCredentials = config?.credentials ?? true;
@@ -33,18 +35,37 @@ async function xhrPost(url: string, metadata: Metadata, requestBody: BodyInit, c
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.HEADERS_RECEIVED) {
                 callData.responseHeaders = headersToMetadata(xhr.getAllResponseHeaders());
+            } else if (xhr.readyState === XMLHttpRequest.DONE) {
+                resolve(callData);
             }
+        }
+        xhr.onerror = function() {
+            callData.statusMessage = getErrorDetailsFromHttpResponse(xhr.status, xhr.statusText);
         }
         xhr.onloadend = function() {
             callData.responseChunks.push(new Uint8Array(xhr.response as ArrayBuffer));
             callData.grpcStatus = getStatusFromHttpCode(xhr.status);
-            resolve(callData);
         }
 
         // Tested, this works.
         // @ts-ignore
         xhr.send(requestBody);
     });
+}
+
+function concatenateChunks(chunks: Uint8Array[]): Uint8Array {
+    // Using the performant method vs spread syntax: https://stackoverflow.com/a/60590943
+    let totalSize = 0;
+    for (const chunk of chunks) {
+        totalSize += chunk.length;
+    }
+    const newData = new Uint8Array(totalSize)
+    let setIndex = 0;
+    for (const chunk of chunks) {
+        newData.set(chunk, setIndex);
+        setIndex += chunk.length;
+    }
+    return newData;
 }
 
 /**
@@ -68,6 +89,7 @@ export function XHRTransport(config?: XHRTransportConfig): Transport {
             let iterator: AsyncIterator<Uint8Array> | undefined;
 
             requestBody = new ReadableStream({
+                // @ts-ignore
                 type: 'bytes',
                 start() {
                     iterator = body[Symbol.asyncIterator]();
@@ -96,10 +118,13 @@ export function XHRTransport(config?: XHRTransportConfig): Transport {
         };
 
         if (xhrData.grpcStatus !== Status.OK) {
+            const decoder = new TextDecoder();
+            const message = decoder.decode(concatenateChunks(xhrData.responseChunks));
+            console.warn(message, xhrData.statusMessage);
             throw new ClientError(
                 method.path,
                 xhrData.grpcStatus,
-                "TODO - Get from chunk",
+                `status=${xhrData.statusMessage}, message=${message}`
             );
         }
 
