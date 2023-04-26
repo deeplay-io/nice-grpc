@@ -5,6 +5,7 @@ import {Transport} from '../Transport';
 
 export interface FetchTransportConfig {
   credentials?: RequestCredentials;
+  cache?: RequestCache; // defaults to no-cache if unspecified
 }
 
 /**
@@ -53,7 +54,7 @@ export function FetchTransport(config?: FetchTransportConfig): Transport {
       body: requestBody,
       headers: metadataToHeaders(metadata),
       signal,
-      cache: 'no-cache',
+      cache: config?.cache ? config.cache : 'no-cache',
       ['duplex' as any]: 'half',
       credentials: config?.credentials,
     });
