@@ -8687,9 +8687,9 @@ protobufjs@^6.11.3, protobufjs@^6.8.8:
     long "^4.0.0"
 
 protobufjs@^7.0.0, protobufjs@^7.1.2:
-  version "7.2.2"
-  resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-7.2.2.tgz#2af401d8c547b9476fb37ffc65782cf302342ca3"
-  integrity sha512-++PrQIjrom+bFDPpfmqXfAGSQs40116JRrqqyf53dymUMvvb5d/LMRyicRoF1AUKoXVS1/IgJXlEgcpr4gTF3Q==
+  version "7.2.3"
+  resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-7.2.3.tgz#01af019e40d9c6133c49acbb3ff9e30f4f0f70b2"
+  integrity sha512-TtpvOqwB5Gdz/PQmOjgsrGH1nHjAQVCN7JG4A6r1sXRWESL5rNMAiRcBQlCAdKxZcAbstExQePYG8xof/JVRgg==
   dependencies:
     "@protobufjs/aspromise" "^1.1.2"
     "@protobufjs/base64" "^1.1.2"
