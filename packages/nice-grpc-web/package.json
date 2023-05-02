@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-web",
-  "version": "3.2.4",
+  "version": "3.3.0",
   "description": "A Browser gRPC library that is nice to you",
   "keywords": [
     "grpc",
