@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.2.4...nice-grpc-web@3.3.0) (2023-05-02)
+
+### Features
+
+- **nice-grpc-web:** add `cache` field to FetchTransportConfig
+  ([#350](https://github.com/deeplay-io/nice-grpc/issues/350))
+  ([19533cd](https://github.com/deeplay-io/nice-grpc/commit/19533cd11df338dd1d1c97948bac35348e3eb9a5))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [3.2.4](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.2.3...nice-grpc-web@3.2.4) (2023-04-18)
 
 ### Bug Fixes
