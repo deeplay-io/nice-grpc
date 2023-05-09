@@ -43,6 +43,9 @@ const environment = detect();
   if (transport === 'xhr' && environment?.type === 'node'){
     return;
   }
+  if (transport === 'fetch-blob' && environment?.type === 'node') {
+    return;
+  }
 
   describe(`unary / ${proxyType} / ${transport} / ${protocol}`, () => {
     type Context = {
