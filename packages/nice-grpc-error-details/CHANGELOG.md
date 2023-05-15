@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-error-details@0.1.9...nice-grpc-error-details@0.2.0) (2023-05-15)
+
+### Features
+
+- **nice-grpc-error-details:** include support for violation type of errors in
+  rich client error detail instance
+  ([#368](https://github.com/deeplay-io/nice-grpc/issues/368))
+  ([dcc2481](https://github.com/deeplay-io/nice-grpc/commit/dcc24819cbce9a5636a1d6220449ab192b9cd313))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [0.1.9](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-error-details@0.1.7...nice-grpc-error-details@0.1.9) (2023-03-31)
 
 **Note:** Version bump only for package nice-grpc-error-details
