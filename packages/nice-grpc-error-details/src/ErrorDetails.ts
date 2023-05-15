@@ -1,11 +1,14 @@
 import {
   BadRequest,
+  BadRequest_FieldViolation,
   DebugInfo,
   ErrorInfo,
   Help,
   LocalizedMessage,
   PreconditionFailure,
+  PreconditionFailure_Violation,
   QuotaFailure,
+  QuotaFailure_Violation,
   RequestInfo,
   ResourceInfo,
   RetryInfo,
@@ -17,9 +20,12 @@ export type ErrorDetails =
   | RetryInfo
   | DebugInfo
   | QuotaFailure
+  | QuotaFailure_Violation
   | ErrorInfo
   | PreconditionFailure
+  | PreconditionFailure_Violation
   | BadRequest
+  | BadRequest_FieldViolation
   | RequestInfo
   | ResourceInfo
   | Help
@@ -30,9 +36,12 @@ const knownMessages = [
   RetryInfo,
   DebugInfo,
   QuotaFailure,
+  QuotaFailure_Violation,
   ErrorInfo,
   PreconditionFailure,
+  PreconditionFailure_Violation,
   BadRequest,
+  BadRequest_FieldViolation,
   RequestInfo,
   ResourceInfo,
   Help,
