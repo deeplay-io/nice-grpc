@@ -2567,9 +2567,9 @@ abbrev@^2.0.0:
   integrity sha512-6/mh1E2u2YgEsCHdY0Yx5oW+61gZU+1vXaoiHHrpKeuRNNgFvS+/jrwHiQhB5apAf5oB7UB7E19ol2R2LKH8hQ==
 
 abort-controller-x@^0.4.0:
-  version "0.4.1"
-  resolved "https://registry.npmjs.org/abort-controller-x/-/abort-controller-x-0.4.1.tgz"
-  integrity sha512-lJ2ssrl3FoTK3cX/g15lRCkXFWKiwRTRtBjfwounO2EM/Q65rI/MEZsfsch1juWU2pH2aLSaq0HGowlDP/imrw==
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/abort-controller-x/-/abort-controller-x-0.4.2.tgz#66dae3c510706b407915af6ecc420ded1e616f08"
+  integrity sha512-5bgqvgogTIxTkQpkgDoFZHt2YS8uireyOkC4snQG2kaEKs7DI7Tgsu5xysjp9MxG+6OLICBOAL8TtKHzxQrlqw==
 
 abort-controller@^3.0.0:
   version "3.0.0"
