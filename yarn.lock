@@ -2229,12 +2229,12 @@
   dependencies:
     minimatch "^7.4.2"
 
-"@types/archiver@^5.3.1":
-  version "5.3.1"
-  resolved "https://registry.npmjs.org/@types/archiver/-/archiver-5.3.1.tgz"
-  integrity sha512-wKYZaSXaDvTZuInAWjCeGG7BEAgTWG2zZW0/f7IYFcoHB2X2d9lkVFnrOlXl3W6NrvO6Ml3FLLu8Uksyymcpnw==
+"@types/archiver@^5.3.2":
+  version "5.3.2"
+  resolved "https://registry.yarnpkg.com/@types/archiver/-/archiver-5.3.2.tgz#a9f0bcb0f0b991400e7766d35f6e19d163bdadcc"
+  integrity sha512-IctHreBuWE5dvBDz/0WeKtyVKVRs4h75IblxOACL92wU66v+HGAfEYAOyXkOFphvRJMhuXdI9huDXpX0FC6lCw==
   dependencies:
-    "@types/glob" "*"
+    "@types/readdir-glob" "*"
 
 "@types/babel__core@^7.1.14":
   version "7.1.14"
@@ -2294,10 +2294,10 @@
     "@types/node" "*"
     "@types/ssh2" "*"
 
-"@types/dockerode@^3.3.14":
-  version "3.3.14"
-  resolved "https://registry.yarnpkg.com/@types/dockerode/-/dockerode-3.3.14.tgz#0c4ff53ea9990c43d525c865525f13e084afb5b0"
-  integrity sha512-PUTwtySPzCbjZ/uqRMBWKHtLGqBAlhnLitzHuom19NEX0KBYsQXqbVlig+zbUgYQU1paDeQURXj7QNglh1RI6A==
+"@types/dockerode@^3.3.16":
+  version "3.3.18"
+  resolved "https://registry.yarnpkg.com/@types/dockerode/-/dockerode-3.3.18.tgz#3fcc5a30e2a1ab3398b3e4cc4bc2a924194746e4"
+  integrity sha512-4EcP136jNMBZQ4zTHlI1VP2RpIQ2uJvRpjta3W2Cc7Ti7rk2r3TgVKjxR0Tb3NrT9ObXvl7Tv5nxra6BHEpkWg==
   dependencies:
     "@types/docker-modem" "*"
     "@types/node" "*"
@@ -2308,14 +2308,6 @@
   integrity sha512-Iv2FAb5RnIk/eFO2CTu8k+0VMmIR15pKbcqRWi+s3ydW+aKXlN2yemP92SrO++ERyJx+p6Ie1ggbLBMbU1SjiQ==
   dependencies:
     get-port "*"
-
-"@types/glob@*":
-  version "8.0.0"
-  resolved "https://registry.npmjs.org/@types/glob/-/glob-8.0.0.tgz"
-  integrity sha512-l6NQsDDyQUVeoTynNpC9uRvCUint/gSUXQA2euwmTuWGvPY5LSDUu6tkCtJB2SvGQlJQzLaKqcGZP4//7EDveA==
-  dependencies:
-    "@types/minimatch" "*"
-    "@types/node" "*"
 
 "@types/google-protobuf@^3.15.2", "@types/google-protobuf@^3.7.4":
   version "3.15.6"
@@ -2379,11 +2371,6 @@
   resolved "https://registry.npmjs.org/@types/long/-/long-4.0.1.tgz"
   integrity sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==
 
-"@types/minimatch@*":
-  version "5.1.2"
-  resolved "https://registry.npmjs.org/@types/minimatch/-/minimatch-5.1.2.tgz"
-  integrity sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==
-
 "@types/minimatch@^3.0.3":
   version "3.0.4"
   resolved "https://registry.npmjs.org/@types/minimatch/-/minimatch-3.0.4.tgz"
@@ -2428,6 +2415,13 @@
   version "2.3.0"
   resolved "https://registry.npmjs.org/@types/prettier/-/prettier-2.3.0.tgz"
   integrity sha512-hkc1DATxFLQo4VxPDpMH1gCkPpBbpOoJ/4nhuXw4n63/0R6bCpQECj4+K226UJ4JO/eJQz+1mC2I7JsWanAdQw==
+
+"@types/readdir-glob@*":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@types/readdir-glob/-/readdir-glob-1.1.1.tgz#27ac2db283e6aa3d110b14ff9da44fcd1a5c38b1"
+  integrity sha512-ImM6TmoF8bgOwvehGviEj3tRdRBbQujr1N+0ypaln/GWjaerOB26jb93vsRHmdMtvVQZQebOlqt2HROark87mQ==
+  dependencies:
+    "@types/node" "*"
 
 "@types/ssh2-streams@*":
   version "0.1.9"
@@ -4401,10 +4395,10 @@ docker-modem@^3.0.0:
     split-ca "^1.0.1"
     ssh2 "^1.11.0"
 
-dockerode@^3.3.4:
-  version "3.3.4"
-  resolved "https://registry.npmjs.org/dockerode/-/dockerode-3.3.4.tgz"
-  integrity sha512-3EUwuXnCU+RUlQEheDjmBE0B7q66PV9Rw5NiH1sXwINq0M9c5ERP9fxgkw36ZHOtzf4AGEEYySnkx/sACC9EgQ==
+dockerode@^3.3.5:
+  version "3.3.5"
+  resolved "https://registry.yarnpkg.com/dockerode/-/dockerode-3.3.5.tgz#7ae3f40f2bec53ae5e9a741ce655fff459745629"
+  integrity sha512-/0YNa3ZDNeLr/tSckmD69+Gq+qVNhvKfAHNeZJBnp7EOP6RGKV8ORrJHkUn20So5wU+xxT7+1n5u8PjHbfjbSA==
   dependencies:
     "@balena/dockerignore" "^1.0.2"
     docker-modem "^3.0.0"
@@ -10099,19 +10093,19 @@ test-exclude@^6.0.0:
     minimatch "^3.0.4"
 
 testcontainers@^9.0.0:
-  version "9.1.3"
-  resolved "https://registry.yarnpkg.com/testcontainers/-/testcontainers-9.1.3.tgz#5a02f9eb17b6993c7c4ba3684318247c0d282262"
-  integrity sha512-Kw7GZC8nD84Uuq2oxa2Ln9F5vIALWIZoQHywOGuiiVthSHzOVl4CtebO25whMf3CrVICwy8CBUimvSdVgU9N7g==
+  version "9.8.0"
+  resolved "https://registry.yarnpkg.com/testcontainers/-/testcontainers-9.8.0.tgz#03d8798ad047e7673e934934b5504bc0a2f14e4e"
+  integrity sha512-61IlJeVrUbS5JlAgM/N0koFnRxsID+vDap7CUmgaHXSGxmFofCiokB7kD96c1BtDWGOznrd7lTAPGSkd3RVkPA==
   dependencies:
     "@balena/dockerignore" "^1.0.2"
-    "@types/archiver" "^5.3.1"
-    "@types/dockerode" "^3.3.14"
+    "@types/archiver" "^5.3.2"
+    "@types/dockerode" "^3.3.16"
     archiver "^5.3.1"
     async-lock "^1.4.0"
     byline "^5.0.0"
     debug "^4.3.4"
     docker-compose "^0.23.19"
-    dockerode "^3.3.4"
+    dockerode "^3.3.5"
     get-port "^5.1.1"
     node-fetch "^2.6.9"
     properties-reader "^2.2.0"
