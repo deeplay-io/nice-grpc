@@ -32,7 +32,7 @@
   "author": "Daniel Lytkin <aikoven@deeplay.io>",
   "license": "MIT",
   "devDependencies": {
-    "@tsconfig/node14": "^1.0.3",
+    "@tsconfig/node14": "^14.1.0",
     "@types/defer-promise": "^1.0.0",
     "@types/get-port": "^4.2.0",
     "@types/google-protobuf": "^3.7.4",

@@ -27,7 +27,7 @@
   "author": "Daniel Lytkin <aikoven@deeplay.io>",
   "license": "MIT",
   "devDependencies": {
-    "@tsconfig/node14": "^1.0.3",
+    "@tsconfig/node14": "^14.1.0",
     "@types/node": "^14.18.23",
     "cpr": "^3.0.1",
     "grpc-tools": "^1.11.0",
