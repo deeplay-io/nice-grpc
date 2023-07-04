@@ -2404,10 +2404,10 @@
     "@types/node" "*"
     "@types/ssh2" "*"
 
-"@types/dockerode@^3.3.16":
-  version "3.3.18"
-  resolved "https://registry.yarnpkg.com/@types/dockerode/-/dockerode-3.3.18.tgz#3fcc5a30e2a1ab3398b3e4cc4bc2a924194746e4"
-  integrity sha512-4EcP136jNMBZQ4zTHlI1VP2RpIQ2uJvRpjta3W2Cc7Ti7rk2r3TgVKjxR0Tb3NrT9ObXvl7Tv5nxra6BHEpkWg==
+"@types/dockerode@^3.3.19":
+  version "3.3.19"
+  resolved "https://registry.yarnpkg.com/@types/dockerode/-/dockerode-3.3.19.tgz#59eb07550a102b397a9504083a6c50d811eed04c"
+  integrity sha512-7CC5yIpQi+bHXwDK43b/deYXteP3Lem9gdocVVHJPSRJJLMfbiOchQV3rDmAPkMw+n3GIVj7m1six3JW+VcwwA==
   dependencies:
     "@types/docker-modem" "*"
     "@types/node" "*"
@@ -4511,12 +4511,12 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-docker-compose@^0.23.19:
-  version "0.23.19"
-  resolved "https://registry.yarnpkg.com/docker-compose/-/docker-compose-0.23.19.tgz#9947726e2fe67bdfa9e8efe1ff15aa0de2e10eb8"
-  integrity sha512-v5vNLIdUqwj4my80wxFDkNH+4S85zsRuH29SO7dCWVWPCMt/ohZBsGN6g6KXWifT0pzQ7uOxqEKCYCDPJ8Vz4g==
+docker-compose@^0.24.1:
+  version "0.24.1"
+  resolved "https://registry.yarnpkg.com/docker-compose/-/docker-compose-0.24.1.tgz#09f9a2408395b8adf80feaacf65f6e2a4b119866"
+  integrity sha512-CVphzCi0Hmw/0CHlAzgiwhLsJjFRqnvpBYMYbf63bz6MON69ElgrfrgQTmgPtEjbifjgaptu3+Gea62vI+9jiA==
   dependencies:
-    yaml "^1.10.2"
+    yaml "^2.2.2"
 
 docker-modem@^3.0.0:
   version "3.0.6"
@@ -7929,10 +7929,10 @@ node-fetch@2.6.7:
   dependencies:
     whatwg-url "^5.0.0"
 
-node-fetch@^2.6.1, node-fetch@^2.6.7, node-fetch@^2.6.9:
-  version "2.6.9"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.9.tgz#7c7f744b5cc6eb5fd404e0c7a9fec630a55657e6"
-  integrity sha512-DJm/CJkZkRjKKj4Zi4BsKVZh3ValV5IR5s7LVZnW+6YMh0W1BfNA8XSs6DLMGYlId5F3KnA70uu2qepcR08Qqg==
+node-fetch@^2.6.1, node-fetch@^2.6.11, node-fetch@^2.6.7:
+  version "2.6.12"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.12.tgz#02eb8e22074018e3d5a83016649d04df0e348fba"
+  integrity sha512-C/fGU2E8ToujUivIO0H+tpQ6HWo4eEmchoPIoXtxCrVghxdKq+QOHqEZW7tuP3KlV3bC8FRMO5nMCC7Zm1VP6g==
   dependencies:
     whatwg-url "^5.0.0"
 
@@ -10214,24 +10214,25 @@ test-exclude@^6.0.0:
     minimatch "^3.0.4"
 
 testcontainers@^9.0.0:
-  version "9.8.0"
-  resolved "https://registry.yarnpkg.com/testcontainers/-/testcontainers-9.8.0.tgz#03d8798ad047e7673e934934b5504bc0a2f14e4e"
-  integrity sha512-61IlJeVrUbS5JlAgM/N0koFnRxsID+vDap7CUmgaHXSGxmFofCiokB7kD96c1BtDWGOznrd7lTAPGSkd3RVkPA==
+  version "9.9.1"
+  resolved "https://registry.yarnpkg.com/testcontainers/-/testcontainers-9.9.1.tgz#0af23e56c52eb7cd0e3bc63cc3e059abf3f1705a"
+  integrity sha512-44iDiyK0JzK5FbqdrKjmE/8QSZhvCFxh0d/OfG+R9fkznU5KVCYeeUsPULkVRIi210X4FAitSXra1ZU591Zlqw==
   dependencies:
     "@balena/dockerignore" "^1.0.2"
     "@types/archiver" "^5.3.2"
-    "@types/dockerode" "^3.3.16"
+    "@types/dockerode" "^3.3.19"
     archiver "^5.3.1"
     async-lock "^1.4.0"
     byline "^5.0.0"
     debug "^4.3.4"
-    docker-compose "^0.23.19"
+    docker-compose "^0.24.1"
     dockerode "^3.3.5"
     get-port "^5.1.1"
-    node-fetch "^2.6.9"
+    node-fetch "^2.6.11"
     properties-reader "^2.2.0"
     ssh-remote-port-forward "^1.0.4"
     tar-fs "^2.1.1"
+    tmp "^0.2.1"
 
 text-extensions@^1.0.0:
   version "1.9.0"
@@ -11061,7 +11062,7 @@ yallist@^4.0.0:
   resolved "https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
-yaml@^1.10.0, yaml@^1.10.2:
+yaml@^1.10.0:
   version "1.10.2"
   resolved "https://registry.npmjs.org/yaml/-/yaml-1.10.2.tgz"
   integrity sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==
