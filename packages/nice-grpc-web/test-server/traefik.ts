@@ -1,11 +1,7 @@
 import fs from 'fs/promises';
 import * as path from 'path';
 import {env} from 'string-env-interpolation';
-import {GenericContainer} from 'testcontainers';
-import {
-  HostPortWaitStrategy,
-  LogWaitStrategy,
-} from 'testcontainers/dist/wait-strategy';
+import {GenericContainer, Wait} from 'testcontainers';
 import * as tmp from 'tmp';
 
 export async function startTraefikProxy(
@@ -83,7 +79,7 @@ export async function startTraefikProxy(
         ipAddress: 'host-gateway',
       },
     ])
-    .withWaitStrategy(new LogWaitStrategy(/traefik-internal-recovery/))
+    .withWaitStrategy(Wait.forLogMessage(/traefik-internal-recovery/))
     .start();
 
   // const logStream = await container.logs();
