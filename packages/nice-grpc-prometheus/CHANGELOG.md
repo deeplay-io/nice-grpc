@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.7](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-prometheus@0.1.6...nice-grpc-prometheus@0.1.7) (2023-07-16)
+
+**Note:** Version bump only for package nice-grpc-prometheus
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [0.1.6](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-prometheus@0.1.4...nice-grpc-prometheus@0.1.6) (2023-03-31)
 
 **Note:** Version bump only for package nice-grpc-prometheus

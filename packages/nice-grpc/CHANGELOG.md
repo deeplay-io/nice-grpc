@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.5](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.4...nice-grpc@2.1.5) (2023-07-16)
+
+**Note:** Version bump only for package nice-grpc
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.1.4](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.3...nice-grpc@2.1.4) (2023-03-31)
 
 **Note:** Version bump only for package nice-grpc

@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.3.0...nice-grpc-web@3.3.1) (2023-07-16)
+
+### Bug Fixes
+
+- **nice-grpc-web:** don't put stack traces to internal and transport error
+  messages ([#406](https://github.com/deeplay-io/nice-grpc/issues/406))
+  ([27c6230](https://github.com/deeplay-io/nice-grpc/commit/27c6230eae74cac04223bf536c609e9dcc7d32de)),
+  closes [#386](https://github.com/deeplay-io/nice-grpc/issues/386)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [3.3.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.2.4...nice-grpc-web@3.3.0) (2023-05-02)
 
 ### Features

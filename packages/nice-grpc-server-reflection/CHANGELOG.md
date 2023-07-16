@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.7](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-reflection@2.0.6...nice-grpc-server-reflection@2.0.7) (2023-07-16)
+
+### Bug Fixes
+
+- **nice-grpc-server-reflection:** fix resolving methods
+  ([#405](https://github.com/deeplay-io/nice-grpc/issues/405))
+  ([de01075](https://github.com/deeplay-io/nice-grpc/commit/de01075663749a6ccdf0b80a4ba035699ffe551b)),
+  closes [#385](https://github.com/deeplay-io/nice-grpc/issues/385)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.0.6](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-reflection@2.0.4...nice-grpc-server-reflection@2.0.6) (2023-03-31)
 
 **Note:** Version bump only for package nice-grpc-server-reflection
