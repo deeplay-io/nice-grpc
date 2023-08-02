@@ -6835,9 +6835,9 @@ karma-spec-reporter@^0.0.36:
     colors "1.4.0"
 
 karma-typescript-es6-transform@^5.5.3:
-  version "5.5.3"
-  resolved "https://registry.yarnpkg.com/karma-typescript-es6-transform/-/karma-typescript-es6-transform-5.5.3.tgz#5396da512c20b69d49e3e362a41f250342da5c03"
-  integrity sha512-vB1Cv8z9yxyR2KQuvks5soNKASyS2RPApdMsB3Ad55RqFJeag9G+xyGIwxOdyCHtgOwa4yn1rngMwaN7WBQTbQ==
+  version "5.5.4"
+  resolved "https://registry.yarnpkg.com/karma-typescript-es6-transform/-/karma-typescript-es6-transform-5.5.4.tgz#bca1eb2f3ba50601c083fe6277ae6df0f7cdb7c8"
+  integrity sha512-SKUNU4cAxNgmJnF/zCAzMRnBaciQjFumSDrsf1j8TTJvAtwAk/tLM+hru88Dr4Q4SmFUFa+PzIK8NJmykQ2F7Q==
   dependencies:
     "@babel/core" "^7.11.1"
     "@babel/preset-env" "^7.11.0"
