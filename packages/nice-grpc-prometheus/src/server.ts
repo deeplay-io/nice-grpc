@@ -19,35 +19,35 @@ import {
 } from './common';
 import {registry} from './registry';
 
-const serverStartedMetric = new Counter({
+const defaultStartedMetric = new Counter({
   registers: [registry],
   name: 'grpc_server_started_total',
   help: 'Total number of RPCs started on the server.',
   labelNames: [typeLabel, serviceLabel, methodLabel, pathLabel],
 });
 
-const serverHandledMetric = new Counter({
+const defaultHandledMetric = new Counter({
   registers: [registry],
   name: 'grpc_server_handled_total',
   help: 'Total number of RPCs completed on the server, regardless of success or failure.',
   labelNames: [typeLabel, serviceLabel, methodLabel, pathLabel, codeLabel],
 });
 
-const serverStreamMsgReceivedMetric = new Counter({
+const defaultStreamMsgReceivedMetric = new Counter({
   registers: [registry],
   name: 'grpc_server_msg_received_total',
   help: 'Total number of RPC stream messages received by the server.',
   labelNames: [typeLabel, serviceLabel, methodLabel, pathLabel],
 });
 
-const serverStreamMsgSentMetric = new Counter({
+const defaultStreamMsgSentMetric = new Counter({
   registers: [registry],
   name: 'grpc_server_msg_sent_total',
   help: 'Total number of gRPC stream messages sent by the server.',
   labelNames: [typeLabel, serviceLabel, methodLabel, pathLabel],
 });
 
-const serverHandlingSecondsMetric = new Histogram({
+const defaultHandlingSecondsMetric = new Histogram({
   registers: [registry],
   name: 'grpc_server_handling_seconds',
   help: 'Histogram of response latency (seconds) of gRPC that had been application-level handled by the server.',
@@ -55,7 +55,55 @@ const serverHandlingSecondsMetric = new Histogram({
   buckets: latencySecondsBuckets,
 });
 
-export function prometheusServerMiddleware(): ServerMiddleware {
+type PrometheusServerMiddlewareOptions = {
+  serverStartedMetric?: Counter<
+    | typeof typeLabel
+    | typeof serviceLabel
+    | typeof methodLabel
+    | typeof pathLabel
+  >;
+  serverHandledMetric?: Counter<
+    | typeof typeLabel
+    | typeof serviceLabel
+    | typeof methodLabel
+    | typeof pathLabel
+    | typeof codeLabel
+  >;
+  serverStreamMsgReceivedMetric?: Counter<
+    | typeof typeLabel
+    | typeof serviceLabel
+    | typeof methodLabel
+    | typeof pathLabel
+  >;
+  serverStreamMsgSentMetric?: Counter<
+    | typeof typeLabel
+    | typeof serviceLabel
+    | typeof methodLabel
+    | typeof pathLabel
+  >;
+  serverHandlingSecondsMetric?: Histogram<
+    | typeof typeLabel
+    | typeof serviceLabel
+    | typeof methodLabel
+    | typeof pathLabel
+    | typeof codeLabel
+  >;
+};
+
+export function prometheusServerMiddleware(
+  options?: PrometheusServerMiddlewareOptions,
+): ServerMiddleware {
+  const serverStartedMetric =
+    options?.serverStartedMetric || defaultStartedMetric;
+  const serverHandledMetric =
+    options?.serverHandledMetric || defaultHandledMetric;
+  const serverStreamMsgReceivedMetric =
+    options?.serverStreamMsgReceivedMetric || defaultStreamMsgReceivedMetric;
+  const serverStreamMsgSentMetric =
+    options?.serverStreamMsgSentMetric || defaultStreamMsgSentMetric;
+  const serverHandlingSecondsMetric =
+    options?.serverHandlingSecondsMetric || defaultHandlingSecondsMetric;
+
   return async function* prometheusServerMiddlewareGenerator<Request, Response>(
     call: ServerMiddlewareCall<Request, Response>,
     context: CallContext,

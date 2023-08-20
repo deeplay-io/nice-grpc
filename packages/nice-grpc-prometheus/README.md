@@ -89,3 +89,54 @@ Metrics that correspond to finished calls have extra label:
 
 [npm-image]: https://badge.fury.io/js/nice-grpc-prometheus.svg
 [npm-url]: https://badge.fury.io/js/nice-grpc-prometheus
+
+### Customization
+
+You can use your own metric instances. This can be useful for example if you
+want to use your own buckets in histograms.
+
+```ts
+import {createClientFactory} from 'nice-grpc';
+import {
+  labelNames,
+  prometheusClientMiddleware,
+  registry,
+} from 'nice-grpc-prometheus';
+import {Histogram} from 'prom-client';
+
+const clientHandlingSecondsMetric = new Histogram({
+  registers: [registry],
+  name: 'custom_grpc_client_handling_seconds',
+  help: 'Custom histogram of response latency (seconds) of the gRPC until it is finished by the application.',
+  labelNames,
+  buckets: [0.1, 0.5, 1, 2, 3, 5, 10],
+});
+
+const clientFactory = createClientFactory()
+  .use(prometheusClientMiddleware({clientHandlingSecondsMetric}))
+  .use(/* ... other middleware */);
+```
+
+Client middleware options:
+
+```ts
+{
+  clientStartedMetric?: Counter;
+  clientHandledMetric?: Counter;
+  clientStreamMsgReceivedMetric?: Counter;
+  clientStreamMsgSentMetric?: Counter;
+  clientHandlingSecondsMetric?: Histogram;
+}
+```
+
+Server middleware options:
+
+```ts
+{
+  serverStartedMetric?: Counter;
+  serverHandledMetric?: Counter;
+  serverStreamMsgReceivedMetric?: Counter;
+  serverStreamMsgSentMetric?: Counter;
+  serverHandlingSecondsMetric?: Histogram;
+}
+```
