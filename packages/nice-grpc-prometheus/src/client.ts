@@ -11,6 +11,8 @@ import {
   codeLabel,
   getLabels,
   incrementStreamMessagesCounter,
+  labelNames,
+  labelNamesWithCode,
   latencySecondsBuckets,
   methodLabel,
   pathLabel,
@@ -23,35 +25,35 @@ const defaultClientStartedMetric = new Counter({
   registers: [registry],
   name: 'grpc_client_started_total',
   help: 'Total number of RPCs started on the client.',
-  labelNames: [typeLabel, serviceLabel, methodLabel, pathLabel],
+  labelNames,
 });
 
 const defaultClientHandledMetric = new Counter({
   registers: [registry],
   name: 'grpc_client_handled_total',
   help: 'Total number of RPCs completed on the client, regardless of success or failure.',
-  labelNames: [typeLabel, serviceLabel, methodLabel, pathLabel, codeLabel],
+  labelNames: labelNamesWithCode,
 });
 
 const defaultClientStreamMsgReceivedMetric = new Counter({
   registers: [registry],
   name: 'grpc_client_msg_received_total',
   help: 'Total number of RPC stream messages received by the client.',
-  labelNames: [typeLabel, serviceLabel, methodLabel, pathLabel],
+  labelNames,
 });
 
 const defaultClientStreamMsgSentMetric = new Counter({
   registers: [registry],
   name: 'grpc_client_msg_sent_total',
   help: 'Total number of gRPC stream messages sent by the client.',
-  labelNames: [typeLabel, serviceLabel, methodLabel, pathLabel],
+  labelNames,
 });
 
 const defaultClientHandlingSecondsMetric = new Histogram({
   registers: [registry],
   name: 'grpc_client_handling_seconds',
   help: 'Histogram of response latency (seconds) of the gRPC until it is finished by the application.',
-  labelNames: [typeLabel, serviceLabel, methodLabel, pathLabel, codeLabel],
+  labelNames: labelNamesWithCode,
   buckets: latencySecondsBuckets,
 });
 

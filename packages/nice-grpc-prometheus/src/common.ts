@@ -11,13 +11,8 @@ export const codeLabel = 'grpc_code';
  * 1ms, 4ms, 16ms, ..., ~1 hour in seconds
  */
 export const latencySecondsBuckets = exponentialBuckets(0.001, 4, 12);
-export const labelNames = [
-  typeLabel,
-  serviceLabel,
-  methodLabel,
-  pathLabel,
-  codeLabel,
-];
+export const labelNames = [typeLabel, serviceLabel, methodLabel, pathLabel];
+export const labelNamesWithCode = [...labelNames, codeLabel];
 
 export function getLabels(method: MethodDescriptor) {
   const callType = method.requestStream

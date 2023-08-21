@@ -98,17 +98,18 @@ want to use your own buckets in histograms.
 ```ts
 import {createClientFactory} from 'nice-grpc';
 import {
-  labelNames,
+  labelNamesWithCode,
   prometheusClientMiddleware,
-  registry,
 } from 'nice-grpc-prometheus';
-import {Histogram} from 'prom-client';
+import {Histogram, Registry} from 'prom-client';
+
+const registry = new Registry();
 
 const clientHandlingSecondsMetric = new Histogram({
   registers: [registry],
   name: 'custom_grpc_client_handling_seconds',
   help: 'Custom histogram of response latency (seconds) of the gRPC until it is finished by the application.',
-  labelNames,
+  labelNames: labelNamesWithCode,
   buckets: [0.1, 0.5, 1, 2, 3, 5, 10],
 });
 
@@ -117,15 +118,19 @@ const clientFactory = createClientFactory()
   .use(/* ... other middleware */);
 ```
 
+Don't forget
+[to merge new registry with the global registry](https://github.com/siimon/prom-client#multiple-registries)
+or use default registry instead.
+
 Client middleware options:
 
 ```ts
 {
-  clientStartedMetric?: Counter;
-  clientHandledMetric?: Counter;
-  clientStreamMsgReceivedMetric?: Counter;
-  clientStreamMsgSentMetric?: Counter;
-  clientHandlingSecondsMetric?: Histogram;
+  clientStartedMetric?: Counter; // labelNames: labelNames
+  clientHandledMetric?: Counter; // labelNames: labelNamesWithCode
+  clientStreamMsgReceivedMetric?: Counter; // labelNames: labelNames
+  clientStreamMsgSentMetric?: Counter; // labelNames: labelNames
+  clientHandlingSecondsMetric?: Histogram; // labelNames: labelNamesWithCode
 }
 ```
 
@@ -133,10 +138,13 @@ Server middleware options:
 
 ```ts
 {
-  serverStartedMetric?: Counter;
-  serverHandledMetric?: Counter;
-  serverStreamMsgReceivedMetric?: Counter;
-  serverStreamMsgSentMetric?: Counter;
-  serverHandlingSecondsMetric?: Histogram;
+  serverStartedMetric?: Counter; // labelNames: labelNames
+  serverHandledMetric?: Counter; // labelNames: labelNamesWithCode
+  serverStreamMsgReceivedMetric?: Counter; // labelNames: labelNames
+  serverStreamMsgSentMetric?: Counter; // labelNames: labelNames
+  serverHandlingSecondsMetric?: Histogram; // labelNames: labelNamesWithCode
 }
 ```
+
+**Caution:** Use the labelNames specified in the comment. Using incorrect
+labelNames may cause errors now or in the future.

@@ -7,9 +7,10 @@ import {
 } from 'nice-grpc';
 import {Counter, Histogram, Registry} from 'prom-client';
 import {
+  labelNames,
+  labelNamesWithCode,
   prometheusClientMiddleware,
   prometheusServerMiddleware,
-  labelNames,
 } from '..';
 import {TestDefinition} from '../../fixtures/test';
 import {dumpMetrics} from './utils/dumpMetrics';
@@ -28,7 +29,7 @@ const serverHandledMetric = new Counter({
   registers: [registry],
   name: 'custom_grpc_server_handled_total',
   help: 'Custom total number of RPCs completed on the server, regardless of success or failure.',
-  labelNames,
+  labelNames: labelNamesWithCode,
 });
 
 const serverStreamMsgReceivedMetric = new Counter({
@@ -49,7 +50,7 @@ const serverHandlingSecondsMetric = new Histogram({
   registers: [registry],
   name: 'custom_grpc_server_handling_seconds',
   help: 'Custom histogram of response latency (seconds) of gRPC that had been application-level handled by the server.',
-  labelNames,
+  labelNames: labelNamesWithCode,
   buckets: [0.1, 0.5, 1],
 });
 
@@ -64,7 +65,7 @@ const clientHandledMetric = new Counter({
   registers: [registry],
   name: 'custom_grpc_client_handled_total',
   help: 'Custom total number of RPCs completed on the client, regardless of success or failure.',
-  labelNames,
+  labelNames: labelNamesWithCode,
 });
 
 const clientStreamMsgReceivedMetric = new Counter({
@@ -85,7 +86,7 @@ const clientHandlingSecondsMetric = new Histogram({
   registers: [registry],
   name: 'custom_grpc_client_handling_seconds',
   help: 'Custom histogram of response latency (seconds) of the gRPC until it is finished by the application.',
-  labelNames,
+  labelNames: labelNamesWithCode,
   buckets: [0.1, 0.5, 1],
 });
 
