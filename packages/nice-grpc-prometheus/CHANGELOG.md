@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-prometheus@0.1.7...nice-grpc-prometheus@0.2.0) (2023-08-24)
+
+### Features
+
+- **nice-grpc-prometheus:** add metrics customization
+  ([#423](https://github.com/deeplay-io/nice-grpc/issues/423))
+  ([4eae37c](https://github.com/deeplay-io/nice-grpc/commit/4eae37c5fa22226765e5808339d5e7b4ebec26f9))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [0.1.7](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-prometheus@0.1.6...nice-grpc-prometheus@0.1.7) (2023-07-16)
 
 **Note:** Version bump only for package nice-grpc-prometheus
