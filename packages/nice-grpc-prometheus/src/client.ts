@@ -11,6 +11,8 @@ import {
   codeLabel,
   getLabels,
   incrementStreamMessagesCounter,
+  labelNames,
+  labelNamesWithCode,
   latencySecondsBuckets,
   methodLabel,
   pathLabel,
@@ -19,43 +21,92 @@ import {
 } from './common';
 import {registry} from './registry';
 
-const clientStartedMetric = new Counter({
+const defaultClientStartedMetric = new Counter({
   registers: [registry],
   name: 'grpc_client_started_total',
   help: 'Total number of RPCs started on the client.',
-  labelNames: [typeLabel, serviceLabel, methodLabel, pathLabel],
+  labelNames,
 });
 
-const clientHandledMetric = new Counter({
+const defaultClientHandledMetric = new Counter({
   registers: [registry],
   name: 'grpc_client_handled_total',
   help: 'Total number of RPCs completed on the client, regardless of success or failure.',
-  labelNames: [typeLabel, serviceLabel, methodLabel, pathLabel, codeLabel],
+  labelNames: labelNamesWithCode,
 });
 
-const clientStreamMsgReceivedMetric = new Counter({
+const defaultClientStreamMsgReceivedMetric = new Counter({
   registers: [registry],
   name: 'grpc_client_msg_received_total',
   help: 'Total number of RPC stream messages received by the client.',
-  labelNames: [typeLabel, serviceLabel, methodLabel, pathLabel],
+  labelNames,
 });
 
-const clientStreamMsgSentMetric = new Counter({
+const defaultClientStreamMsgSentMetric = new Counter({
   registers: [registry],
   name: 'grpc_client_msg_sent_total',
   help: 'Total number of gRPC stream messages sent by the client.',
-  labelNames: [typeLabel, serviceLabel, methodLabel, pathLabel],
+  labelNames,
 });
 
-const clientHandlingSecondsMetric = new Histogram({
+const defaultClientHandlingSecondsMetric = new Histogram({
   registers: [registry],
   name: 'grpc_client_handling_seconds',
   help: 'Histogram of response latency (seconds) of the gRPC until it is finished by the application.',
-  labelNames: [typeLabel, serviceLabel, methodLabel, pathLabel, codeLabel],
+  labelNames: labelNamesWithCode,
   buckets: latencySecondsBuckets,
 });
 
-export function prometheusClientMiddleware(): ClientMiddleware {
+type PrometheusClientMiddlewareOptions = {
+  clientStartedMetric?: Counter<
+    | typeof typeLabel
+    | typeof serviceLabel
+    | typeof methodLabel
+    | typeof pathLabel
+  >;
+  clientHandledMetric?: Counter<
+    | typeof typeLabel
+    | typeof serviceLabel
+    | typeof methodLabel
+    | typeof pathLabel
+    | typeof codeLabel
+  >;
+  clientStreamMsgReceivedMetric?: Counter<
+    | typeof typeLabel
+    | typeof serviceLabel
+    | typeof methodLabel
+    | typeof pathLabel
+  >;
+  clientStreamMsgSentMetric?: Counter<
+    | typeof typeLabel
+    | typeof serviceLabel
+    | typeof methodLabel
+    | typeof pathLabel
+  >;
+  clientHandlingSecondsMetric?: Histogram<
+    | typeof typeLabel
+    | typeof serviceLabel
+    | typeof methodLabel
+    | typeof pathLabel
+    | typeof codeLabel
+  >;
+};
+
+export function prometheusClientMiddleware(
+  options?: PrometheusClientMiddlewareOptions,
+): ClientMiddleware {
+  const clientStartedMetric =
+    options?.clientStartedMetric || defaultClientStartedMetric;
+  const clientHandledMetric =
+    options?.clientHandledMetric || defaultClientHandledMetric;
+  const clientStreamMsgReceivedMetric =
+    options?.clientStreamMsgReceivedMetric ||
+    defaultClientStreamMsgReceivedMetric;
+  const clientStreamMsgSentMetric =
+    options?.clientStreamMsgSentMetric || defaultClientStreamMsgSentMetric;
+  const clientHandlingSecondsMetric =
+    options?.clientHandlingSecondsMetric || defaultClientHandlingSecondsMetric;
+
   return async function* prometheusClientMiddlewareGenerator<Request, Response>(
     call: ClientMiddlewareCall<Request, Response>,
     options: CallOptions,
