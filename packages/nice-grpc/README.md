@@ -994,6 +994,15 @@ const client2 = clientFactory.use(middlewareC).create(Service2, channel2);
 In the above example, `Service1` client gets `middlewareA` and `middlewareB`,
 and `Service2` client gets `middlewareA` and `middlewareC`.
 
+Type augmentation to `Client` CallOptions is done automatically by adding a middleware, but can also be done by passing a generic. This code example shows how to correctly annotate client type given that middleware has type `ClientMiddleware<{callOption?: number}>`.
+
+```ts
+let client: ExampleServiceClient<{callOption?: number}>;
+client = createClientFactory()
+  .use(middleware)
+  .create(ExampleService, channel);
+```
+
 ##### Example: Logging
 
 Log all calls:
