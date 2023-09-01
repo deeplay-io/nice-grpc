@@ -2605,9 +2605,9 @@ abbrev@^2.0.0:
   integrity sha512-6/mh1E2u2YgEsCHdY0Yx5oW+61gZU+1vXaoiHHrpKeuRNNgFvS+/jrwHiQhB5apAf5oB7UB7E19ol2R2LKH8hQ==
 
 abort-controller-x@^0.4.0:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/abort-controller-x/-/abort-controller-x-0.4.2.tgz#66dae3c510706b407915af6ecc420ded1e616f08"
-  integrity sha512-5bgqvgogTIxTkQpkgDoFZHt2YS8uireyOkC4snQG2kaEKs7DI7Tgsu5xysjp9MxG+6OLICBOAL8TtKHzxQrlqw==
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/abort-controller-x/-/abort-controller-x-0.4.3.tgz#ff269788386fabd58a7b6eeaafcb6cf55c2958e0"
+  integrity sha512-VtUwTNU8fpMwvWGn4xE93ywbogTYsuT+AUxAXOeelbXuQVIwNmC5YLeho9sH4vZ4ITW8414TTAOG1nW6uIVHCA==
 
 abort-controller@^3.0.0:
   version "3.0.0"
