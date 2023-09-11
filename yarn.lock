@@ -2075,10 +2075,15 @@
     "@opentelemetry/sdk-trace-base" "1.15.1"
     semver "^7.5.1"
 
-"@opentelemetry/semantic-conventions@1.15.1", "@opentelemetry/semantic-conventions@^1.5.0":
+"@opentelemetry/semantic-conventions@1.15.1":
   version "1.15.1"
   resolved "https://registry.yarnpkg.com/@opentelemetry/semantic-conventions/-/semantic-conventions-1.15.1.tgz#3d745996b2bd11095b515515fd3d68d46092a02d"
   integrity sha512-n8Kur1/CZlYG32YCEj30CoUqA8R7UyDVZzoEU6SDP+13+kXDT2kFVu6MpcnEUTyGP3i058ID6Qjp5h6IJxdPPQ==
+
+"@opentelemetry/semantic-conventions@^1.5.0":
+  version "1.15.2"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/semantic-conventions/-/semantic-conventions-1.15.2.tgz#3bafb5de3e20e841dff6cb3c66f4d6e9694c4241"
+  integrity sha512-CjbOKwk2s+3xPIMcd5UNYQzsf+v94RczbdNix9/kQh38WiQkM90sUOi3if8eyHFgiBjBjhwXrA7W3ydiSQP9mw==
 
 "@parcel/watcher@2.0.4":
   version "2.0.4"
