@@ -1,0 +1,36 @@
+{
+  "name": "nice-grpc-client-middleware-devtools",
+  "version": "1.0.0",
+  "description": "Client middleware for nice-grpc to work with grpc-web-devtools https://github.com/SafetyCulture/grpc-web-devtools",
+  "repository": "deeplay-io/nice-grpc",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "src",
+    "!src/**/*.test.ts",
+    "!src/**/__tests__"
+  ],
+  "scripts": {
+    "clean": "rimraf lib",
+    "test": "jest",
+    "build": "tsc -P tsconfig.build.json",
+    "prepublishOnly": "npm run clean && npm run build && npm test",
+    "build:proto": "grpc_tools_node_protoc --plugin=protoc-gen-grpc=./node_modules/.bin/grpc_tools_node_protoc_plugin --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./fixtures --ts_out=grpc_js:./fixtures --grpc_out=grpc_js:./fixtures -I fixtures fixtures/*.proto",
+    "prepare": "npm run build:proto"
+  },
+  "author": "Sebastian Halder",
+  "license": "MIT",
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.1",
+    "@types/google-protobuf": "^3.7.4",
+    "abort-controller-x": "^0.4.0",
+    "google-protobuf": "^3.14.0",
+    "grpc-tools": "^1.10.0",
+    "grpc_tools_node_protoc_ts": "^5.0.1",
+    "nice-grpc": "^2.1.5"
+  },
+  "dependencies": {
+    "nice-grpc-common": "^2.0.2"
+  }
+}
