@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-error-details",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "gRPC rich error model implementation for nice-grpc",
   "repository": "deeplay-io/nice-grpc",
   "main": "lib/index.js",
