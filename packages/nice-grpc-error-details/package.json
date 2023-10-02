@@ -31,5 +31,8 @@
   "dependencies": {
     "nice-grpc-common": "^2.0.2",
     "protobufjs": "^7.1.2"
+  },
+  "peerDependencies": {
+    "long": ">=4"
   }
 }
