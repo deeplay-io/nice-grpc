@@ -29,10 +29,8 @@
     "ts-proto": "^1.112.0"
   },
   "dependencies": {
+    "long": "^5.2.3",
     "nice-grpc-common": "^2.0.2",
     "protobufjs": "^7.1.2"
-  },
-  "peerDependencies": {
-    "long": ">=4"
   }
 }
