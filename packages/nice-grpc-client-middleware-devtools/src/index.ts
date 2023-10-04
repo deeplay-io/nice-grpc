@@ -6,7 +6,7 @@ import {
   ClientMiddleware,
   ClientMiddlewareCall,
   composeClientMiddleware,
-} from 'nice-grpc-web';
+} from 'nice-grpc-common';
 
 export const devtoolsUnaryLoggingMiddleware: ClientMiddleware = async function* devtoolsLoggingMiddleware<Request, Response>(
   call: ClientMiddlewareCall<Request, Response>,
