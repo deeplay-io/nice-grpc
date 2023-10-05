@@ -7,7 +7,7 @@ import {
   ServerError,
   Status,
 } from 'nice-grpc';
-import {deadlineMiddleware} from '.';
+import {devtoolsLoggingMiddleware} from '.';
 import {TestService} from '../fixtures/test_grpc_pb';
 import {TestRequest, TestResponse} from '../fixtures/test_pb';
 
