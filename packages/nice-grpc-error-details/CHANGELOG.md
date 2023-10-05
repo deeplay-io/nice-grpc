@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.2](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-error-details@0.2.1...nice-grpc-error-details@0.2.2) (2023-10-02)
+
+### Bug Fixes
+
+- **nice-grpc-error-details:** add long to dependencies
+  ([#460](https://github.com/deeplay-io/nice-grpc/issues/460))
+  ([0863e8b](https://github.com/deeplay-io/nice-grpc/commit/0863e8be5205fa9a0245638b18783a2119b68f75))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [0.2.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-error-details@0.2.0...nice-grpc-error-details@0.2.1) (2023-07-16)
 
 **Note:** Version bump only for package nice-grpc-error-details
