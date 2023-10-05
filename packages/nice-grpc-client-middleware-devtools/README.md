@@ -18,7 +18,7 @@ import {
   ClientError,
   Status,
 } from 'nice-grpc';
-import {devtoolsLoggingMiddleware} from 'nice-grpc-client-middleware-deadline';
+import {devtoolsLoggingMiddleware} from 'nice-grpc-client-middleware-devtools';
 
 const clientFactory = createClientFactory().use(devtoolsLoggingMiddlware);
 
