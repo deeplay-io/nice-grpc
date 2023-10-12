@@ -64,7 +64,7 @@
     "karma-spec-reporter": "^0.0.36",
     "karma-typescript": "^5.5.3",
     "karma-typescript-es6-transform": "^5.5.3",
-    "mkdirp": "^2.1.6",
+    "mkdirp": "^3.0.1",
     "path-exists-cli": "^2.0.0",
     "request": "^2.88.2",
     "selfsigned": "^2.1.1",

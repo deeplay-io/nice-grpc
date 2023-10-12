@@ -2,7 +2,7 @@ const request = require('request');
 const fs = require('fs');
 const path = require('path');
 const unzip = require('unzipper');
-const mkdirp = require('mkdirp');
+const {mkdirp} = require('mkdirp');
 
 const version = '0.0.1';
 
