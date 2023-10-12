@@ -38,7 +38,7 @@
     "@types/google-protobuf": "^3.7.4",
     "@types/node": "^14.18.23",
     "defer-promise": "^2.0.1",
-    "get-port": "^5.1.1",
+    "get-port": "^7.0.0",
     "google-protobuf": "^3.14.0",
     "grpc-tools": "^1.10.0",
     "grpc_tools_node_protoc_ts": "^5.0.1",
