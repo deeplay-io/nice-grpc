@@ -70,7 +70,7 @@
     "selfsigned": "^2.1.1",
     "string-env-interpolation": "^1.0.1",
     "tcp-port-used": "^1.0.2",
-    "testcontainers": "^9.0.0",
+    "testcontainers": "^10.2.1",
     "ts-proto": "^1.112.0",
     "ts-protoc-gen": "^0.15.0",
     "unzipper": "^0.10.11",
