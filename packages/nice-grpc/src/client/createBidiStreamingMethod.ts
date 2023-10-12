@@ -16,7 +16,6 @@ import {
   convertMetadataToGrpcJs,
 } from '../utils/convertMetadata';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
-import {patchClientWritableStream} from '../utils/patchClientWritableStream';
 import {readableToAsyncIterable} from '../utils/readableToAsyncIterable';
 import {BidiStreamingClientMethod} from './Client';
 import {wrapClientError} from './wrapClientError';
@@ -60,8 +59,6 @@ export function createBidiStreamingMethod<Request, Response>(
       grpcMethodDefinition.responseDeserialize,
       convertMetadataToGrpcJs(metadata),
     );
-
-    patchClientWritableStream(call);
 
     call.on('metadata', metadata => {
       onHeader?.(convertMetadataFromGrpcJs(metadata));
