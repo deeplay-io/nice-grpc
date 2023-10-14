@@ -1,4 +1,3 @@
-import getPort = require('get-port');
 import defer = require('defer-promise');
 import {forever, isAbortError} from 'abort-controller-x';
 import {
@@ -30,11 +29,9 @@ test('basic', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
+  const port = await server.listen('127.0.0.1:0');
 
-  await server.listen(address);
-
-  const channel = createChannel(address);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(TestService, channel);
 
   const responses: any[] = [];
@@ -87,11 +84,9 @@ test('metadata', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
+  const port = await server.listen('127.0.0.1:0');
 
-  await server.listen(address);
-
-  const channel = createChannel(address);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(TestService, channel);
 
   const headerDeferred = defer<Metadata>();
@@ -193,11 +188,9 @@ test('implicit header sending', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
+  const port = await server.listen('127.0.0.1:0');
 
-  await server.listen(address);
-
-  const channel = createChannel(address);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(TestService, channel);
 
   const metadata = Metadata();
@@ -243,11 +236,9 @@ test('error', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
+  const port = await server.listen('127.0.0.1:0');
 
-  await server.listen(address);
-
-  const channel = createChannel(address);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(TestService, channel);
 
   const responses: any[] = [];
@@ -319,11 +310,9 @@ test('cancel', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
+  const port = await server.listen('127.0.0.1:0');
 
-  await server.listen(address);
-
-  const channel = createChannel(address);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(TestService, channel);
 
   const abortController = new AbortController();
@@ -381,11 +370,9 @@ test('high rate', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
+  const port = await server.listen('127.0.0.1:0');
 
-  await server.listen(address);
-
-  const channel = createChannel(address);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(TestService, channel);
 
   let i = 0;
@@ -425,11 +412,9 @@ test('aborted iteration on client', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
+  const port = await server.listen('127.0.0.1:0');
 
-  await server.listen(address);
-
-  const channel = createChannel(address);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(TestService, channel);
 
   const iterable = client.testServerStream(new TestRequest().setId('test'));
