@@ -469,7 +469,7 @@ const environment = detect();
         new ClientError(
           '/nice_grpc.test.Test2/TestUnary',
           Status.UNIMPLEMENTED,
-          '[object Object]', // this is a bug in grpc-js
+          'The server does not implement the method /nice_grpc.test.Test2/TestUnary',
         ),
       );
     });

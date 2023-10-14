@@ -162,8 +162,8 @@ export default (config: Config & Record<string, unknown>) => {
     karmaTypescriptConfig: {
       tsconfig: 'tsconfig.json',
       compilerOptions: {
-        target: 'ES2015',
-        lib: ['ES2015', 'DOM', 'DOM.Iterable'],
+        target: 'ES2018',
+        lib: ['ES2018', 'DOM', 'DOM.Iterable'],
       },
       bundlerOptions: {
         constants: {
