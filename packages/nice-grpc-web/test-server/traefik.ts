@@ -79,7 +79,7 @@ export async function startTraefikProxy(
         ipAddress: 'host-gateway',
       },
     ])
-    .withWaitStrategy(Wait.forLogMessage(/traefik-internal-recovery/))
+    .withWaitStrategy(Wait.forHttp('/ping', internalListenPort))
     .start();
 
   // const logStream = await container.logs();
