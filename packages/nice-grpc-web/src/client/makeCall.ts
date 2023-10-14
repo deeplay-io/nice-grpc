@@ -120,18 +120,6 @@ export async function* makeCall<Request, Response>(
 
   try {
     yield* response;
-
-    if (status != null && status !== Status.OK) {
-      throw new ClientError(definition.path, status, message ?? '');
-    }
-
-    if (status == null) {
-      throw new ClientError(
-        definition.path,
-        Status.UNKNOWN,
-        'Response stream closed without gRPC status',
-      );
-    }
   } catch (err) {
     if (requestError !== undefined) {
       throw requestError.err;
@@ -147,6 +135,17 @@ export async function* makeCall<Request, Response>(
   } finally {
     finished = true;
     signal.removeEventListener('abort', abortListener);
-    innerAbortController.abort();
+
+    if (status != null && status !== Status.OK) {
+      throw new ClientError(definition.path, status, message ?? '');
+    }
+  }
+
+  if (status == null) {
+    throw new ClientError(
+      definition.path,
+      Status.UNKNOWN,
+      'Response stream closed without gRPC status',
+    );
   }
 }
