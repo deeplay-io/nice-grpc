@@ -26,7 +26,7 @@ export async function startRemoteTestServer(
   proxyType: 'grpcwebproxy' | 'envoy' | 'traefik' = 'grpcwebproxy',
   protocol: 'http' | 'https' = 'http',
 ): Promise<RemoteTestServer> {
-  const hostname = globalThis.location?.hostname ?? 'localhost';
+  const hostname = globalThis.location?.hostname ?? '127.0.0.1';
 
   const ws = new WebSocket(
     `ws://${hostname}:3000/mock-server?proxy=${proxyType}&protocol=${protocol}`,

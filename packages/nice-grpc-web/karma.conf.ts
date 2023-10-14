@@ -50,7 +50,7 @@ export default (config: Config & Record<string, unknown>) => {
     certPath = path.resolve(__dirname, './test-server/cert/tls.crt');
     keyPath = path.resolve(__dirname, './test-server/cert/tls.key');
   } else {
-    hostname = 'localhost';
+    hostname = '127.0.0.1';
     certPath = path.resolve(__dirname, './test-server/cert/self-signed.crt');
     keyPath = path.resolve(__dirname, './test-server/cert/self-signed.key');
 

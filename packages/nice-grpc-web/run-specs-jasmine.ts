@@ -29,7 +29,7 @@ jasmine.addReporter(new SpecReporter());
 const certPath = path.resolve(__dirname, './test-server/cert/self-signed.crt');
 const keyPath = path.resolve(__dirname, './test-server/cert/self-signed.key');
 
-const hostname = 'localhost';
+const hostname = '127.0.0.1';
 const cert = selfsigned.generate([{name: 'commonName', value: hostname}], {
   keySize: 2048,
 });
