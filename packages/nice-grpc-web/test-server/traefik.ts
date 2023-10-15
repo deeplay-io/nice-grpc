@@ -59,7 +59,7 @@ export async function startTraefikProxy(
   ).forStatusCode(415);
 
   if (tls) {
-    waitStrategy = waitStrategy.usingTls();
+    waitStrategy = waitStrategy.usingTls().allowInsecure();
   }
 
   const container = await new GenericContainer('traefik:v3.0.0-beta2')
