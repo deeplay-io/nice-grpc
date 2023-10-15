@@ -82,11 +82,13 @@ export async function startTraefikProxy(
     .withWaitStrategy(Wait.forHttp('/ping', internalListenPort))
     .start();
 
-  // const logStream = await container.logs();
+  console.log('traefik started');
 
-  // logStream.on('data', data => {
-  //   console.log('traefik:', data.toString());
-  // });
+  const logStream = await container.logs();
+
+  logStream.on('data', data => {
+    console.log('traefik:', data.toString());
+  });
 
   return {
     stop() {
