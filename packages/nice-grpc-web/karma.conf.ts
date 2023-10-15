@@ -213,6 +213,25 @@ function WebdriverIOLauncher(
           this.on('kill', (done: () => void) => {
             Promise.resolve()
               .then(async () => {
+                const browserLogs = await browser.getLogs('browser');
+                console.log(
+                  'browser logs:\n' +
+                    (
+                      browserLogs as Array<{
+                        level: string;
+                        message: string;
+                        source: string;
+                        timestamp: number;
+                      }>
+                    )
+                      .map(
+                        log =>
+                          `${new Date(log.timestamp).toISOString()} ${
+                            log.level
+                          } [${log.source}] ${log.message}`,
+                      )
+                      .join('\n'),
+                );
                 await browser.deleteSession();
                 browserstackLocal?.stop();
               })
