@@ -2,9 +2,6 @@ entryPoints:
   web:
     address: :${LISTEN_PORT}
 
-ping:
-  entryPoint: web
-
 providers:
   file:
     directory: /etc/traefik/
