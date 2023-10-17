@@ -1,4 +1,3 @@
-import getPort = require('get-port');
 import {Channel} from '@grpc/grpc-js';
 import {createChannel, createClient, createServer, Metadata, Server} from '..';
 import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';
@@ -21,11 +20,9 @@ beforeEach(async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
+  const port = await server.listen('127.0.0.1:0');
 
-  await server.listen(address);
-
-  channel = createChannel(address);
+  channel = createChannel(`127.0.0.1:${port}`);
 });
 
 afterEach(async () => {

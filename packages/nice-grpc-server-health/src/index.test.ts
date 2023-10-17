@@ -10,9 +10,9 @@ test('basic', async () => {
 
   server.add(HealthDefinition, HealthServiceImpl());
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`localhost:${port}`);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(HealthDefinition, channel);
 
   await expect(client.check({service: ''})).resolves.toMatchInlineSnapshot(`
@@ -36,9 +36,9 @@ test('per-service', async () => {
 
   server.add(HealthDefinition, HealthServiceImpl(healthState));
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`localhost:${port}`);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(HealthDefinition, channel);
 
   await expect(client.check({service: ''})).resolves.toMatchInlineSnapshot(`
@@ -92,9 +92,9 @@ test('watch', async () => {
 
   server.add(HealthDefinition, HealthServiceImpl(healthState));
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`localhost:${port}`);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(HealthDefinition, channel);
 
   const it1 = client.watch({service: ''})[Symbol.asyncIterator]();
@@ -171,7 +171,7 @@ test.skipWindows('grpc-health-probe', async () => {
 
   server.add(HealthDefinition, HealthServiceImpl(healthState));
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
   const execProbe = (...args: string[]) =>
     new Promise<{stderr: string; code: number | null}>(resolve => {
@@ -182,7 +182,7 @@ test.skipWindows('grpc-health-probe', async () => {
           'grpc-health-probe',
           'grpc-health-probe',
         )}`,
-        ['-addr', `localhost:${port}`, ...args],
+        ['-addr', `127.0.0.1:${port}`, ...args],
       );
 
       let stderr = '';
