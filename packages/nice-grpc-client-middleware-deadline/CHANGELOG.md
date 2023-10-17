@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## <small>2.0.8 (2023-10-17)</small>
+
+- chore: fix hanging and erroring tests (#466)
+  ([0d169ec](https://github.com/deeplay-io/nice-grpc/commit/0d169ec)), closes
+  [#466](https://github.com/deeplay-io/nice-grpc/issues/466)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.0.7](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-deadline@2.0.6...nice-grpc-client-middleware-deadline@2.0.7) (2023-07-16)
 
 **Note:** Version bump only for package nice-grpc-client-middleware-deadline

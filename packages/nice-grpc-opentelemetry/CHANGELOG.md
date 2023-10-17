@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## <small>0.1.12 (2023-10-17)</small>
+
+- chore: fix hanging and erroring tests (#466)
+  ([0d169ec](https://github.com/deeplay-io/nice-grpc/commit/0d169ec)), closes
+  [#466](https://github.com/deeplay-io/nice-grpc/issues/466)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [0.1.11](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-opentelemetry@0.1.10...nice-grpc-opentelemetry@0.1.11) (2023-08-24)
 
 **Note:** Version bump only for package nice-grpc-opentelemetry

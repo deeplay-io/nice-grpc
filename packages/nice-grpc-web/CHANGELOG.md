@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## <small>3.3.2 (2023-10-17)</small>
+
+- chore: fix hanging and erroring tests (#466)
+  ([0d169ec](https://github.com/deeplay-io/nice-grpc/commit/0d169ec)), closes
+  [#466](https://github.com/deeplay-io/nice-grpc/issues/466)
+- chore(deps-dev): bump jasmine and @types/jasmine (#464)
+  ([deb51bc](https://github.com/deeplay-io/nice-grpc/commit/deb51bc)), closes
+  [#464](https://github.com/deeplay-io/nice-grpc/issues/464)
+- chore(deps-dev): upgrade mkdirp to 3.0.1 (#463)
+  ([02772e8](https://github.com/deeplay-io/nice-grpc/commit/02772e8)), closes
+  [#463](https://github.com/deeplay-io/nice-grpc/issues/463)
+- chore(nice-grpc-web): fix failing tests (#467)
+  ([0509986](https://github.com/deeplay-io/nice-grpc/commit/0509986)), closes
+  [#467](https://github.com/deeplay-io/nice-grpc/issues/467)
+- chore(nice-grpc-web): update error message
+  ([226b599](https://github.com/deeplay-io/nice-grpc/commit/226b599)), closes
+  [#446](https://github.com/deeplay-io/nice-grpc/issues/446)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [3.3.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.3.0...nice-grpc-web@3.3.1) (2023-07-16)
 
 ### Bug Fixes

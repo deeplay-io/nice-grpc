@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## <small>2.1.6 (2023-10-17)</small>
+
+- chore: fix hanging and erroring tests (#466)
+  ([0d169ec](https://github.com/deeplay-io/nice-grpc/commit/0d169ec)), closes
+  [#466](https://github.com/deeplay-io/nice-grpc/issues/466)
+- chore(deps): upgrade grpc-js to 1.9.5 (#461)
+  ([de41157](https://github.com/deeplay-io/nice-grpc/commit/de41157)), closes
+  [#461](https://github.com/deeplay-io/nice-grpc/issues/461)
+- docs(nice-grpc): Add example to docs for extending a client Type with
+  CallOptions (#426)
+  ([191e706](https://github.com/deeplay-io/nice-grpc/commit/191e706)), closes
+  [#426](https://github.com/deeplay-io/nice-grpc/issues/426)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.1.5](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.4...nice-grpc@2.1.5) (2023-07-16)
 
 **Note:** Version bump only for package nice-grpc

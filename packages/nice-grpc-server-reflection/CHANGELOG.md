@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## <small>2.0.8 (2023-10-17)</small>
+
+- chore(deps): upgrade grpc-js to 1.9.5 (#461)
+  ([de41157](https://github.com/deeplay-io/nice-grpc/commit/de41157)), closes
+  [#461](https://github.com/deeplay-io/nice-grpc/issues/461)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.0.7](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-reflection@2.0.6...nice-grpc-server-reflection@2.0.7) (2023-07-16)
 
 ### Bug Fixes
