@@ -1,7 +1,7 @@
 const request = require('request');
 const fs = require('fs');
 const path = require('path');
-const mkdirp = require('mkdirp');
+const {mkdirp} = require('mkdirp');
 
 const releases = {
   win32: 'https://bstack-local-prod.s3.amazonaws.com/BrowserStackLocal.exe',
