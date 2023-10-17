@@ -50,7 +50,7 @@ export default (config: Config & Record<string, unknown>) => {
     certPath = path.resolve(__dirname, './test-server/cert/tls.crt');
     keyPath = path.resolve(__dirname, './test-server/cert/tls.key');
   } else {
-    hostname = 'localhost';
+    hostname = '127.0.0.1';
     certPath = path.resolve(__dirname, './test-server/cert/self-signed.crt');
     keyPath = path.resolve(__dirname, './test-server/cert/self-signed.key');
 
@@ -162,8 +162,8 @@ export default (config: Config & Record<string, unknown>) => {
     karmaTypescriptConfig: {
       tsconfig: 'tsconfig.json',
       compilerOptions: {
-        target: 'ES2015',
-        lib: ['ES2015', 'DOM', 'DOM.Iterable'],
+        target: 'ES2018',
+        lib: ['ES2018', 'DOM', 'DOM.Iterable'],
       },
       bundlerOptions: {
         constants: {
@@ -213,6 +213,25 @@ function WebdriverIOLauncher(
           this.on('kill', (done: () => void) => {
             Promise.resolve()
               .then(async () => {
+                const browserLogs = await browser.getLogs('browser');
+                console.log(
+                  'browser logs:\n' +
+                    (
+                      browserLogs as Array<{
+                        level: string;
+                        message: string;
+                        source: string;
+                        timestamp: number;
+                      }>
+                    )
+                      .map(
+                        log =>
+                          `${new Date(log.timestamp).toISOString()} ${
+                            log.level
+                          } [${log.source}] ${log.message}`,
+                      )
+                      .join('\n'),
+                );
                 await browser.deleteSession();
                 browserstackLocal?.stop();
               })

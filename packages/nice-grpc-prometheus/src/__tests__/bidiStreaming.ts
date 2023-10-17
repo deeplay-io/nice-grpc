@@ -33,9 +33,9 @@ test('basic', async () => {
     },
   });
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`localhost:${port}`);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClientFactory()
     .use(prometheusClientMiddleware())
     .create(TestDefinition, channel);
@@ -138,9 +138,9 @@ test('error', async () => {
     },
   });
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`localhost:${port}`);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClientFactory()
     .use(prometheusClientMiddleware())
     .create(TestDefinition, channel);
@@ -247,9 +247,9 @@ test('aborted iteration on client', async () => {
     },
   });
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`localhost:${port}`);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClientFactory()
     .use(prometheusClientMiddleware())
     .create(TestDefinition, channel);
