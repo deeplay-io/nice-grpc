@@ -1,4 +1,7 @@
-import * as grpc from '@grpc/grpc-js';
+import {
+  ServiceDefinition as GrpcJsServiceDefinition,
+  MethodDefinition as GrpcJsMethodDefinition,
+} from '@grpc/grpc-js';
 import {
   fromGrpcJsServiceDefinition,
   FromGrpcJsServiceDefinition,
@@ -11,10 +14,16 @@ import {
   TsProtoServiceDefinition,
 } from './ts-proto';
 
+/**
+ * A nice-grpc service definition.
+ */
 export type ServiceDefinition = {
   [method: string]: AnyMethodDefinition;
 };
 
+/**
+ * A nice-grpc method definition.
+ */
 export type MethodDefinition<
   RequestIn,
   RequestOut,
@@ -35,18 +44,29 @@ export type MethodDefinition<
   };
 };
 
+/**
+ * A nice-grpc method definition with any request and response types.
+ */
 export type AnyMethodDefinition = MethodDefinition<any, any, any, any>;
 
+/**
+ * A service definition that can be converted to a nice-grpc service definition
+ * i.e. a nice-grpc service definition, a grpc-js service definition or a
+ * ts-proto service definition.
+ */
 export type CompatServiceDefinition =
   | ServiceDefinition
-  | grpc.ServiceDefinition
+  | GrpcJsServiceDefinition
   | TsProtoServiceDefinition;
 
+/**
+ * A nice-grpc service definition converted from a CompatServiceDefinition.
+ */
 export type NormalizedServiceDefinition<
   Service extends CompatServiceDefinition,
 > = Service extends ServiceDefinition
   ? Service
-  : Service extends grpc.ServiceDefinition
+  : Service extends GrpcJsServiceDefinition
   ? FromGrpcJsServiceDefinition<Service>
   : Service extends TsProtoServiceDefinition
   ? FromTsProtoServiceDefinition<Service>
@@ -68,8 +88,8 @@ export function normalizeServiceDefinition(
 /** @internal */
 export function toGrpcJsServiceDefinition(
   definition: ServiceDefinition,
-): grpc.ServiceDefinition {
-  const result: {[key: string]: grpc.MethodDefinition<any, any>} = {};
+): GrpcJsServiceDefinition {
+  const result: {[key: string]: GrpcJsMethodDefinition<any, any>} = {};
 
   for (const [key, method] of Object.entries(definition)) {
     result[key] = toGrpcJsMethodDefinition(method);
@@ -81,7 +101,7 @@ export function toGrpcJsServiceDefinition(
 /** @internal */
 export function toGrpcJsMethodDefinition(
   definition: AnyMethodDefinition,
-): grpc.MethodDefinition<any, any> {
+): GrpcJsMethodDefinition<any, any> {
   return {
     path: definition.path,
     requestStream: definition.requestStream,
