@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.9](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-middleware-terminator@2.0.8...nice-grpc-server-middleware-terminator@2.0.9) (2023-10-19)
+
+**Note:** Version bump only for package nice-grpc-server-middleware-terminator
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## <small>2.0.8 (2023-10-17)</small>
 
 - chore: fix hanging and erroring tests (#466)

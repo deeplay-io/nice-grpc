@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.7](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.6...nice-grpc@2.1.7) (2023-10-19)
+
+### Bug Fixes
+
+- **nice-grpc:** add missing exports for Service Definition types
+  ([#470](https://github.com/deeplay-io/nice-grpc/issues/470))
+  ([2e3ab79](https://github.com/deeplay-io/nice-grpc/commit/2e3ab79b293cd5f5dd3a0eb244dd6915a54a1dbb))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## <small>2.1.6 (2023-10-17)</small>
 
 - chore: fix hanging and erroring tests (#466)

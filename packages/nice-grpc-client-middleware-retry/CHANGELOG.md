@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.1.6](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-retry@3.1.5...nice-grpc-client-middleware-retry@3.1.6) (2023-10-19)
+
+**Note:** Version bump only for package nice-grpc-client-middleware-retry
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## <small>3.1.5 (2023-10-17)</small>
 
 - chore: fix hanging and erroring tests (#466)

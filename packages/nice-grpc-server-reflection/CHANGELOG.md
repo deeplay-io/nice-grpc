@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.9](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-reflection@2.0.8...nice-grpc-server-reflection@2.0.9) (2023-10-19)
+
+**Note:** Version bump only for package nice-grpc-server-reflection
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## <small>2.0.8 (2023-10-17)</small>
 
 - chore(deps): upgrade grpc-js to 1.9.5 (#461)

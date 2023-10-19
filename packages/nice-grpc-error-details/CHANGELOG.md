@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.4](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-error-details@0.2.3...nice-grpc-error-details@0.2.4) (2023-10-19)
+
+**Note:** Version bump only for package nice-grpc-error-details
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## <small>0.2.3 (2023-10-17)</small>
 
 - chore: fix hanging and erroring tests (#466)
