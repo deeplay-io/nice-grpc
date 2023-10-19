@@ -101,7 +101,7 @@ export function toGrpcJsServiceDefinition(
 /** @internal */
 export function toGrpcJsMethodDefinition(
   definition: AnyMethodDefinition,
-): grpc.MethodDefinition<any, any> {
+): GrpcJsMethodDefinition<any, any> {
   return {
     path: definition.path,
     requestStream: definition.requestStream,
