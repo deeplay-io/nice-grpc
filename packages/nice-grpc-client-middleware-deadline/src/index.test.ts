@@ -107,3 +107,39 @@ test('relative deadline', async () => {
 
   await server.shutdown();
 });
+
+test('already aborted', async () => {
+  const server = createServer();
+
+  server.add(TestService, {
+    async testUnary(request: TestRequest, {signal}) {
+      return new TestResponse();
+    },
+    testServerStream: throwUnimplemented,
+    testClientStream: throwUnimplemented,
+    testBidiStream: throwUnimplemented,
+  });
+
+  const port = await server.listen('127.0.0.1:0');
+
+  const channel = createChannel(`127.0.0.1:${port}`);
+  const client = createClientFactory()
+    .use(deadlineMiddleware)
+    .create(TestService, channel);
+
+  const abortController = new AbortController();
+  abortController.abort();
+
+  const promise = client.testUnary(new TestRequest(), {
+    deadline: new Date(Date.now() + 500),
+    signal: abortController.signal,
+  });
+
+  await expect(promise).rejects.toMatchInlineSnapshot(
+    `[AbortError: The operation has been aborted]`,
+  );
+
+  channel.close();
+
+  await server.shutdown();
+});
