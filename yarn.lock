@@ -2509,9 +2509,9 @@
   integrity sha512-RJJrrySY7A8havqpGObOB4W92QXKJo63/jFLLgpvOtsGUqbQZ9Sbgl35KMm1DjC6j7AvmmU2bIno+3IyEaemaw==
 
 "@types/tcp-port-used@^1.0.0":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@types/tcp-port-used/-/tcp-port-used-1.0.2.tgz#1a63df25488835e843dc167ca2d14fef55348c16"
-  integrity sha512-TEd/IvSora//3AXqt0XhuK2glye54uX2Iq/ZUKW2k/cWh9Zo2D6HUOC9m+Z/NNvtR3TtijYt5uo8wDn+P5aVxA==
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@types/tcp-port-used/-/tcp-port-used-1.0.3.tgz#f0256fc0ce92d549c64a25bf398597f7084aa19c"
+  integrity sha512-Lq0Z8iw3uiBJzOdfL+ip6l6vOJw++XEyXPa7/3hMkWVU2YMsKuQBjjK5M2Fmq/533DBVW9L5I/XlJvcHnfAP4g==
 
 "@types/tmp@^0.2.3":
   version "0.2.5"
