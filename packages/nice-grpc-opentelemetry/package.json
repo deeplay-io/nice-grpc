@@ -29,7 +29,7 @@
   "author": "Daniel Lytkin <aikoven@deeplay.io>",
   "license": "MIT",
   "devDependencies": {
-    "@opentelemetry/sdk-node": "^0.41.1",
+    "@opentelemetry/sdk-node": "^0.44.0",
     "@tsconfig/recommended": "^1.0.1",
     "@types/defer-promise": "^1.0.0",
     "defer-promise": "^2.0.1",
