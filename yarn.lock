@@ -2516,9 +2516,9 @@
   integrity sha512-Lq0Z8iw3uiBJzOdfL+ip6l6vOJw++XEyXPa7/3hMkWVU2YMsKuQBjjK5M2Fmq/533DBVW9L5I/XlJvcHnfAP4g==
 
 "@types/tmp@^0.2.3":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@types/tmp/-/tmp-0.2.5.tgz#0f3a71d0a94cbd5de45b0aa641575dd503e43ed4"
-  integrity sha512-KodRrjqWrk/3VyzfR4aeXkf2n5Ssg+bvVUhXlvHVffLiIHriLlrO3vYobB+Kvnr9DkNzMiyWHT3G6hT/xX0ryQ==
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/@types/tmp/-/tmp-0.2.6.tgz#d785ee90c52d7cc020e249c948c36f7b32d1e217"
+  integrity sha512-chhaNf2oKHlRkDGt+tiKE2Z5aJ6qalm7Z9rlLdBwmOiAAf09YQvvoLXjWK4HWPF1xU/fqvMgfNfpVoBscA/tKA==
 
 "@types/which@^2.0.1":
   version "2.0.1"
