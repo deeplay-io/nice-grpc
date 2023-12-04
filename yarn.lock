@@ -2379,6 +2379,22 @@
   resolved "https://registry.npmjs.org/@types/defer-promise/-/defer-promise-1.0.0.tgz"
   integrity sha512-NJAgn+jlo8V2TD0rj8zQy1nRzNLX73MQARTSQzWxco94lwzTOwRp7FPu7r4/Cnz715DxCWMGf3epjo7wbDBhVA==
 
+"@types/docker-modem@*":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@types/docker-modem/-/docker-modem-3.0.6.tgz#1f9262fcf85425b158ca725699a03eb23cddbf87"
+  integrity sha512-yKpAGEuKRSS8wwx0joknWxsmLha78wNMe9R2S3UNsVOkZded8UqOrV8KoeDXoXsjndxwyF3eIhyClGbO1SEhEg==
+  dependencies:
+    "@types/node" "*"
+    "@types/ssh2" "*"
+
+"@types/dockerode@^3.3.21":
+  version "3.3.23"
+  resolved "https://registry.yarnpkg.com/@types/dockerode/-/dockerode-3.3.23.tgz#07b2084013d01e14d5d97856446f4d9c9f27c223"
+  integrity sha512-Lz5J+NFgZS4cEVhquwjIGH4oQwlVn2h7LXD3boitujBnzOE5o7s9H8hchEjoDK2SlRsJTogdKnQeiJgPPKLIEw==
+  dependencies:
+    "@types/docker-modem" "*"
+    "@types/node" "*"
+
 "@types/get-port@^4.2.0":
   version "4.2.0"
   resolved "https://registry.npmjs.org/@types/get-port/-/get-port-4.2.0.tgz"
@@ -2475,6 +2491,13 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-14.18.23.tgz"
   integrity sha512-MhbCWN18R4GhO8ewQWAFK4TGQdBpXWByukz7cWyJmXhvRuCIaM/oWytGPqVmDzgEnnaIc9ss6HbU5mUi+vyZPA==
 
+"@types/node@^18.11.18":
+  version "18.19.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.19.0.tgz#e86ce256c46661016fa83360bf8738eb4efdc88c"
+  integrity sha512-667KNhaD7U29mT5wf+TZUnrzPrlL2GNQ5N0BMjO2oNULhBxX0/FKCkm6JMu0Jh7Z+1LwUlR21ekd7KhIboNFNw==
+  dependencies:
+    undici-types "~5.26.4"
+
 "@types/normalize-package-data@^2.4.0", "@types/normalize-package-data@^2.4.1":
   version "2.4.1"
   resolved "https://registry.npmjs.org/@types/normalize-package-data/-/normalize-package-data-2.4.1.tgz"
@@ -2496,6 +2519,13 @@
   integrity sha512-I2J9jKqfmvXLR5GomDiCoHrEJ58hAOmFrekfFqmCFd+A6gaEStvWnPykoWUwld1PNg4G5ag1LwdA+Lz1doRJqg==
   dependencies:
     "@types/node" "*"
+
+"@types/ssh2@*":
+  version "1.11.18"
+  resolved "https://registry.yarnpkg.com/@types/ssh2/-/ssh2-1.11.18.tgz#0766a52a91f85c39768ccdc8dce1498dcbb02d32"
+  integrity sha512-7eH4ppQMFlzvn//zhwD54MWaITR1aSc1oFBye9vb76GZ2Y9PSFYdwVIwOlxRXWs5+1hifntXyt+8a6SUbOD7Hg==
+  dependencies:
+    "@types/node" "^18.11.18"
 
 "@types/ssh2@^0.5.48":
   version "0.5.52"
@@ -10488,11 +10518,12 @@ test-exclude@^6.0.0:
     minimatch "^3.0.4"
 
 testcontainers@^10.2.1:
-  version "10.2.2"
-  resolved "https://registry.yarnpkg.com/testcontainers/-/testcontainers-10.2.2.tgz#a7cc0b3512642131cff4ffc9af93e15edc765463"
-  integrity sha512-5GZ93rtoVXMx/s3xZjydftrKLnv1Yf+ETzGkXYRCm16LB60W48SGodxuiouYvNlVy0y0ogoQhdOw3DqsPActEA==
+  version "10.3.2"
+  resolved "https://registry.yarnpkg.com/testcontainers/-/testcontainers-10.3.2.tgz#1477771585b328953ef6641f83b43368adac1242"
+  integrity sha512-IsV6NgS5reHcVF1nJLCDJv1hM9gAWUhLwh9b3ybgzvM3X7T2dcmuLFKt1RAR8qN8k+44tW2Drj7idxW6oeGvvg==
   dependencies:
     "@balena/dockerignore" "^1.0.2"
+    "@types/dockerode" "^3.3.21"
     archiver "^5.3.2"
     async-lock "^1.4.0"
     byline "^5.0.0"
@@ -10857,6 +10888,11 @@ unbzip2-stream@1.4.3:
   dependencies:
     buffer "^5.2.1"
     through "^2.3.8"
+
+undici-types@~5.26.4:
+  version "5.26.5"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-5.26.5.tgz#bcd539893d00b56e964fd2657a4866b221a65617"
+  integrity sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==
 
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.0"
