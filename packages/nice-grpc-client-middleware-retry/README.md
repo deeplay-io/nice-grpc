@@ -38,6 +38,16 @@ service ExampleService {
 }
 ```
 
+or read-only:
+
+```protobuf
+service ExampleService {
+  rpc ExampleMethod(ExampleMethodRequest) returns (ExampleMethodResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+}
+```
+
 > Note that method options currently work only when
 > [compiling with `ts-proto`](https://github.com/deeplay-io/nice-grpc/tree/master/packages/nice-grpc#using-ts-proto).
 
