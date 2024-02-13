@@ -25,7 +25,7 @@ call might have reached the server and had an effect on the system. For example,
 an increment operation is not idempotent, since executing it twice will
 increment by 2. In contrast, a delete operation can be made idempotent, if the
 server ignores the delete of an already non-existent entity. Any read-only
-operation is inherently idempotent .
+operation is inherently idempotent.
 
 In this middleware, the retries are disabled by default, unless the method is
 marked as idempotent:
@@ -72,7 +72,7 @@ const response = await client.exampleMethod(request, {
   retry: true,
   // defaults to 1
   retryMaxAttempts: 5,
-  // defaults to [UNKNOWN, INTERNAL, UNAVAILABLE]
+  // defaults to [UNKNOWN, INTERNAL, UNAVAILABLE, CANCELLED]
   retryableStatuses: [Status.UNAVAILABLE],
   onRetryableError(error: ClientError, attempt: number, delayMs: number) {
     logger.error(error, `Call failed (${attempt}), retrying in ${delayMs}ms`);
