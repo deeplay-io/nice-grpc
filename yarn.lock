@@ -2322,9 +2322,9 @@
     pretty-format "^29.0.0"
 
 "@types/karma@^6.3.3":
-  version "6.3.5"
-  resolved "https://registry.yarnpkg.com/@types/karma/-/karma-6.3.5.tgz#897873763f6ca3dfe58f8743cad2d8314e5e38ef"
-  integrity sha512-TOct2CFocHyc+Y9M9Mu6H6FK5hikTFOOJV5iKYlk8SMouuMR0mgC6VS07vCxu40FWjmQqK2ZKHWP/AOeJnDvvw==
+  version "6.3.8"
+  resolved "https://registry.yarnpkg.com/@types/karma/-/karma-6.3.8.tgz#06cb3ecddabece81eb43a1087a8f01adecf64645"
+  integrity sha512-+QGoOPhb1f6Oli8pG+hxdnGDzVhIrpsHaFSJ4UJg15Xj+QBtluKELkJY+L4Li532HmT3l5K5o1FoUZHRQeOOaQ==
   dependencies:
     "@types/node" "*"
     log4js "^6.4.1"
