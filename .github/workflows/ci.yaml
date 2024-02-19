@@ -111,10 +111,10 @@ jobs:
           path: '**/node_modules'
           key: modules-${{ runner.os }}-20.x-${{ hashFiles('yarn.lock') }}
       - run: yarn --frozen-lockfile
-      - run: yarn build
-      - run: yarn lerna run test:local-browser-headless --scope nice-grpc-web
         env:
           CHROMEDRIVER_CDNBINARIESURL: https://storage.googleapis.com/chrome-for-testing-public
+      - run: yarn build
+      - run: yarn lerna run test:local-browser-headless --scope nice-grpc-web
 
   # Empty job that finishes after all required jobs finish.
   # Needed to not have to specify every single required job in branch protection.
