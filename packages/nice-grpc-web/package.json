@@ -51,7 +51,7 @@
     "@types/tmp": "^0.2.3",
     "@types/ws": "^8.2.2",
     "assert-never": "^1.2.1",
-    "chromedriver": "^113.0.0",
+    "chromedriver": "^121.0.2",
     "cpr": "^3.0.1",
     "detect-browser": "^5.3.0",
     "get-port": "^5.1.1",
@@ -76,7 +76,7 @@
     "ts-proto": "^1.112.0",
     "ts-protoc-gen": "^0.15.0",
     "unzipper": "^0.10.11",
-    "webdriverio": "^8.2.1",
+    "webdriverio": "^8.32.2",
     "ws": "^8.4.2"
   },
   "dependencies": {
