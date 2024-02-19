@@ -20,12 +20,14 @@ jobs:
       fail-fast: false
       matrix:
         environment:
-          - node-version: '14.15'
-            node-options: --require "abort-controller/polyfill"
-          - node-version: '14.17'
-            node-options: --experimental-abortcontroller
-          - node-version: 16.x
+          # Reached end of life:
+          # - node-version: '14.15'
+          #   node-options: --require "abort-controller/polyfill"
+          # - node-version: '14.17'
+          #   node-options: --experimental-abortcontroller
+          # - node-version: 16.x
           - node-version: 18.x
+          - node-version: 20.x
 
     steps:
       - uses: actions/checkout@v3
@@ -62,9 +64,11 @@ jobs:
       fail-fast: false
       matrix:
         environment:
-          - node-version: 16.x
-            node-options: --experimental-fetch
+          # Reached end of life:
+          # - node-version: 16.x
+          #   node-options: --experimental-fetch
           - node-version: 18.x
+          - node-version: 20.x
 
     steps:
       - uses: actions/checkout@v3
