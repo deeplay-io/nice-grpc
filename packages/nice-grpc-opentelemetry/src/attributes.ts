@@ -1,5 +1,13 @@
 import {Attributes} from '@opentelemetry/api';
-import {SemanticAttributes} from '@opentelemetry/semantic-conventions';
+import {
+  SEMATTRS_RPC_SYSTEM,
+  SEMATTRS_RPC_SERVICE,
+  SEMATTRS_RPC_METHOD,
+  SEMATTRS_RPC_GRPC_STATUS_CODE,
+  SEMATTRS_NET_PEER_NAME,
+  SEMATTRS_NET_PEER_IP,
+  SEMATTRS_NET_PEER_PORT,
+} from '@opentelemetry/semantic-conventions';
 import * as ipaddr from 'ipaddr.js';
 import {Status} from 'nice-grpc-common';
 
@@ -12,9 +20,9 @@ export function getMethodAttributes(methodPath: string): Attributes {
   const [, service, method] = methodPath.split('/');
 
   return {
-    [SemanticAttributes.RPC_SYSTEM]: 'grpc',
-    [SemanticAttributes.RPC_SERVICE]: service,
-    [SemanticAttributes.RPC_METHOD]: method,
+    [SEMATTRS_RPC_SYSTEM]: 'grpc',
+    [SEMATTRS_RPC_SERVICE]: service,
+    [SEMATTRS_RPC_METHOD]: method,
   };
 }
 
@@ -23,7 +31,7 @@ export function getMethodAttributes(methodPath: string): Attributes {
  */
 export function getStatusAttributes(status: Status): Attributes {
   return {
-    [SemanticAttributes.RPC_GRPC_STATUS_CODE]: status,
+    [SEMATTRS_RPC_GRPC_STATUS_CODE]: status,
     'rpc.grpc.status_text': Status[status],
   };
 }
@@ -38,7 +46,7 @@ export function getPeerAttributes(peer: string): Attributes {
 
   if (lastColonIndex === -1) {
     return {
-      [SemanticAttributes.NET_PEER_NAME]: peer,
+      [SEMATTRS_NET_PEER_NAME]: peer,
     };
   }
 
@@ -47,19 +55,19 @@ export function getPeerAttributes(peer: string): Attributes {
 
   if (Number.isNaN(port)) {
     return {
-      [SemanticAttributes.NET_PEER_NAME]: peer,
+      [SEMATTRS_NET_PEER_NAME]: peer,
     };
   }
 
   if (ipaddr.isValid(host)) {
     return {
-      [SemanticAttributes.NET_PEER_IP]: host,
-      [SemanticAttributes.NET_PEER_PORT]: port,
+      [SEMATTRS_NET_PEER_IP]: host,
+      [SEMATTRS_NET_PEER_PORT]: port,
     };
   }
 
   return {
-    [SemanticAttributes.NET_PEER_NAME]: host,
-    [SemanticAttributes.NET_PEER_PORT]: port,
+    [SEMATTRS_NET_PEER_NAME]: host,
+    [SEMATTRS_NET_PEER_PORT]: port,
   };
 }
