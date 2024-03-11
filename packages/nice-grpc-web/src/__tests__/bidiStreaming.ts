@@ -59,21 +59,19 @@ const environment = detect();
   }
 
   describe(`bidiStreaming / ${proxyType} / ${transport} / ${protocol}`, () => {
-    type Context = {
-      server?: RemoteTestServer;
-      init(
-        mockImplementation: Partial<TestServiceImplementation>,
-      ): Promise<TestClient>;
-    };
+    let server: RemoteTestServer;
+    let init: (
+      mockImplementation: Partial<TestServiceImplementation>,
+    ) => Promise<TestClient>;
 
-    beforeEach(function (this: Context) {
-      this.init = async impl => {
-        this.server = await startRemoteTestServer(impl, proxyType, protocol);
+    beforeEach(() => {
+      init = async impl => {
+        server = await startRemoteTestServer(impl, proxyType, protocol);
 
         return createClient(
           TestDefinition,
           createChannel(
-            this.server.address,
+            server.address,
             transport === 'fetch'
               ? FetchTransport()
               : transport === 'websocket'
@@ -86,12 +84,12 @@ const environment = detect();
       };
     });
 
-    afterEach(function (this: Context) {
-      this.server?.shutdown();
+    afterEach(() => {
+      server?.shutdown();
     });
 
-    it('sends multiple requests and receives multiple responses', async function (this: Context) {
-      const client = await this.init({
+    it('sends multiple requests and receives multiple responses', async () => {
+      const client = await init({
         async *testBidiStream(request, context) {
           context.header.set('test', 'test-header');
           context.trailer.set('test', 'test-trailer');
@@ -131,8 +129,8 @@ const environment = detect();
       expect(trailer?.get('test')).toEqual('test-trailer');
     });
 
-    it('receives an error', async function (this: Context) {
-      const client = await this.init({
+    it('receives an error', async () => {
+      const client = await init({
         async *testBidiStream(request, context) {
           context.header.set('test', 'test-header');
           context.trailer.set('test', 'test-trailer');
@@ -192,10 +190,10 @@ const environment = detect();
       // full duplex is not supported by fetch
       // grpcwebproxy and traefik do not send response before request is finished
     } else {
-      it('receives a response before finishing sending request', async function (this: Context) {
+      it('receives a response before finishing sending request', async () => {
         const serverResponseFinish = defer<void>();
 
-        const client = await this.init({
+        const client = await init({
           async *testBidiStream(request, context) {
             yield {id: 'test'};
 
@@ -220,8 +218,8 @@ const environment = detect();
         requestIterableFinish.resolve();
       });
 
-      it('stops reading request iterable on response', async function (this: Context) {
-        const client = await this.init({
+      it('stops reading request iterable on response', async () => {
+        const client = await init({
           async *testBidiStream() {},
         });
 
@@ -250,11 +248,11 @@ const environment = detect();
       });
     }
 
-    it('cancels a call', async function (this: Context) {
+    it('cancels a call', async () => {
       const serverRequestStartDeferred = defer<void>();
       const serverAbortDeferred = defer<void>();
 
-      const client = await this.init({
+      const client = await init({
         async *testBidiStream(request, {signal}) {
           serverRequestStartDeferred.resolve();
 
@@ -299,9 +297,7 @@ const environment = detect();
           }
 
           expect(responses).toEqual([]);
-          expect(isAbortError(error))
-            .withContext(`Expected AbortError, got ${error}`)
-            .toBe(true);
+          expect(isAbortError(error)).toBe(true);
           requestIterableFinish.resolve();
 
           await serverAbortDeferred.promise;
@@ -314,10 +310,10 @@ const environment = detect();
       ]);
     });
 
-    it('handles request iterable error', async function (this: Context) {
+    it('handles request iterable error', async () => {
       const serverRequestStartDeferred = defer<void>();
 
-      const client = await this.init({
+      const client = await init({
         async *testBidiStream(request) {
           for await (const _ of request) {
             serverRequestStartDeferred.resolve();

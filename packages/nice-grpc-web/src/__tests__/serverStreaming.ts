@@ -41,21 +41,19 @@ const environment = detect();
   }
 
   describe(`serverStreaming / ${proxyType} / ${transport} / ${protocol}`, () => {
-    type Context = {
-      server?: RemoteTestServer;
-      init(
-        mockImplementation: Partial<TestServiceImplementation>,
-      ): Promise<TestClient>;
-    };
+    let server: RemoteTestServer;
+    let init: (
+      mockImplementation: Partial<TestServiceImplementation>,
+    ) => Promise<TestClient>;
 
-    beforeEach(function (this: Context) {
-      this.init = async impl => {
-        this.server = await startRemoteTestServer(impl, proxyType, protocol);
+    beforeEach(() => {
+      init = async impl => {
+        server = await startRemoteTestServer(impl, proxyType, protocol);
 
         return createClient(
           TestDefinition,
           createChannel(
-            this.server.address,
+            server.address,
             transport === 'fetch'
               ? FetchTransport()
               : transport === 'websocket'
@@ -68,12 +66,12 @@ const environment = detect();
       };
     });
 
-    afterEach(function (this: Context) {
-      this.server?.shutdown();
+    afterEach(() => {
+      server?.shutdown();
     });
 
-    it('sends request and receives multiple responses', async function (this: Context) {
-      const client = await this.init({
+    it('sends request and receives multiple responses', async () => {
+      const client = await init({
         async *testServerStream(request, context) {
           context.header.set('test', `${request.id}-header`);
           context.trailer.set('test', `${request.id}-trailer`);
@@ -107,10 +105,10 @@ const environment = detect();
       expect(trailer?.get('test')).toEqual('test-trailer');
     });
 
-    it('receives empty response', async function (this: Context) {
+    it('receives empty response', async () => {
       const endDeferred = defer();
 
-      const client = await this.init({
+      const client = await init({
         async *testServerStream(request, context) {
           yield {};
 
@@ -129,8 +127,8 @@ const environment = detect();
       endDeferred.resolve();
     });
 
-    it('receives error', async function (this: Context) {
-      const client = await this.init({
+    it('receives error', async () => {
+      const client = await init({
         async *testServerStream(request, context) {
           context.header.set('test', `${request.id}-header`);
           context.trailer.set('test', `${request.id}-trailer`);
@@ -175,8 +173,8 @@ const environment = detect();
       expect(trailer?.get('test')).toEqual('test-trailer');
     });
 
-    it('receives response and error', async function (this: Context) {
-      const client = await this.init({
+    it('receives response and error', async () => {
+      const client = await init({
         async *testServerStream(request, context) {
           yield {id: `${request.id}-1`};
 
@@ -218,10 +216,10 @@ const environment = detect();
       expect(trailer?.get('test')).toEqual('test-trailer');
     });
 
-    it('cancels a call', async function (this: Context) {
+    it('cancels a call', async () => {
       const serverAbortDeferred = defer<void>();
 
-      const client = await this.init({
+      const client = await init({
         async *testServerStream(request, {signal}) {
           yield {id: request.id};
 
@@ -259,17 +257,15 @@ const environment = detect();
       }
 
       expect(responses).toEqual([{id: 'test'}]);
-      expect(isAbortError(error))
-        .withContext(`Expected AbortError, got ${error}`)
-        .toBe(true);
+      expect(isAbortError(error)).toBe(true);
 
       await serverAbortDeferred.promise;
     });
 
-    it('receives header with first response', async function (this: Context) {
+    it('receives header with first response', async () => {
       const endDeferred = defer();
 
-      const client = await this.init({
+      const client = await init({
         async *testServerStream(request, context) {
           context.header.set('test', `${request.id}-1`);
 
@@ -311,10 +307,10 @@ const environment = detect();
     ) {
       // most browsers only receive headers after the first message is sent
     } else {
-      it('receives early header', async function (this: Context) {
+      it('receives early header', async () => {
         const endDeferred = defer();
 
-        const client = await this.init({
+        const client = await init({
           async *testServerStream(request, context) {
             context.header.set('test', request.id);
             context.sendHeader();
@@ -354,10 +350,10 @@ const environment = detect();
       });
     }
 
-    it('receives high rate of responses', async function (this: Context) {
+    it('receives high rate of responses', async () => {
       const count = 1_000;
 
-      const client = await this.init({
+      const client = await init({
         async *testServerStream(request) {
           for (let i = 0; i < count; i++) {
             yield {id: `${i}`};
