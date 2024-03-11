@@ -62,7 +62,7 @@ export const config: Options.Testrunner = {
   key: useBrowserstack ? BROWSERSTACK_KEY : undefined,
 
   bail: 1,
-  maxInstances: 2,
+  maxInstances: 1,
 
   services: compact([
     useBrowserstack && [
