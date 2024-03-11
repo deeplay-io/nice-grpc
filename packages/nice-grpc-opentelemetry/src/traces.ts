@@ -1,7 +1,9 @@
 import {Span, trace} from '@opentelemetry/api';
 import {
-  MessageTypeValues,
-  SemanticAttributes,
+  MESSAGETYPEVALUES_RECEIVED,
+  MESSAGETYPEVALUES_SENT,
+  SEMATTRS_MESSAGE_ID,
+  SEMATTRS_MESSAGE_TYPE,
 } from '@opentelemetry/semantic-conventions';
 import {VERSION} from './version';
 
@@ -29,14 +31,14 @@ export function getSpanName(methodPath: string): string {
 export async function* emitSpanEvents<T>(
   iterable: AsyncIterable<T>,
   span: Span,
-  type: MessageTypeValues,
+  type: typeof MESSAGETYPEVALUES_SENT | typeof MESSAGETYPEVALUES_RECEIVED,
 ): AsyncIterable<T> {
   let nextId = 1;
 
   for await (const item of iterable) {
     span.addEvent('message', {
-      [SemanticAttributes.MESSAGE_TYPE]: type,
-      [SemanticAttributes.MESSAGE_ID]: nextId++,
+      [SEMATTRS_MESSAGE_TYPE]: type,
+      [SEMATTRS_MESSAGE_ID]: nextId++,
     });
 
     yield item;

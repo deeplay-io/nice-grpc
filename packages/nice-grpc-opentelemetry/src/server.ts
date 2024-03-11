@@ -6,7 +6,10 @@ import {
   SpanKind,
   SpanStatusCode,
 } from '@opentelemetry/api';
-import {MessageTypeValues} from '@opentelemetry/semantic-conventions';
+import {
+  MESSAGETYPEVALUES_RECEIVED,
+  MESSAGETYPEVALUES_SENT,
+} from '@opentelemetry/semantic-conventions';
 import {isAbortError} from 'abort-controller-x';
 import {
   CallContext,
@@ -21,9 +24,8 @@ import {
   getStatusAttributes,
 } from './attributes';
 import {metadataGetter} from './propagation';
+import {emitSpanEvents, getSpanName, tracer} from './traces';
 import {bindAsyncGenerator} from './utils/bindAsyncGenerator';
-import {tracer} from './traces';
-import {emitSpanEvents, getSpanName} from './traces';
 
 export function openTelemetryServerMiddleware(): ServerMiddleware {
   return (call, context) =>
@@ -62,7 +64,7 @@ async function* openTelemetryServerMiddlewareGenerator<Request, Response>(
     if (!call.requestStream) {
       request = call.request;
     } else {
-      request = emitSpanEvents(call.request, span, MessageTypeValues.RECEIVED);
+      request = emitSpanEvents(call.request, span, MESSAGETYPEVALUES_RECEIVED);
     }
 
     if (!call.responseStream) {
@@ -71,7 +73,7 @@ async function* openTelemetryServerMiddlewareGenerator<Request, Response>(
       yield* emitSpanEvents(
         call.next(request, context),
         span,
-        MessageTypeValues.SENT,
+        MESSAGETYPEVALUES_SENT,
       );
 
       return;
