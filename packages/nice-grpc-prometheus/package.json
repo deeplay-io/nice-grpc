@@ -41,6 +41,6 @@
   "dependencies": {
     "abort-controller-x": "^0.4.0",
     "nice-grpc-common": "^2.0.2",
-    "prom-client": "^14.0.1"
+    "prom-client": "^15.1.0"
   }
 }
