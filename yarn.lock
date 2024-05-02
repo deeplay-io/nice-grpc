@@ -2263,17 +2263,6 @@
   dependencies:
     "@types/node" "^20.1.0"
 
-"@wdio/reporter@8.32.2":
-  version "8.32.2"
-  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-8.32.2.tgz#de9affe8922eb5da01ac5e32f0b9b6f8ec543f52"
-  integrity sha512-BZdReAFfRCtgtYbyhkKgSGqqoIn/yG5/Z4COjvRvon9NJkz+eA4PiHCKdEP7+ekBIjud7H8Gy+6mPBDEu+wllw==
-  dependencies:
-    "@types/node" "^20.1.0"
-    "@wdio/logger" "8.28.0"
-    "@wdio/types" "8.32.2"
-    diff "^5.0.0"
-    object-inspect "^1.12.0"
-
 "@wdio/reporter@8.32.4":
   version "8.32.4"
   resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-8.32.4.tgz#94b817df102cd3efaa63260d894a02eca7ee2cf3"
@@ -2282,6 +2271,17 @@
     "@types/node" "^20.1.0"
     "@wdio/logger" "8.28.0"
     "@wdio/types" "8.32.4"
+    diff "^5.0.0"
+    object-inspect "^1.12.0"
+
+"@wdio/reporter@8.36.1":
+  version "8.36.1"
+  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-8.36.1.tgz#2940ffa27c8222f1fec8329c05b00714cd1a5259"
+  integrity sha512-HcXr9XKq/6kPC9nexMRXIc/ft3Lvp0yCaW5tps01Axus9wbi5ysLHi2z5sB84F2YdpM+aRf7Lac56xkc4Jldeg==
+  dependencies:
+    "@types/node" "^20.1.0"
+    "@wdio/logger" "8.28.0"
+    "@wdio/types" "8.36.1"
     diff "^5.0.0"
     object-inspect "^1.12.0"
 
@@ -2303,22 +2303,15 @@
     webdriverio "8.32.4"
 
 "@wdio/spec-reporter@^8.32.2":
-  version "8.32.2"
-  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-8.32.2.tgz#b3be8296fd8968be1314318a59ef10f300abfb32"
-  integrity sha512-3hUXpE+idC4KOXofJnpubdDDCE8X0OTd6ykypiaXMI2hJTA2nIZcHtpRQnAE0E4JT9OzLnPWODcMq54GGBDRkg==
+  version "8.36.1"
+  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-8.36.1.tgz#9d5858f5612c95b1d61ef7e69a2d3321aac8597d"
+  integrity sha512-VgAd8VQCfwKYz4A3BPDUYNIQxXhRSTaVNbmDzSlYfo5Jekygk7fz0LRFYBpJ69l7eQH0P5nzEyF92oW/rvE3VA==
   dependencies:
-    "@wdio/reporter" "8.32.2"
-    "@wdio/types" "8.32.2"
+    "@wdio/reporter" "8.36.1"
+    "@wdio/types" "8.36.1"
     chalk "^5.1.2"
     easy-table "^1.2.0"
     pretty-ms "^7.0.0"
-
-"@wdio/types@8.32.2":
-  version "8.32.2"
-  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-8.32.2.tgz#7b79f4156eabf5fc68c9cda1cf84441033c3acce"
-  integrity sha512-jq8LcBBQpBP9ZF5kECKEpXv8hN7irCGCjLFAN0Bd5ScRR6qu6MGWvwkDkau2sFPr0b++sKDCEaMzQlwrGFjZXg==
-  dependencies:
-    "@types/node" "^20.1.0"
 
 "@wdio/types@8.32.4":
   version "8.32.4"
