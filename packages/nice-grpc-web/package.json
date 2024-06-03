@@ -69,7 +69,7 @@
     "ts-node": "^10.9.2",
     "ts-proto": "^1.112.0",
     "ts-protoc-gen": "^0.15.0",
-    "unzipper": "^0.10.11",
+    "unzipper": "^0.11.6",
     "ws": "^8.4.2"
   },
   "dependencies": {
