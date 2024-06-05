@@ -5,18 +5,26 @@ import {
   convertMetadataToGrpcJs,
 } from '../utils/convertMetadata';
 
+// https://github.com/deeplay-io/nice-grpc/issues/607
+// https://github.com/deeplay-io/nice-grpc/issues/555
+export type CallContextMaybeCancel = {
+  signal: AbortSignal;
+  cancel?: () => void;
+};
+
 /** @internal */
-export function createCallContext(call: ServerSurfaceCall): CallContext {
+export function createCallContext(
+  call: ServerSurfaceCall,
+  maybeCancel: CallContextMaybeCancel,
+): CallContext {
   const header = Metadata();
   const trailer = Metadata();
 
-  const abortController = new AbortController();
-
   if (call.cancelled) {
-    abortController.abort();
+    maybeCancel.cancel?.();
   } else {
     call.on('cancelled', () => {
-      abortController.abort();
+      maybeCancel.cancel?.();
     });
   }
 
@@ -35,6 +43,6 @@ export function createCallContext(call: ServerSurfaceCall): CallContext {
       headerSent = true;
     },
     trailer,
-    signal: abortController.signal,
+    signal: maybeCancel.signal,
   };
 }

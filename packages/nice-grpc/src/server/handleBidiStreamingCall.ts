@@ -9,9 +9,9 @@ import {MethodDefinition} from '../service-definitions';
 import {convertMetadataToGrpcJs} from '../utils/convertMetadata';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
 import {readableToAsyncIterable} from '../utils/readableToAsyncIterable';
-import {createCallContext} from './createCallContext';
-import {createErrorStatusObject} from './createErrorStatusObject';
 import {BidiStreamingMethodImplementation} from './ServiceImplementation';
+import {CallContextMaybeCancel, createCallContext} from './createCallContext';
+import {createErrorStatusObject} from './createErrorStatusObject';
 
 /** @internal */
 export function createBidiStreamingMethodHandler<Request, Response>(
@@ -54,8 +54,16 @@ export function createBidiStreamingMethodHandler<Request, Response>(
             context,
           );
 
+  const ac = new AbortController();
+  const maybeCancel: CallContextMaybeCancel = {
+    signal: ac.signal,
+    cancel() {
+      ac.abort();
+    },
+  };
+
   return call => {
-    const context = createCallContext(call);
+    const context = createCallContext(call, maybeCancel);
 
     Promise.resolve()
       .then(async () => {
@@ -101,6 +109,7 @@ export function createBidiStreamingMethodHandler<Request, Response>(
             break;
           }
         } finally {
+          maybeCancel.cancel = undefined;
           context.sendHeader();
         }
       })
@@ -109,12 +118,13 @@ export function createBidiStreamingMethodHandler<Request, Response>(
           call.end(convertMetadataToGrpcJs(context.trailer));
         },
         err => {
-          call.destroy(
+          call.emit(
+            'error',
             createErrorStatusObject(
               definition.path,
               err,
               convertMetadataToGrpcJs(context.trailer),
-            ) as any,
+            ),
           );
         },
       );

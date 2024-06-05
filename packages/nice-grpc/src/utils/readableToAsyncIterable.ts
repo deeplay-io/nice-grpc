@@ -22,6 +22,18 @@ export async function* readableToAsyncIterable<T>(
     }
   }
 
+  // before we do this hack, we must check if the internals of grpc-js are available:
+  if (
+    !(
+      stream &&
+      typeof stream === 'object' &&
+      '_readableState' in stream &&
+      stream._readableState &&
+      typeof (stream as any)._readableState === 'object'
+    )
+  ) {
+    throw new Error('nice-grpc: _readableState not found in stream');
+  }
   const state = (stream as any)._readableState;
 
   let error = state.errored;

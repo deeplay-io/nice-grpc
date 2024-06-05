@@ -5,7 +5,7 @@ import {
   ServerMiddleware,
 } from 'nice-grpc-common';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
-import {createCallContext} from './createCallContext';
+import {CallContextMaybeCancel, createCallContext} from './createCallContext';
 import {ClientStreamingMethodImplementation} from './ServiceImplementation';
 import {createErrorStatusObject} from './createErrorStatusObject';
 import {readableToAsyncIterable} from '../utils/readableToAsyncIterable';
@@ -53,8 +53,16 @@ export function createClientStreamingMethodHandler<Request, Response>(
             context,
           );
 
+  const ac = new AbortController();
+  const maybeCancel: CallContextMaybeCancel = {
+    signal: ac.signal,
+    cancel() {
+      ac.abort();
+    },
+  };
+
   return (call, callback) => {
-    const context = createCallContext(call);
+    const context = createCallContext(call, maybeCancel);
 
     Promise.resolve()
       .then(async () => {
@@ -88,6 +96,7 @@ export function createClientStreamingMethodHandler<Request, Response>(
             return result.value;
           }
         } finally {
+          maybeCancel.cancel = undefined;
           context.sendHeader();
         }
       })
