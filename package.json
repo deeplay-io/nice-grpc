@@ -21,9 +21,6 @@
   "lint-staged": {
     "*.{ts,js,md,json,yaml}": "prettier --write"
   },
-  "resolutions": {
-    "@grpc/grpc-js": "1.10.8"
-  },
   "devDependencies": {
     "@types/jest": "^29.2.4",
     "abort-controller": "^3.0.0",
