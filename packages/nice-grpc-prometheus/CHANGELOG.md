@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.4](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-prometheus@0.2.3...nice-grpc-prometheus@0.2.4) (2024-06-06)
+
+### Bug Fixes
+
+- **nice-grpc:** resolve compatibility issues with grpc-js 1.10.x
+  ([bdfc754](https://github.com/deeplay-io/nice-grpc/commit/bdfc7546dce450a9c50947e386e9e9bdf6180c59)),
+  closes [#555](https://github.com/deeplay-io/nice-grpc/issues/555)
+  [#607](https://github.com/deeplay-io/nice-grpc/issues/607)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [0.2.3](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-prometheus@0.2.2...nice-grpc-prometheus@0.2.3) (2024-03-11)
 
 **Note:** Version bump only for package nice-grpc-prometheus
