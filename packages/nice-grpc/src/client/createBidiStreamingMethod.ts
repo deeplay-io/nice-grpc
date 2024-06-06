@@ -10,7 +10,6 @@ import {
   MethodDefinition,
   toGrpcJsMethodDefinition,
 } from '../service-definitions';
-import {CompatAbortSignal} from '../utils/compatAbortSignal';
 import {
   convertMetadataFromGrpcJs,
   convertMetadataToGrpcJs,
@@ -48,8 +47,7 @@ export function createBidiStreamingMethod<Request, Response>(
 
     const {metadata = Metadata(), onHeader, onTrailer} = options;
 
-    const signal = (options.signal ??
-      new AbortController().signal) as CompatAbortSignal;
+    const signal = options.signal ?? new AbortController().signal;
 
     const pipeAbortController = new AbortController();
 
