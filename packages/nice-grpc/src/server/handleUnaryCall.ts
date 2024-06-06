@@ -7,9 +7,9 @@ import {
 import {MethodDefinition} from '../service-definitions';
 import {convertMetadataToGrpcJs} from '../utils/convertMetadata';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
+import {UnaryMethodImplementation} from './ServiceImplementation';
 import {createCallContext} from './createCallContext';
 import {createErrorStatusObject} from './createErrorStatusObject';
-import {UnaryMethodImplementation} from './ServiceImplementation';
 
 /** @internal */
 export function createUnaryMethodHandler<Request, Response>(
@@ -50,7 +50,7 @@ export function createUnaryMethodHandler<Request, Response>(
           );
 
   return (call, callback) => {
-    const context = createCallContext(call);
+    const {context, maybeCancel} = createCallContext(call);
 
     Promise.resolve()
       .then(async () => {
@@ -84,6 +84,7 @@ export function createUnaryMethodHandler<Request, Response>(
             return result.value;
           }
         } finally {
+          maybeCancel.cancel = undefined;
           context.sendHeader();
         }
       })

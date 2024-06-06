@@ -1,16 +1,253 @@
 import defer = require('defer-promise');
 import {forever, isAbortError} from 'abort-controller-x';
 import {
-  createChannel,
-  createClient,
-  createServer,
   Metadata,
   ServerError,
   Status,
+  createChannel,
+  createClient,
+  createServer,
 } from '..';
 import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../fixtures/grpc-js/test_pb';
 import {throwUnimplemented} from './utils/throwUnimplemented';
+
+function waitForAbort(signal: AbortSignal, timeout: number | undefined = 1000) {
+  return new Promise<void>((resolve, reject) => {
+    const savedError = new Error('waitForAbort timeout'); // capture stack trace of where the timeout was created
+    let timeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
+    const resolverReference = () => {
+      clearTimeout(timeoutId);
+      resolve();
+    };
+    signal.addEventListener('abort', resolverReference);
+    if (timeout) {
+      timeoutId = setTimeout(() => {
+        signal.removeEventListener('abort', resolverReference);
+        reject(savedError);
+      }, timeout);
+    }
+  });
+}
+
+/**
+ * Tests that two streaming RPCs one after another work correctly. Specifically tests
+ * that the server does not reuse the same AbortSignal for both RPCs.
+ */
+test('back-to-back', async () => {
+  const server = createServer();
+
+  const serverSignal1 = defer<AbortSignal>();
+  const serverSignal2 = defer<AbortSignal>();
+
+  let firstTimeOnly = true;
+
+  server.add(TestService, {
+    async *testServerStream(request: TestRequest, context) {
+      const first = firstTimeOnly;
+      firstTimeOnly = false;
+
+      if (first) {
+        serverSignal1.resolve(context.signal);
+      } else {
+        serverSignal2.resolve(context.signal);
+      }
+
+      let count = first ? 100 : 200;
+      while (true) {
+        yield new TestResponse().setId(`${request.getId()}-${count++}`);
+      }
+    },
+    testUnary: throwUnimplemented,
+    testClientStream: throwUnimplemented,
+    testBidiStream: throwUnimplemented,
+  });
+
+  const port = await server.listen('127.0.0.1:0');
+  const channel = createChannel(`127.0.0.1:${port}`);
+  const client = createClient(TestService, channel);
+
+  const it1 = client
+    .testServerStream(new TestRequest().setId('first'))
+    [Symbol.asyncIterator]();
+
+  await expect(it1.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "first-100",
+      },
+    }
+  `);
+  const serverSig1 = await serverSignal1.promise;
+  expect(serverSig1.aborted).toBe(false);
+
+  await expect(it1.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "first-101",
+      },
+    }
+  `);
+
+  expect(serverSig1.aborted).toBe(false);
+  await it1.return?.();
+  await waitForAbort(serverSig1);
+
+  const it2 = client
+    .testServerStream(new TestRequest().setId('second'))
+    [Symbol.asyncIterator]();
+  await expect(it2.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "second-200",
+      },
+    }
+  `);
+  const serverSig2 = await serverSignal2.promise;
+  expect(serverSig2.aborted).toBe(false);
+
+  await expect(it2.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "second-201",
+      },
+    }
+  `);
+
+  expect(serverSig2.aborted).toBe(false);
+  await it2.return?.();
+  await waitForAbort(serverSig2);
+
+  channel.close();
+  await server.shutdown();
+});
+
+/**
+ * Tests that two interleaved streaming RPCs work correctly. Specifically tests
+ * that the server does not reuse the same AbortSignal for both RPCs and that
+ * messages from both RPCs are routed correctly.
+ */
+test('interleaved', async () => {
+  const server = createServer();
+
+  const serverSignal1 = defer<AbortSignal>();
+  const serverSignal2 = defer<AbortSignal>();
+
+  let firstTimeOnly = true;
+
+  server.add(TestService, {
+    async *testServerStream(request: TestRequest, context) {
+      const first = firstTimeOnly;
+      firstTimeOnly = false;
+
+      if (first) {
+        serverSignal1.resolve(context.signal);
+      } else {
+        serverSignal2.resolve(context.signal);
+      }
+
+      let count = first ? 100 : 200;
+      while (true) {
+        yield new TestResponse().setId(`${request.getId()}-${count++}`);
+      }
+    },
+    testUnary: throwUnimplemented,
+    testClientStream: throwUnimplemented,
+    testBidiStream: throwUnimplemented,
+  });
+
+  const port = await server.listen('127.0.0.1:0');
+  const channel = createChannel(`127.0.0.1:${port}`);
+  const client = createClient(TestService, channel);
+
+  const it1 = client
+    .testServerStream(new TestRequest().setId('first'))
+    [Symbol.asyncIterator]();
+
+  await expect(it1.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "first-100",
+      },
+    }
+  `);
+  const serverSig1 = await serverSignal1.promise;
+  expect(serverSig1.aborted).toBe(false);
+
+  await expect(it1.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "first-101",
+      },
+    }
+  `);
+
+  const it2 = client
+    .testServerStream(new TestRequest().setId('second'))
+    [Symbol.asyncIterator]();
+  await expect(it2.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "second-200",
+      },
+    }
+  `);
+  await expect(it2.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "second-201",
+      },
+    }
+  `);
+
+  const serverSig2 = await serverSignal2.promise;
+  expect(serverSig1.aborted).toBe(false);
+  expect(serverSig2.aborted).toBe(false);
+  await expect(it1.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "first-102",
+      },
+    }
+  `);
+  await expect(it2.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "second-202",
+      },
+    }
+  `);
+
+  expect(serverSig1.aborted).toBe(false);
+  await it1.return?.();
+  await waitForAbort(serverSig1);
+
+  await expect(it2.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "second-203",
+      },
+    }
+  `);
+
+  expect(serverSig2.aborted).toBe(false);
+  await it2.return?.();
+  await waitForAbort(serverSig2);
+
+  channel.close();
+  await server.shutdown();
+});
 
 test('basic', async () => {
   const server = createServer();

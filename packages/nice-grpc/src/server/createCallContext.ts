@@ -5,24 +5,48 @@ import {
   convertMetadataToGrpcJs,
 } from '../utils/convertMetadata';
 
+// https://github.com/deeplay-io/nice-grpc/issues/607
+// https://github.com/deeplay-io/nice-grpc/issues/555
+export type CallContextMaybeCancel = {
+  signal: AbortSignal;
+  cancel?: () => void;
+};
+
 /** @internal */
-export function createCallContext(call: ServerSurfaceCall): CallContext {
+export function createCallContext(call: ServerSurfaceCall): {
+  context: CallContext;
+  maybeCancel: CallContextMaybeCancel;
+} {
+  const ac = new AbortController();
+  const maybeCancel: CallContextMaybeCancel = {
+    signal: ac.signal,
+    cancel() {
+      ac.abort();
+    },
+  };
+
   const header = Metadata();
   const trailer = Metadata();
 
-  const abortController = new AbortController();
-
   if (call.cancelled) {
-    abortController.abort();
+    maybeCancel.cancel?.();
+    maybeCancel.cancel = undefined;
   } else {
+    call.on('close', () => {
+      maybeCancel.cancel = undefined;
+    });
+    call.on('finish', () => {
+      maybeCancel.cancel = undefined;
+    });
     call.on('cancelled', () => {
-      abortController.abort();
+      maybeCancel.cancel?.();
+      maybeCancel.cancel = undefined;
     });
   }
 
   let headerSent = false;
 
-  return {
+  const context = {
     metadata: convertMetadataFromGrpcJs(call.metadata),
     peer: call.getPeer(),
     header,
@@ -35,6 +59,8 @@ export function createCallContext(call: ServerSurfaceCall): CallContext {
       headerSent = true;
     },
     trailer,
-    signal: abortController.signal,
+    signal: maybeCancel.signal,
   };
+
+  return {context, maybeCancel};
 }
