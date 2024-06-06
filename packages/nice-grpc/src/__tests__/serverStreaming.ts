@@ -12,35 +12,6 @@ import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../fixtures/grpc-js/test_pb';
 import {throwUnimplemented} from './utils/throwUnimplemented';
 
-class AssignablePromise<T> extends Promise<T> {
-  public resolve!: (value: T | PromiseLike<T>) => void;
-  public reject!: (reason?: any) => void;
-
-  private constructor(
-    executor: (
-      resolve: (value: T | PromiseLike<T>) => void,
-      reject: (reason?: any) => void,
-    ) => void,
-  ) {
-    super(executor);
-  }
-
-  static create<T>(): AssignablePromise<T> {
-    let resolveFunc: (value: T | PromiseLike<T>) => void;
-    let rejectFunc: (reason?: any) => void;
-
-    const promise = new AssignablePromise<T>((resolve, reject) => {
-      resolveFunc = resolve;
-      rejectFunc = reject;
-    });
-
-    promise.resolve = resolveFunc!;
-    promise.reject = rejectFunc!;
-
-    return promise;
-  }
-}
-
 function waitForAbort(signal: AbortSignal, timeout: number | undefined = 1000) {
   return new Promise<void>((resolve, reject) => {
     const savedError = new Error('waitForAbort timeout'); // capture stack trace of where the timeout was created
@@ -59,11 +30,15 @@ function waitForAbort(signal: AbortSignal, timeout: number | undefined = 1000) {
   });
 }
 
+/**
+ * Tests that two streaming RPCs one after another work correctly. Specifically tests
+ * that the server does not reuse the same AbortSignal for both RPCs.
+ */
 test('back-to-back', async () => {
   const server = createServer();
 
-  const serverSignal1 = AssignablePromise.create<AbortSignal>();
-  const serverSignal2 = AssignablePromise.create<AbortSignal>();
+  const serverSignal1 = defer<AbortSignal>();
+  const serverSignal2 = defer<AbortSignal>();
 
   let firstTimeOnly = true;
 
@@ -104,7 +79,7 @@ test('back-to-back', async () => {
       },
     }
   `);
-  const serverSig1 = await serverSignal1;
+  const serverSig1 = await serverSignal1.promise;
   expect(serverSig1.aborted).toBe(false);
 
   await expect(it1.next()).resolves.toMatchInlineSnapshot(`
@@ -131,7 +106,7 @@ test('back-to-back', async () => {
       },
     }
   `);
-  const serverSig2 = await serverSignal2;
+  const serverSig2 = await serverSignal2.promise;
   expect(serverSig2.aborted).toBe(false);
 
   await expect(it2.next()).resolves.toMatchInlineSnapshot(`
@@ -151,11 +126,16 @@ test('back-to-back', async () => {
   await server.shutdown();
 });
 
+/**
+ * Tests that two interleaved streaming RPCs work correctly. Specifically tests
+ * that the server does not reuse the same AbortSignal for both RPCs and that
+ * messages from both RPCs are routed correctly.
+ */
 test('interleaved', async () => {
   const server = createServer();
 
-  const serverSignal1 = AssignablePromise.create<AbortSignal>();
-  const serverSignal2 = AssignablePromise.create<AbortSignal>();
+  const serverSignal1 = defer<AbortSignal>();
+  const serverSignal2 = defer<AbortSignal>();
 
   let firstTimeOnly = true;
 
@@ -196,7 +176,7 @@ test('interleaved', async () => {
       },
     }
   `);
-  const serverSig1 = await serverSignal1;
+  const serverSig1 = await serverSignal1.promise;
   expect(serverSig1.aborted).toBe(false);
 
   await expect(it1.next()).resolves.toMatchInlineSnapshot(`
@@ -228,7 +208,7 @@ test('interleaved', async () => {
     }
   `);
 
-  const serverSig2 = await serverSignal2;
+  const serverSig2 = await serverSignal2.promise;
   expect(serverSig1.aborted).toBe(false);
   expect(serverSig2.aborted).toBe(false);
   await expect(it1.next()).resolves.toMatchInlineSnapshot(`

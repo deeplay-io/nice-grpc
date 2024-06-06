@@ -36,10 +36,6 @@ export function createCallContext(call: ServerSurfaceCall): {
       maybeCancel.cancel = undefined;
     });
     call.on('finish', () => {
-      // https://github.com/grpc/grpc-node/issues/2681#issuecomment-1989715667
-      // Versions of grpc-js 1.10.0 and 1.10.1 will not operate correctly with gRPC-JS
-      // and may cause server-side streaming calls to always appear as if they were cancelled
-      // even if the client did not cancel the call.
       maybeCancel.cancel = undefined;
     });
     call.on('cancelled', () => {
