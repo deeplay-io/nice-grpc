@@ -1,5 +1,37 @@
 import {ObjectReadable} from '@grpc/grpc-js/build/src/object-stream';
 
+type NodeInternalReadableState = {
+  errored: unknown;
+  errorEmitted: boolean;
+  endEmitted: boolean;
+  closeEmitted: boolean;
+};
+
+let nodejsInternalsCompatibilityCheckedOnce = false;
+
+/**
+ * Exactly once check that an object has Node.js readable stream internal object looks roughly like we expect.
+ */
+function nodejsInternalsAccessible(obj: any): obj is NodeInternalReadableState {
+  if (nodejsInternalsCompatibilityCheckedOnce) {
+    return true;
+  }
+
+  const safe =
+    obj &&
+    typeof obj === 'object' &&
+    'errored' in obj &&
+    'errorEmitted' in obj &&
+    'endEmitted' in obj &&
+    'closeEmitted' in obj &&
+    typeof obj.errorEmitted === 'boolean' &&
+    typeof obj.endEmitted === 'boolean' &&
+    typeof obj.closeEmitted === 'boolean';
+
+  nodejsInternalsCompatibilityCheckedOnce = safe;
+  return safe;
+}
+
 /**
  * This is a copy of NodeJS createAsyncIterator(stream), with removed stream
  * destruction.
@@ -22,19 +54,10 @@ export async function* readableToAsyncIterable<T>(
     }
   }
 
-  // before we do this hack, we must check if the internals of grpc-js are available:
-  if (
-    !(
-      stream &&
-      typeof stream === 'object' &&
-      '_readableState' in stream &&
-      stream._readableState &&
-      typeof (stream as any)._readableState === 'object'
-    )
-  ) {
-    throw new Error('nice-grpc: _readableState not found in stream');
-  }
   const state = (stream as any)._readableState;
+  if (!nodejsInternalsAccessible(state)) {
+    throw new Error('nice-grpc: _readableState members incompatible');
+  }
 
   let error = state.errored;
   let errorEmitted = state.errorEmitted;
