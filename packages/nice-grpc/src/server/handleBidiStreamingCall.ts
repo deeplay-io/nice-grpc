@@ -10,7 +10,7 @@ import {convertMetadataToGrpcJs} from '../utils/convertMetadata';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
 import {readableToAsyncIterable} from '../utils/readableToAsyncIterable';
 import {BidiStreamingMethodImplementation} from './ServiceImplementation';
-import {CallContextMaybeCancel, createCallContext} from './createCallContext';
+import {createCallContext} from './createCallContext';
 import {createErrorStatusObject} from './createErrorStatusObject';
 
 /** @internal */
@@ -54,16 +54,8 @@ export function createBidiStreamingMethodHandler<Request, Response>(
             context,
           );
 
-  const ac = new AbortController();
-  const maybeCancel: CallContextMaybeCancel = {
-    signal: ac.signal,
-    cancel() {
-      ac.abort();
-    },
-  };
-
   return call => {
-    const context = createCallContext(call, maybeCancel);
+    const {context, maybeCancel} = createCallContext(call);
 
     Promise.resolve()
       .then(async () => {

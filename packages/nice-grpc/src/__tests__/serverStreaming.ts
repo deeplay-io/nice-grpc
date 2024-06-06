@@ -1,16 +1,273 @@
 import defer = require('defer-promise');
 import {forever, isAbortError} from 'abort-controller-x';
 import {
-  createChannel,
-  createClient,
-  createServer,
   Metadata,
   ServerError,
   Status,
+  createChannel,
+  createClient,
+  createServer,
 } from '..';
 import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../fixtures/grpc-js/test_pb';
 import {throwUnimplemented} from './utils/throwUnimplemented';
+
+class AssignablePromise<T> extends Promise<T> {
+  public resolve!: (value: T | PromiseLike<T>) => void;
+  public reject!: (reason?: any) => void;
+
+  private constructor(
+    executor: (
+      resolve: (value: T | PromiseLike<T>) => void,
+      reject: (reason?: any) => void,
+    ) => void,
+  ) {
+    super(executor);
+  }
+
+  static create<T>(): AssignablePromise<T> {
+    let resolveFunc: (value: T | PromiseLike<T>) => void;
+    let rejectFunc: (reason?: any) => void;
+
+    const promise = new AssignablePromise<T>((resolve, reject) => {
+      resolveFunc = resolve;
+      rejectFunc = reject;
+    });
+
+    promise.resolve = resolveFunc!;
+    promise.reject = rejectFunc!;
+
+    return promise;
+  }
+}
+
+function waitForAbort(signal: AbortSignal, timeout: number | undefined = 1000) {
+  return new Promise<void>((resolve, reject) => {
+    const savedError = new Error('waitForAbort timeout'); // capture stack trace of where the timeout was created
+    let timeoutId: ReturnType<typeof setTimeout> | undefined = undefined;
+    const resolverReference = () => {
+      clearTimeout(timeoutId);
+      resolve();
+    };
+    signal.addEventListener('abort', resolverReference);
+    if (timeout) {
+      timeoutId = setTimeout(() => {
+        signal.removeEventListener('abort', resolverReference);
+        reject(savedError);
+      }, timeout);
+    }
+  });
+}
+
+test('back-to-back', async () => {
+  const server = createServer();
+
+  const serverSignal1 = AssignablePromise.create<AbortSignal>();
+  const serverSignal2 = AssignablePromise.create<AbortSignal>();
+
+  let firstTimeOnly = true;
+
+  server.add(TestService, {
+    async *testServerStream(request: TestRequest, context) {
+      const first = firstTimeOnly;
+      firstTimeOnly = false;
+
+      if (first) {
+        serverSignal1.resolve(context.signal);
+      } else {
+        serverSignal2.resolve(context.signal);
+      }
+
+      let count = first ? 100 : 200;
+      while (true) {
+        yield new TestResponse().setId(`${request.getId()}-${count++}`);
+      }
+    },
+    testUnary: throwUnimplemented,
+    testClientStream: throwUnimplemented,
+    testBidiStream: throwUnimplemented,
+  });
+
+  const port = await server.listen('127.0.0.1:0');
+  const channel = createChannel(`127.0.0.1:${port}`);
+  const client = createClient(TestService, channel);
+
+  const it1 = client
+    .testServerStream(new TestRequest().setId('first'))
+    [Symbol.asyncIterator]();
+
+  await expect(it1.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "first-100",
+      },
+    }
+  `);
+  const serverSig1 = await serverSignal1;
+  expect(serverSig1.aborted).toBe(false);
+
+  await expect(it1.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "first-101",
+      },
+    }
+  `);
+
+  expect(serverSig1.aborted).toBe(false);
+  await it1.return?.();
+  await waitForAbort(serverSig1);
+
+  const it2 = client
+    .testServerStream(new TestRequest().setId('second'))
+    [Symbol.asyncIterator]();
+  await expect(it2.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "second-200",
+      },
+    }
+  `);
+  const serverSig2 = await serverSignal2;
+  expect(serverSig2.aborted).toBe(false);
+
+  await expect(it2.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "second-201",
+      },
+    }
+  `);
+
+  expect(serverSig2.aborted).toBe(false);
+  await it2.return?.();
+  await waitForAbort(serverSig2);
+
+  channel.close();
+  await server.shutdown();
+});
+
+test('interleaved', async () => {
+  const server = createServer();
+
+  const serverSignal1 = AssignablePromise.create<AbortSignal>();
+  const serverSignal2 = AssignablePromise.create<AbortSignal>();
+
+  let firstTimeOnly = true;
+
+  server.add(TestService, {
+    async *testServerStream(request: TestRequest, context) {
+      const first = firstTimeOnly;
+      firstTimeOnly = false;
+
+      if (first) {
+        serverSignal1.resolve(context.signal);
+      } else {
+        serverSignal2.resolve(context.signal);
+      }
+
+      let count = first ? 100 : 200;
+      while (true) {
+        yield new TestResponse().setId(`${request.getId()}-${count++}`);
+      }
+    },
+    testUnary: throwUnimplemented,
+    testClientStream: throwUnimplemented,
+    testBidiStream: throwUnimplemented,
+  });
+
+  const port = await server.listen('127.0.0.1:0');
+  const channel = createChannel(`127.0.0.1:${port}`);
+  const client = createClient(TestService, channel);
+
+  const it1 = client
+    .testServerStream(new TestRequest().setId('first'))
+    [Symbol.asyncIterator]();
+
+  await expect(it1.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "first-100",
+      },
+    }
+  `);
+  const serverSig1 = await serverSignal1;
+  expect(serverSig1.aborted).toBe(false);
+
+  await expect(it1.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "first-101",
+      },
+    }
+  `);
+
+  const it2 = client
+    .testServerStream(new TestRequest().setId('second'))
+    [Symbol.asyncIterator]();
+  await expect(it2.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "second-200",
+      },
+    }
+  `);
+  await expect(it2.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "second-201",
+      },
+    }
+  `);
+
+  const serverSig2 = await serverSignal2;
+  expect(serverSig1.aborted).toBe(false);
+  expect(serverSig2.aborted).toBe(false);
+  await expect(it1.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "first-102",
+      },
+    }
+  `);
+  await expect(it2.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "second-202",
+      },
+    }
+  `);
+
+  expect(serverSig1.aborted).toBe(false);
+  await it1.return?.();
+  await waitForAbort(serverSig1);
+
+  await expect(it2.next()).resolves.toMatchInlineSnapshot(`
+    {
+      "done": false,
+      "value": nice_grpc.test.TestResponse {
+        "id": "second-203",
+      },
+    }
+  `);
+
+  expect(serverSig2.aborted).toBe(false);
+  await it2.return?.();
+  await waitForAbort(serverSig2);
+
+  channel.close();
+  await server.shutdown();
+});
 
 test('basic', async () => {
   const server = createServer();
