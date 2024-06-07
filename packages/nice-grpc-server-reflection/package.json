@@ -18,10 +18,10 @@
   ],
   "scripts": {
     "clean": "rimraf lib",
-    "test": "jest --passWithNoTests",
+    "test": "jest",
     "build": "tsc -P tsconfig.build.json && rimraf lib/proto && cpr src/proto lib/proto",
     "prepublishOnly": "npm test && npm run clean && npm run build",
-    "prepare:proto": "mkdirp ./src/proto && grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./src/proto --grpc_out=grpc_js:./src/proto --ts_out=grpc_js:./src/proto -I ./proto proto/grpc/reflection/v1alpha/reflection.proto",
+    "prepare:proto": "mkdirp ./src/proto && grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./src/proto --grpc_out=grpc_js:./src/proto --ts_out=grpc_js:./src/proto -I ./proto proto/grpc/reflection/v1alpha/reflection.proto && grpc_tools_node_protoc --ts_proto_out=./fixtures --ts_proto_opt=outputServices=generic-definitions,useExactTypes=false,esModuleInterop=true -I fixtures fixtures/*.proto --descriptor_set_out=fixtures/test.protoset.bin --include_imports",
     "prepare": "npm run prepare:proto"
   },
   "author": "Daniel Lytkin <aikoven@deeplay.io>",
