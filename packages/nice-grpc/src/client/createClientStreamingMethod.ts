@@ -20,7 +20,6 @@ import {
   convertMetadataToGrpcJs,
 } from '../utils/convertMetadata';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
-import {patchClientWritableStream} from '../utils/patchClientWritableStream';
 import {ClientStreamingClientMethod} from './Client';
 import {wrapClientError} from './wrapClientError';
 
@@ -75,8 +74,6 @@ export function createClientStreamingMethod<Request, Response>(
           }
         },
       );
-
-      patchClientWritableStream(call);
 
       call.on('metadata', metadata => {
         onHeader?.(convertMetadataFromGrpcJs(metadata));

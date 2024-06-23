@@ -18,7 +18,7 @@ export type DeadlineOptions = {
  */
 export const deadlineMiddleware: ClientMiddleware<DeadlineOptions> =
   async function* deadlineMiddleware(call, options) {
-    if (options.deadline == null) {
+    if (options.deadline == null || options.signal?.aborted) {
       return yield* call.next(call.request, options);
     }
 

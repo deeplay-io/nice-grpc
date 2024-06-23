@@ -1,4 +1,3 @@
-import defer = require('defer-promise');
 import {forever} from 'abort-controller-x';
 import {
   createChannel,
@@ -27,9 +26,9 @@ test('successful call', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`localhost:${port}`);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClientFactory()
     .use(deadlineMiddleware)
     .create(TestService, channel);
@@ -57,9 +56,9 @@ test('absolute deadline', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`localhost:${port}`);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClientFactory()
     .use(deadlineMiddleware)
     .create(TestService, channel);
@@ -89,9 +88,9 @@ test('relative deadline', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`localhost:${port}`);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClientFactory()
     .use(deadlineMiddleware)
     .create(TestService, channel);
@@ -102,6 +101,42 @@ test('relative deadline', async () => {
 
   await expect(promise).rejects.toMatchInlineSnapshot(
     `[ClientError: /nice_grpc.test.Test/TestUnary DEADLINE_EXCEEDED: Deadline exceeded]`,
+  );
+
+  channel.close();
+
+  await server.shutdown();
+});
+
+test('already aborted', async () => {
+  const server = createServer();
+
+  server.add(TestService, {
+    async testUnary(request: TestRequest, {signal}) {
+      return new TestResponse();
+    },
+    testServerStream: throwUnimplemented,
+    testClientStream: throwUnimplemented,
+    testBidiStream: throwUnimplemented,
+  });
+
+  const port = await server.listen('127.0.0.1:0');
+
+  const channel = createChannel(`127.0.0.1:${port}`);
+  const client = createClientFactory()
+    .use(deadlineMiddleware)
+    .create(TestService, channel);
+
+  const abortController = new AbortController();
+  abortController.abort();
+
+  const promise = client.testUnary(new TestRequest(), {
+    deadline: new Date(Date.now() + 500),
+    signal: abortController.signal,
+  });
+
+  await expect(promise).rejects.toMatchInlineSnapshot(
+    `[AbortError: The operation has been aborted]`,
   );
 
   channel.close();

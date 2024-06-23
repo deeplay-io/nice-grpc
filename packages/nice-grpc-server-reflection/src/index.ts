@@ -79,7 +79,7 @@ export function ServerReflection(
     }
 
     if (descriptor instanceof ServiceDescriptorProto) {
-      const servicePrefix = `${fullName}`;
+      const servicePrefix = `${fullName}.`;
 
       return descriptor
         .getMethodList()

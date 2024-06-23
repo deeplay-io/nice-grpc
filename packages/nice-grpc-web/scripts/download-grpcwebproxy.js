@@ -2,7 +2,7 @@ const request = require('request');
 const fs = require('fs');
 const path = require('path');
 const unzip = require('unzipper');
-const mkdirp = require('mkdirp');
+const {mkdirp} = require('mkdirp');
 
 const version = '0.0.1';
 
@@ -14,7 +14,8 @@ const releases = {
 };
 
 const platform = process.platform;
-const arch = process.arch === 'x64' ? 'x86_64' : 'x86_32';
+const arch =
+  process.arch === 'x64' || process.arch === 'arm64' ? 'x86_64' : 'x86_32';
 const release = platform + '_' + arch;
 
 const targetPath = path.join(

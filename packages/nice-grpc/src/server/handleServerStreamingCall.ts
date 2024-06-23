@@ -8,9 +8,9 @@ import {
 import {MethodDefinition} from '../service-definitions';
 import {convertMetadataToGrpcJs} from '../utils/convertMetadata';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
+import {ServerStreamingMethodImplementation} from './ServiceImplementation';
 import {createCallContext} from './createCallContext';
 import {createErrorStatusObject} from './createErrorStatusObject';
-import {ServerStreamingMethodImplementation} from './ServiceImplementation';
 
 /** @internal */
 export function createServerStreamingMethodHandler<Request, Response>(
@@ -54,7 +54,7 @@ export function createServerStreamingMethodHandler<Request, Response>(
           );
 
   return call => {
-    const context = createCallContext(call);
+    const {context, maybeCancel} = createCallContext(call);
 
     Promise.resolve()
       .then(async () => {
@@ -100,6 +100,7 @@ export function createServerStreamingMethodHandler<Request, Response>(
             break;
           }
         } finally {
+          maybeCancel.cancel = undefined;
           context.sendHeader();
         }
       })
@@ -108,12 +109,13 @@ export function createServerStreamingMethodHandler<Request, Response>(
           call.end(convertMetadataToGrpcJs(context.trailer));
         },
         err => {
-          call.destroy(
+          call.emit(
+            'error',
             createErrorStatusObject(
               definition.path,
               err,
               convertMetadataToGrpcJs(context.trailer),
-            ) as any,
+            ),
           );
         },
       );

@@ -5,7 +5,10 @@ import {
   SpanKind,
   SpanStatusCode,
 } from '@opentelemetry/api';
-import {MessageTypeValues} from '@opentelemetry/semantic-conventions';
+import {
+  MESSAGETYPEVALUES_RECEIVED,
+  MESSAGETYPEVALUES_SENT,
+} from '@opentelemetry/semantic-conventions';
 import {isAbortError} from 'abort-controller-x';
 import {
   CallOptions,
@@ -62,7 +65,7 @@ async function* openTelemetryClientMiddlewareGenerator<Request, Response>(
     if (!call.requestStream) {
       request = call.request;
     } else {
-      request = emitSpanEvents(call.request, span, MessageTypeValues.SENT);
+      request = emitSpanEvents(call.request, span, MESSAGETYPEVALUES_SENT);
     }
 
     if (!call.responseStream) {
@@ -75,7 +78,7 @@ async function* openTelemetryClientMiddlewareGenerator<Request, Response>(
       yield* emitSpanEvents(
         call.next(request, options),
         span,
-        MessageTypeValues.RECEIVED,
+        MESSAGETYPEVALUES_RECEIVED,
       );
 
       settled = true;

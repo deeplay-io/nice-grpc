@@ -46,9 +46,9 @@ test('basic', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`localhost:${port}`);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClientFactory()
     .use(openTelemetryClientMiddleware())
     .create(TestDefinition, channel);
@@ -105,7 +105,7 @@ test('basic', async () => {
   expect(dumpSpan(serverSpan)).toMatchInlineSnapshot(`
     {
       "attributes": {
-        "net.peer.ip": "::1",
+        "net.peer.ip": "127.0.0.1",
         "rpc.grpc.status_code": 0,
         "rpc.grpc.status_text": "OK",
         "rpc.method": "TestClientStream",
@@ -157,9 +157,9 @@ test('error', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`localhost:${port}`);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClientFactory()
     .use(openTelemetryClientMiddleware())
     .create(TestDefinition, channel);
@@ -216,7 +216,7 @@ test('error', async () => {
   expect(dumpSpan(serverSpan)).toMatchInlineSnapshot(`
     {
       "attributes": {
-        "net.peer.ip": "::1",
+        "net.peer.ip": "127.0.0.1",
         "rpc.grpc.status_code": 5,
         "rpc.grpc.status_text": "NOT_FOUND",
         "rpc.method": "TestClientStream",

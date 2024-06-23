@@ -1,4 +1,3 @@
-import getPort = require('get-port');
 import {
   createChannel,
   createClient,
@@ -30,11 +29,9 @@ test('basic', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
+  const port = await server.listen('127.0.0.1:0');
 
-  await server.listen(address);
-
-  const channel = createChannel(address);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(TestService, channel);
 
   await expect(client.testUnary(new TestRequest().setId('test'))).resolves
@@ -88,11 +85,9 @@ test('error', async () => {
     testBidiStream: throwUnimplemented,
   });
 
-  const address = `localhost:${await getPort()}`;
+  const port = await server.listen('127.0.0.1:0');
 
-  await server.listen(address);
-
-  const channel = createChannel(address);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(TestService, channel);
 
   await expect(

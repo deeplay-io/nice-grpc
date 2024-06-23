@@ -1,4 +1,3 @@
-import getPort = require('get-port');
 import {randomBytes} from 'crypto';
 import {
   createChannel,
@@ -9,13 +8,11 @@ import {
 } from '..';
 
 test('implicit protocol', async () => {
-  const address = `localhost:${await getPort()}`;
-
   const server = createServer();
 
-  await server.listen(address);
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(address);
+  const channel = createChannel(`127.0.0.1:${port}`);
   await waitForChannelReady(channel, new Date(Date.now() + 1000));
 
   channel.close();
@@ -23,13 +20,11 @@ test('implicit protocol', async () => {
 });
 
 test('http', async () => {
-  const address = `localhost:${await getPort()}`;
-
   const server = createServer();
 
-  await server.listen(address);
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`http://${address}`);
+  const channel = createChannel(`http://127.0.0.1:${port}`);
   await waitForChannelReady(channel, new Date(Date.now() + 1000));
 
   channel.close();

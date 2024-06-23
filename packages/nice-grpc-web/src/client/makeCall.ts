@@ -145,7 +145,7 @@ export async function* makeCall<Request, Response>(
     throw new ClientError(
       definition.path,
       Status.UNKNOWN,
-      'Response stream closed without gRPC status',
+      'Response stream closed without gRPC status. This may indicate a misconfigured CORS policy on the server: Access-Control-Expose-Headers must include "grpc-status" and "grpc-message".',
     );
   }
 }

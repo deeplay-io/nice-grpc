@@ -30,7 +30,7 @@ export async function startGrpcWebProxy(
         : [`--server_http_debug_port=${listenPort}`, `--run_tls_server=false`]),
 
       `--server_bind_address=0.0.0.0`,
-      `--backend_addr=localhost:${backendPort}`,
+      `--backend_addr=127.0.0.1:${backendPort}`,
       `--use_websockets=true`,
       `--allow_all_origins=true`,
     ],

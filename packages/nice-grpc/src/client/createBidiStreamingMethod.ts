@@ -10,13 +10,11 @@ import {
   MethodDefinition,
   toGrpcJsMethodDefinition,
 } from '../service-definitions';
-import {CompatAbortSignal} from '../utils/compatAbortSignal';
 import {
   convertMetadataFromGrpcJs,
   convertMetadataToGrpcJs,
 } from '../utils/convertMetadata';
 import {isAsyncIterable} from '../utils/isAsyncIterable';
-import {patchClientWritableStream} from '../utils/patchClientWritableStream';
 import {readableToAsyncIterable} from '../utils/readableToAsyncIterable';
 import {BidiStreamingClientMethod} from './Client';
 import {wrapClientError} from './wrapClientError';
@@ -49,8 +47,7 @@ export function createBidiStreamingMethod<Request, Response>(
 
     const {metadata = Metadata(), onHeader, onTrailer} = options;
 
-    const signal = (options.signal ??
-      new AbortController().signal) as CompatAbortSignal;
+    const signal = options.signal ?? new AbortController().signal;
 
     const pipeAbortController = new AbortController();
 
@@ -60,8 +57,6 @@ export function createBidiStreamingMethod<Request, Response>(
       grpcMethodDefinition.responseDeserialize,
       convertMetadataToGrpcJs(metadata),
     );
-
-    patchClientWritableStream(call);
 
     call.on('metadata', metadata => {
       onHeader?.(convertMetadataFromGrpcJs(metadata));

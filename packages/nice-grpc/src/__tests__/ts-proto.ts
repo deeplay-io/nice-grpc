@@ -1,4 +1,3 @@
-import getPort = require('get-port');
 import {ClientMiddleware, ServerMiddleware} from 'nice-grpc-common';
 import {createChannel, createClient, createServer} from '..';
 import {
@@ -31,11 +30,9 @@ test('basic', async () => {
 
   server.add(TestDefinition, impl);
 
-  const address = `localhost:${await getPort()}`;
+  const port = await server.listen('127.0.0.1:0');
 
-  await server.listen(address);
-
-  const channel = createChannel(address);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client: TestClient = createClient(TestDefinition, channel);
 
   await expect(client.testUnary({id: 'test'})).resolves.toMatchInlineSnapshot(`
@@ -76,9 +73,7 @@ test('middleware', async () => {
 
   server.with(serverMiddleware).add(Test2Definition, impl);
 
-  const address = `localhost:${await getPort()}`;
-
-  await server.listen(address);
+  const port = await server.listen('127.0.0.1:0');
 
   const clientMiddlewareCalls: any[] = [];
 
@@ -92,7 +87,7 @@ test('middleware', async () => {
     return yield* call.next(call.request, rest);
   };
 
-  const channel = createChannel(address);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client: Test2Client<{bar: 'baz'}> = createClientFactory()
     .use(clientMiddleware)
     .create(Test2Definition, channel);

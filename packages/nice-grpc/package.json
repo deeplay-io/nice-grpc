@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc",
-  "version": "2.1.4",
+  "version": "2.1.9",
   "description": "A Node.js gRPC library that is nice to you",
   "keywords": [
     "grpc",
@@ -32,20 +32,18 @@
   "author": "Daniel Lytkin <aikoven@deeplay.io>",
   "license": "MIT",
   "devDependencies": {
-    "@tsconfig/node14": "^1.0.3",
+    "@tsconfig/node14": "^14.1.0",
     "@types/defer-promise": "^1.0.0",
-    "@types/get-port": "^4.2.0",
     "@types/google-protobuf": "^3.7.4",
-    "@types/node": "^14.18.23",
+    "@types/node": "^18.0.0",
     "defer-promise": "^2.0.1",
-    "get-port": "^5.1.1",
     "google-protobuf": "^3.14.0",
     "grpc-tools": "^1.10.0",
     "grpc_tools_node_protoc_ts": "^5.0.1",
     "ts-proto": "^1.112.0"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.7.3",
+    "@grpc/grpc-js": "^1.10.8",
     "abort-controller-x": "^0.4.0",
     "nice-grpc-common": "^2.0.2"
   }

@@ -59,21 +59,19 @@ const environment = detect();
   }
 
   describe(`clientStreaming / ${proxyType} / ${transport} / ${protocol}`, () => {
-    type Context = {
-      server?: RemoteTestServer;
-      init(
-        mockImplementation: Partial<TestServiceImplementation>,
-      ): Promise<TestClient>;
-    };
+    let server: RemoteTestServer;
+    let init: (
+      mockImplementation: Partial<TestServiceImplementation>,
+    ) => Promise<TestClient>;
 
-    beforeEach(function (this: Context) {
-      this.init = async impl => {
-        this.server = await startRemoteTestServer(impl, proxyType, protocol);
+    beforeEach(() => {
+      init = async impl => {
+        server = await startRemoteTestServer(impl, proxyType, protocol);
 
         return createClient(
           TestDefinition,
           createChannel(
-            this.server.address,
+            server.address,
             transport === 'fetch'
               ? FetchTransport()
               : transport === 'websocket'
@@ -86,12 +84,12 @@ const environment = detect();
       };
     });
 
-    afterEach(function (this: Context) {
-      this.server?.shutdown();
+    afterEach(() => {
+      server?.shutdown();
     });
 
-    it('sends multiple requests and receives a response', async function (this: Context) {
-      const client = await this.init({
+    it('sends multiple requests and receives a response', async () => {
+      const client = await init({
         async testClientStream(request, context) {
           context.header.set('test', 'test-header');
           context.trailer.set('test', 'test-trailer');
@@ -133,8 +131,8 @@ const environment = detect();
       expect(trailer?.get('test')).toEqual('test-trailer');
     });
 
-    it('receives an error', async function (this: Context) {
-      const client = await this.init({
+    it('receives an error', async () => {
+      const client = await init({
         async testClientStream(request, context) {
           context.header.set('test', 'test-header');
           context.trailer.set('test', 'test-trailer');
@@ -190,8 +188,8 @@ const environment = detect();
       // full duplex is not supported by fetch
       // grpcwebproxy and traefik do not send response before request is finished
     } else {
-      it('receives a response before finishing sending request', async function (this: Context) {
-        const client = await this.init({
+      it('receives a response before finishing sending request', async () => {
+        const client = await init({
           async testClientStream() {
             return {id: 'test'};
           },
@@ -210,8 +208,8 @@ const environment = detect();
         requestIterableFinish.resolve();
       });
 
-      it('stops reading request iterable on response', async function (this: Context) {
-        const client = await this.init({
+      it('stops reading request iterable on response', async () => {
+        const client = await init({
           async testClientStream() {
             return {id: 'test'};
           },
@@ -239,11 +237,11 @@ const environment = detect();
       });
     }
 
-    it('cancels a call', async function (this: Context) {
+    it('cancels a call', async () => {
       const serverRequestStartDeferred = defer<void>();
       const serverAbortDeferred = defer<void>();
 
-      const client = await this.init({
+      const client = await init({
         async testClientStream(request, {signal}) {
           serverRequestStartDeferred.resolve();
 
@@ -282,9 +280,7 @@ const environment = detect();
             error = err;
           }
 
-          expect(isAbortError(error))
-            .withContext(`Expected AbortError, got ${error}`)
-            .toBe(true);
+          expect(isAbortError(error)).toBe(true);
           requestIterableFinish.resolve();
 
           await serverAbortDeferred.promise;
@@ -297,10 +293,10 @@ const environment = detect();
       ]);
     });
 
-    it('handles request iterable error', async function (this: Context) {
+    it('handles request iterable error', async () => {
       const serverRequestStartDeferred = defer<void>();
 
-      const client = await this.init({
+      const client = await init({
         async testClientStream(request) {
           for await (const _ of request) {
             serverRequestStartDeferred.resolve();
@@ -339,10 +335,10 @@ const environment = detect();
     ) {
       // most browsers only receive headers after the first message is sent
     } else {
-      it('receives early header', async function (this: Context) {
+      it('receives early header', async () => {
         const endDeferred = defer();
 
-        const client = await this.init({
+        const client = await init({
           async testClientStream(request, context) {
             context.header.set('test', 'test-value');
             context.sendHeader();

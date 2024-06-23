@@ -48,21 +48,19 @@ const environment = detect();
   }
 
   describe(`unary / ${proxyType} / ${transport} / ${protocol}`, () => {
-    type Context = {
-      server?: RemoteTestServer;
-      init(
-        mockImplementation: Partial<TestServiceImplementation>,
-      ): Promise<TestClient>;
-    };
+    let server: RemoteTestServer;
+    let init: (
+      mockImplementation: Partial<TestServiceImplementation>,
+    ) => Promise<TestClient>;
 
-    beforeEach(function (this: Context) {
-      this.init = async impl => {
-        this.server = await startRemoteTestServer(impl, proxyType, protocol);
+    beforeEach(() => {
+      init = async impl => {
+        server = await startRemoteTestServer(impl, proxyType, protocol);
 
         return createClient(
           TestDefinition,
           createChannel(
-            this.server.address,
+            server.address,
             transport === 'fetch'
               ? FetchTransport()
               : transport === 'websocket'
@@ -79,12 +77,12 @@ const environment = detect();
       };
     });
 
-    afterEach(function (this: Context) {
-      this.server?.shutdown();
+    afterEach(() => {
+      server.shutdown();
     });
 
-    it('sends request and receives response', async function (this: Context) {
-      const client = await this.init({
+    it('sends request and receives response', async () => {
+      const client = await init({
         async testUnary(request, context) {
           context.header.set('test', `${request.id}-header`);
           context.trailer.set('test', `${request.id}-trailer`);
@@ -113,8 +111,8 @@ const environment = detect();
       expect(trailer?.get('test')).toEqual('test-trailer');
     });
 
-    it('receives an error', async function (this: Context) {
-      const client = await this.init({
+    it('receives an error', async () => {
+      const client = await init({
         async testUnary(request, context) {
           context.header.set('test', `${request.id}-header`);
           context.trailer.set('test', `${request.id}-trailer`);
@@ -153,11 +151,11 @@ const environment = detect();
       expect(trailer?.get('test')).toEqual('test-trailer');
     });
 
-    it('cancels a call', async function (this: Context) {
+    it('cancels a call', async () => {
       const serverRequestStartDeferred = defer<void>();
       const serverAbortDeferred = defer<void>();
 
-      const client = await this.init({
+      const client = await init({
         async testUnary(request, {signal}) {
           serverRequestStartDeferred.resolve();
 
@@ -185,9 +183,7 @@ const environment = detect();
             error = err;
           }
 
-          expect(isAbortError(error))
-            .withContext(`Expected AbortError, got ${error}`)
-            .toBe(true);
+          expect(isAbortError(error)).toBe(true);
 
           await serverAbortDeferred.promise;
         }),
@@ -199,8 +195,8 @@ const environment = detect();
       ]);
     });
 
-    it('sends metadata', async function (this: Context) {
-      const client = await this.init({
+    it('sends metadata', async () => {
+      const client = await init({
         async testUnary(request, context) {
           return {id: context.metadata.get('test')};
         },
@@ -218,8 +214,8 @@ const environment = detect();
       ).toEqual({id: 'test-value'});
     });
 
-    it('sends binary metadata', async function (this: Context) {
-      const client = await this.init({
+    it('sends binary metadata', async () => {
+      const client = await init({
         async testUnary(request, context) {
           return {
             id: new TextDecoder().decode(context.metadata.get('test-bin')),
@@ -246,8 +242,8 @@ const environment = detect();
     ) {
       // grpcwebproxy does not support multiple values in metadata
     } else {
-      it('sends binary metadata with multiple values', async function (this: Context) {
-        const client = await this.init({
+      it('sends binary metadata with multiple values', async () => {
+        const client = await init({
           async testUnary(request, context) {
             return {
               id: context.metadata
@@ -285,10 +281,10 @@ const environment = detect();
     ) {
       // most browsers only receive headers after the first message is sent
     } else {
-      it('receives early header', async function (this: Context) {
+      it('receives early header', async () => {
         const responseDeferred = defer<TestResponse>();
 
-        const client = await this.init({
+        const client = await init({
           async testUnary(request, context) {
             context.header.set('test', request.id);
             context.sendHeader();
@@ -323,8 +319,8 @@ const environment = detect();
       });
     }
 
-    it('receives binary header', async function (this: Context) {
-      const client = await this.init({
+    it('receives binary header', async () => {
+      const client = await init({
         async testUnary(request, context) {
           context.header.set('test-bin', new TextEncoder().encode(request.id));
 
@@ -348,8 +344,8 @@ const environment = detect();
       );
     });
 
-    it('receives binary header with multiple values', async function (this: Context) {
-      const client = await this.init({
+    it('receives binary header with multiple values', async () => {
+      const client = await init({
         async testUnary(request, context) {
           context.header.set('test-bin', [
             new TextEncoder().encode(`${request.id}-1`),
@@ -377,8 +373,8 @@ const environment = detect();
       ]);
     });
 
-    it('receives binary trailer', async function (this: Context) {
-      const client = await this.init({
+    it('receives binary trailer', async () => {
+      const client = await init({
         async testUnary(request, context) {
           context.trailer.set('test-bin', new TextEncoder().encode(request.id));
 
@@ -402,8 +398,8 @@ const environment = detect();
       );
     });
 
-    it('receives binary trailer with multiple values', async function (this: Context) {
-      const client = await this.init({
+    it('receives binary trailer with multiple values', async () => {
+      const client = await init({
         async testUnary(request, context) {
           context.trailer.set('test-bin', [
             new TextEncoder().encode(`${request.id}-1`),
@@ -431,13 +427,13 @@ const environment = detect();
       ]);
     });
 
-    it('receives trailers-only response', async function (this: Context) {
+    it('receives trailers-only response', async () => {
       // Calling non-existent method will produce trailers-only response in
       // grpc-js. But note that some proxies will still send a response with
       // both headers and trailers. We can only test that the grpc status code
       // and message are handled correctly.
 
-      this.server = await startRemoteTestServer({}, proxyType, protocol);
+      server = await startRemoteTestServer({}, proxyType, protocol);
 
       const FakeDefinition = {
         name: 'Test2',
@@ -457,7 +453,7 @@ const environment = detect();
       const client = createClient(
         FakeDefinition,
         createChannel(
-          this.server.address,
+          server.address,
           transport === 'fetch'
             ? FetchTransport()
             : transport === 'websocket'
@@ -484,7 +480,7 @@ const environment = detect();
         new ClientError(
           '/nice_grpc.test.Test2/TestUnary',
           Status.UNIMPLEMENTED,
-          '[object Object]', // this is a bug in grpc-js
+          'The server does not implement the method /nice_grpc.test.Test2/TestUnary',
         ),
       );
     });

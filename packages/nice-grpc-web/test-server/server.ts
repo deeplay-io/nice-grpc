@@ -11,22 +11,23 @@ import {metadataFromJson, metadataToJson} from './metadata';
 import {MockServerCommand, MockServerEvent} from './types';
 import {startTraefikProxy} from './traefik';
 
-export type MockServerLogger = {
-  debug(message: any, ...args: any[]): void;
-  info(message: any, ...args: any[]): void;
-  warn(message: any, ...args: any[]): void;
-  error(message: any, ...args: any[]): void;
+export type MockServerParams = {
+  certPath: string;
+  keyPath: string;
+  enableDebugLogs: boolean;
 };
 
-export function startMockServer(
-  logger: MockServerLogger,
-  certPath: string,
-  keyPath: string,
-): WebSocketServer {
+export function startMockServer({
+  certPath,
+  keyPath,
+  enableDebugLogs,
+}: MockServerParams): WebSocketServer {
   const wsServer = new WebSocketServer({port: 3000});
 
+  const log = enableDebugLogs ? console.log : () => {};
+
   wsServer.on('connection', (ws, request) => {
-    logger.debug('server connection', request.url);
+    log('server connection', request.url);
 
     const searchParams = new URLSearchParams(
       request.url!.slice(request.url!.indexOf('?') + 1),
@@ -49,16 +50,12 @@ export function startMockServer(
         ...event,
         seq: nextSeq++,
       };
-      logger.debug(proxyType, 'server sending', eventToSend);
+      log(proxyType, 'server sending', eventToSend);
       ws.send(JSON.stringify(eventToSend));
     }
 
     ws.addEventListener('message', message => {
-      logger.debug(
-        proxyType,
-        'server receiving',
-        JSON.parse(message.data.toString()),
-      );
+      log(proxyType, 'server receiving', JSON.parse(message.data.toString()));
     });
 
     function handleRequest(

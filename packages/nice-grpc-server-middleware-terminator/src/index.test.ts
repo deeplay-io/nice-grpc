@@ -30,9 +30,9 @@ test('basic', async () => {
     },
   });
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`localhost:${port}`);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(TestDefinition, channel);
 
   const promise = client.testUnary({});
@@ -65,9 +65,9 @@ test('terminate before call start', async () => {
     },
   });
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`localhost:${port}`);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(TestDefinition, channel);
 
   terminatorMiddleware.terminate();
@@ -106,9 +106,9 @@ test('cancel', async () => {
     },
   });
 
-  const port = await server.listen('localhost:0');
+  const port = await server.listen('127.0.0.1:0');
 
-  const channel = createChannel(`localhost:${port}`);
+  const channel = createChannel(`127.0.0.1:${port}`);
   const client = createClient(TestDefinition, channel);
 
   const abortController = new AbortController();

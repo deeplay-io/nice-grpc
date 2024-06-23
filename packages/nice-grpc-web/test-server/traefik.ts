@@ -1,11 +1,7 @@
 import fs from 'fs/promises';
 import * as path from 'path';
 import {env} from 'string-env-interpolation';
-import {GenericContainer} from 'testcontainers';
-import {
-  HostPortWaitStrategy,
-  LogWaitStrategy,
-} from 'testcontainers/dist/wait-strategy';
+import {GenericContainer, Wait} from 'testcontainers';
 import * as tmp from 'tmp';
 
 export async function startTraefikProxy(
@@ -54,6 +50,18 @@ export async function startTraefikProxy(
     'utf8',
   );
 
+  // Traefik can return 404 for a while after start.
+  // See https://github.com/traefik/traefik/issues/7347
+  // Once the gRPC server is reached it returns 415.
+  let waitStrategy = Wait.forHttp(
+    '/fake-probe',
+    internalListenPort,
+  ).forStatusCode(415);
+
+  if (tls) {
+    waitStrategy = waitStrategy.usingTls().allowInsecure();
+  }
+
   const container = await new GenericContainer('traefik:v3.0.0-beta2')
     .withBindMounts([
       ...(tls
@@ -83,7 +91,7 @@ export async function startTraefikProxy(
         ipAddress: 'host-gateway',
       },
     ])
-    .withWaitStrategy(new LogWaitStrategy(/traefik-internal-recovery/))
+    .withWaitStrategy(waitStrategy)
     .start();
 
   // const logStream = await container.logs();

@@ -21,6 +21,10 @@ A gRPC library that is nice to you.
   — client middleware that adds support for setting call deadline.
 - [nice-grpc-client-middleware-retry](/packages/nice-grpc-client-middleware-retry)
   — client middleware that adds automatic retries to unary calls.
+- [nice-grpc-client-middleware-devtools](/packages/nice-grpc-client-middleware-devtools)
+  — client middleware to log calls with
+  [grpc-web-tools](https://github.com/SafetyCulture/grpc-web-devtools) in the
+  browser.
 - [nice-grpc-server-middleware-terminator](/packages/nice-grpc-server-middleware-terminator)
   — server middleware that makes it possible to prevent long-running calls from
   blocking server graceful shutdown.

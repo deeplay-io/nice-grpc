@@ -22,7 +22,7 @@ export function createErrorStatusObject(
     };
   } else {
     process.emitWarning(
-      `${path}: Uncaught error in server implementation method: ${
+      `${path}: Uncaught error in server implementation method. Server methods should only throw ServerError or AbortError. ${
         error instanceof Error ? error.stack : error
       }`,
     );
