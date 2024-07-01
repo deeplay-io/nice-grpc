@@ -3152,10 +3152,10 @@ chownr@^2.0.0:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-2.0.0.tgz#15bfbe53d2eab4cf70f18a8cd68ebe5b3cb1dece"
   integrity sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==
 
-chromedriver@^125.0.3:
-  version "125.0.3"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-125.0.3.tgz#4c7cf13e54cd3575b88d4376a53d659cabb0ae05"
-  integrity sha512-Qzuk5Wian2o3EVGjtbz6V/jv+pT/AV9246HbG6kUljZXXjsKZLZxqJC+kHR3qEh/wdv4EJD0YwAOWV72v9hogw==
+chromedriver@^126.0.4:
+  version "126.0.4"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-126.0.4.tgz#5c5e1f80c4269b55251c563cf47709154090135b"
+  integrity sha512-mIdJqdocfN/y9fl5BymIzM9WQLy64x078i5tS1jGFzbFAwXwXrj3zmA86Wf3R/hywPYpWqwXxFGBJHgqZTuGCA==
   dependencies:
     "@testim/chrome-version" "^1.1.4"
     axios "^1.6.7"
