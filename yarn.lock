@@ -2099,16 +2099,16 @@
     webdriverio "8.38.2"
 
 "@wdio/browserstack-service@^8.33.0":
-  version "8.38.2"
-  resolved "https://registry.yarnpkg.com/@wdio/browserstack-service/-/browserstack-service-8.38.2.tgz#7aa67d0916124eed882b71d99bae981ca034a36e"
-  integrity sha512-dBvTK97deVbyDskCRdcQ47xuR7QYx3mqNFJUZLWBitwFV/DU5YIpCbGlySLc4gkO4//Zn1A3Gh/TOGWZrigcCQ==
+  version "8.39.0"
+  resolved "https://registry.yarnpkg.com/@wdio/browserstack-service/-/browserstack-service-8.39.0.tgz#7294511b827d410947b852bcec6fb74e53534aa2"
+  integrity sha512-EEbmg9hBk0FAf9b2oHEL0w8aIscKPy3ms0/zSaLp+jDMuWHllpVQ83GCW9qHIJbKUzTNUlF031fRdPzq+GQaVg==
   dependencies:
     "@percy/appium-app" "^2.0.1"
     "@percy/selenium-webdriver" "^2.0.3"
     "@types/gitconfiglocal" "^2.0.1"
     "@wdio/logger" "8.38.0"
-    "@wdio/reporter" "8.38.2"
-    "@wdio/types" "8.38.2"
+    "@wdio/reporter" "8.39.0"
+    "@wdio/types" "8.39.0"
     browserstack-local "^1.5.1"
     chalk "^5.3.0"
     csv-writer "^1.6.0"
@@ -2117,7 +2117,7 @@
     gitconfiglocal "^2.1.0"
     got "^12.6.1"
     uuid "^9.0.0"
-    webdriverio "8.38.2"
+    webdriverio "8.39.0"
     winston-transport "^4.5.0"
     yauzl "^3.0.0"
 
@@ -2159,6 +2159,19 @@
     "@wdio/logger" "8.38.0"
     "@wdio/types" "8.38.2"
     "@wdio/utils" "8.38.2"
+    decamelize "^6.0.0"
+    deepmerge-ts "^5.0.0"
+    glob "^10.2.2"
+    import-meta-resolve "^4.0.0"
+
+"@wdio/config@8.39.0":
+  version "8.39.0"
+  resolved "https://registry.yarnpkg.com/@wdio/config/-/config-8.39.0.tgz#3bda79e2f39d66079deb9813147234493468c790"
+  integrity sha512-yNuGPMPibY91s936gnJCHWlStvIyDrwLwGfLC/NCdTin4F7HL4Gp5iJnHWkJFty1/DfFi8jjoIUBNLM8HEez+A==
+  dependencies:
+    "@wdio/logger" "8.38.0"
+    "@wdio/types" "8.39.0"
+    "@wdio/utils" "8.39.0"
     decamelize "^6.0.0"
     deepmerge-ts "^5.0.0"
     glob "^10.2.2"
@@ -2231,6 +2244,17 @@
     diff "^5.0.0"
     object-inspect "^1.12.0"
 
+"@wdio/reporter@8.39.0":
+  version "8.39.0"
+  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-8.39.0.tgz#e4d16a0b996b3dbeeb8a1f38ef2dfa3d763f3226"
+  integrity sha512-XahXhmaA1okdwg4/ThHFSqy/41KywxhbtszPcTzyXB+9INaqFNHA1b1vvWs0mrD5+tTtKbg4caTcEHVJU4iv0w==
+  dependencies:
+    "@types/node" "^20.1.0"
+    "@wdio/logger" "8.38.0"
+    "@wdio/types" "8.39.0"
+    diff "^5.0.0"
+    object-inspect "^1.12.0"
+
 "@wdio/runner@8.38.2":
   version "8.38.2"
   resolved "https://registry.yarnpkg.com/@wdio/runner/-/runner-8.38.2.tgz#ce6c94f3486a5b68a97ae2a299af8830ab085226"
@@ -2266,6 +2290,13 @@
   dependencies:
     "@types/node" "^20.1.0"
 
+"@wdio/types@8.39.0":
+  version "8.39.0"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-8.39.0.tgz#21032c638ded2dfb72b87114a8086e6777b43aae"
+  integrity sha512-86lcYROTapOJuFd9ouomFDfzDnv3Kn+jE0RmqfvN9frZAeLVJ5IKjX9M6HjplsyTZhjGO1uCaehmzx+HJus33Q==
+  dependencies:
+    "@types/node" "^20.1.0"
+
 "@wdio/utils@8.38.2":
   version "8.38.2"
   resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-8.38.2.tgz#d10b0cdeccf507b20ba94bdde0f91dd22fc35d49"
@@ -2274,6 +2305,25 @@
     "@puppeteer/browsers" "^1.6.0"
     "@wdio/logger" "8.38.0"
     "@wdio/types" "8.38.2"
+    decamelize "^6.0.0"
+    deepmerge-ts "^5.1.0"
+    edgedriver "^5.5.0"
+    geckodriver "^4.3.1"
+    get-port "^7.0.0"
+    import-meta-resolve "^4.0.0"
+    locate-app "^2.1.0"
+    safaridriver "^0.1.0"
+    split2 "^4.2.0"
+    wait-port "^1.0.4"
+
+"@wdio/utils@8.39.0":
+  version "8.39.0"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-8.39.0.tgz#527f9d3c168672abf8711f510321b8633c834f6b"
+  integrity sha512-jY+n6jlGeK+9Tx8T659PKLwMQTGpLW5H78CSEWgZLbjbVSr2LfGR8Lx0CRktNXxAtqEVZPj16Pi74OtAhvhE6Q==
+  dependencies:
+    "@puppeteer/browsers" "^1.6.0"
+    "@wdio/logger" "8.38.0"
+    "@wdio/types" "8.39.0"
     decamelize "^6.0.0"
     deepmerge-ts "^5.1.0"
     edgedriver "^5.5.0"
@@ -9670,7 +9720,24 @@ webdriver@8.38.2:
     ky "^0.33.0"
     ws "^8.8.0"
 
-webdriverio@8.38.2, webdriverio@^8.29.3:
+webdriver@8.39.0:
+  version "8.39.0"
+  resolved "https://registry.yarnpkg.com/webdriver/-/webdriver-8.39.0.tgz#ccb5362e53593e23f16a3951d70b7b32a1073fd1"
+  integrity sha512-Kc3+SfiH4ufyrIht683VT2vnJocx0pfH8rYdyPvEh1b2OYewtFTHK36k9rBDHZiBmk6jcSXs4M2xeFgOuon9Lg==
+  dependencies:
+    "@types/node" "^20.1.0"
+    "@types/ws" "^8.5.3"
+    "@wdio/config" "8.39.0"
+    "@wdio/logger" "8.38.0"
+    "@wdio/protocols" "8.38.0"
+    "@wdio/types" "8.39.0"
+    "@wdio/utils" "8.39.0"
+    deepmerge-ts "^5.1.0"
+    got "^12.6.1"
+    ky "^0.33.0"
+    ws "^8.8.0"
+
+webdriverio@8.38.2:
   version "8.38.2"
   resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-8.38.2.tgz#5a53205cecfb9e2d3bdb1de0400e1194c1d08029"
   integrity sha512-r09y5UfivyYh5JOzT2SpJJ1zDmQl/R4OTH12opUqkjvp21BibCQm/uu1mrxGy4lzSHljrvqSVrrcGI+6UA1O8w==
@@ -9700,6 +9767,37 @@ webdriverio@8.38.2, webdriverio@^8.29.3:
     rgb2hex "0.2.5"
     serialize-error "^11.0.1"
     webdriver "8.38.2"
+
+webdriverio@8.39.0, webdriverio@^8.29.3:
+  version "8.39.0"
+  resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-8.39.0.tgz#7b0dfc12058fcf574b0c0515cbdc026e9e6b1e53"
+  integrity sha512-pDpGu0V+TL1LkXPode67m3s+IPto4TcmcOzMpzFgu2oeLMBornoLN3yQSFR1fjZd1gK4UfnG3lJ4poTGOfbWfw==
+  dependencies:
+    "@types/node" "^20.1.0"
+    "@wdio/config" "8.39.0"
+    "@wdio/logger" "8.38.0"
+    "@wdio/protocols" "8.38.0"
+    "@wdio/repl" "8.24.12"
+    "@wdio/types" "8.39.0"
+    "@wdio/utils" "8.39.0"
+    archiver "^7.0.0"
+    aria-query "^5.0.0"
+    css-shorthand-properties "^1.1.1"
+    css-value "^0.0.1"
+    devtools-protocol "^0.0.1302984"
+    grapheme-splitter "^1.0.2"
+    import-meta-resolve "^4.0.0"
+    is-plain-obj "^4.1.0"
+    jszip "^3.10.1"
+    lodash.clonedeep "^4.5.0"
+    lodash.zip "^4.2.0"
+    minimatch "^9.0.0"
+    puppeteer-core "^20.9.0"
+    query-selector-shadow-dom "^1.0.0"
+    resq "^1.9.1"
+    rgb2hex "0.2.5"
+    serialize-error "^11.0.1"
+    webdriver "8.39.0"
 
 webidl-conversions@^3.0.0:
   version "3.0.1"
