@@ -2233,17 +2233,6 @@
   dependencies:
     "@types/node" "^20.1.0"
 
-"@wdio/reporter@8.38.2":
-  version "8.38.2"
-  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-8.38.2.tgz#9daf7c442d233f9f0e225732285c9593a6e45ca9"
-  integrity sha512-R78UdAtAnkaV22NYlCCcbPPhmYweiDURiw64LYhlVIQrKNuXUQcafR2kRlWKy31rZc9thSLs5LzrZDReENUlFQ==
-  dependencies:
-    "@types/node" "^20.1.0"
-    "@wdio/logger" "8.38.0"
-    "@wdio/types" "8.38.2"
-    diff "^5.0.0"
-    object-inspect "^1.12.0"
-
 "@wdio/reporter@8.39.0":
   version "8.39.0"
   resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-8.39.0.tgz#e4d16a0b996b3dbeeb8a1f38ef2dfa3d763f3226"
@@ -4890,14 +4879,15 @@ glob@8.1.0, glob@^8.0.1:
     once "^1.3.0"
 
 glob@^10.0.0, glob@^10.2.2, glob@^10.3.10, glob@^10.3.7:
-  version "10.4.1"
-  resolved "https://registry.yarnpkg.com/glob/-/glob-10.4.1.tgz#0cfb01ab6a6b438177bfe6a58e2576f6efe909c2"
-  integrity sha512-2jelhlq3E4ho74ZyVLN03oKdAZVUa6UDZzFLVH1H7dnoax+y9qyaq8zBkfDIggjniU19z0wU18y16jMB2eyVIw==
+  version "10.4.2"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-10.4.2.tgz#bed6b95dade5c1f80b4434daced233aee76160e5"
+  integrity sha512-GwMlUF6PkPo3Gk21UxkCohOv0PLcIXVtKyLlpEI28R/cO/4eNOdmLk3CMW1wROV/WR/EsZOWAfBbBOqYvs88/w==
   dependencies:
     foreground-child "^3.1.0"
     jackspeak "^3.1.2"
     minimatch "^9.0.4"
     minipass "^7.1.2"
+    package-json-from-dist "^1.0.0"
     path-scurry "^1.11.1"
 
 glob@^7.0.5, glob@^7.1.3, glob@^7.1.4, glob@^7.2.3:
@@ -7633,6 +7623,11 @@ pac-resolver@^7.0.0:
   dependencies:
     degenerator "^5.0.0"
     netmask "^2.0.2"
+
+package-json-from-dist@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/package-json-from-dist/-/package-json-from-dist-1.0.0.tgz#e501cd3094b278495eb4258d4c9f6d5ac3019f00"
+  integrity sha512-dATvCeZN/8wQsGywez1mzHtTlP22H8OEfPrVMLNr4/eGa+ijtLn/6M5f0dY8UKNrC2O9UCU6SSoG3qRKnt7STw==
 
 pacote@^17.0.5:
   version "17.0.7"
