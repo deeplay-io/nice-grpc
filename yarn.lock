@@ -1848,7 +1848,7 @@
     "@types/node" "*"
     "@types/ssh2" "*"
 
-"@types/dockerode@^3.3.24":
+"@types/dockerode@^3.3.29":
   version "3.3.29"
   resolved "https://registry.yarnpkg.com/@types/dockerode/-/dockerode-3.3.29.tgz#7d3c99a91c381115015587a8a2a71002029e1740"
   integrity sha512-5PRRq/yt5OT/Jf77ltIdz4EiR9+VLnPF+HpU4xGFwUqmV24Co2HKBNW3w+slqZ1CYchbcDeqJASHDYWzZCcMiQ==
@@ -3664,7 +3664,7 @@ dateformat@^3.0.3:
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-3.0.3.tgz#a6e37499a4d9a9cf85ef5872044d62901c9889ae"
   integrity sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
 
-debug@4, debug@^4.1.0, debug@^4.1.1, debug@^4.3.0, debug@^4.3.1, debug@^4.3.3, debug@^4.3.4, debug@~4.3.4:
+debug@4, debug@^4.1.0, debug@^4.1.1, debug@^4.3.0, debug@^4.3.1, debug@^4.3.3, debug@^4.3.4, debug@^4.3.5, debug@~4.3.4:
   version "4.3.5"
   resolved "https://registry.yarnpkg.com/debug/-/debug-4.3.5.tgz#e83444eceb9fedd4a1da56d671ae2446a01a6e1e"
   integrity sha512-pt0bNEmneDIvdL1Xsd9oDQ/wrQRkXDT4AUWlNZNPKvW5x/jyO9VFXkJUP07vQ2upmw5PlaITaPKc31jK13V+jg==
@@ -3867,7 +3867,7 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-docker-compose@^0.24.6:
+docker-compose@^0.24.8:
   version "0.24.8"
   resolved "https://registry.yarnpkg.com/docker-compose/-/docker-compose-0.24.8.tgz#6c125e6b9e04cf68ced47e2596ef2bb93ee9694e"
   integrity sha512-plizRs/Vf15H+GCVxq2EUvyPK7ei9b/cVesHvjnX4xaXjM9spHe2Ytq0BitndFgvTJ3E3NljPNUEl7BAN43iZw==
@@ -9102,7 +9102,7 @@ tar-fs@3.0.4:
     pump "^3.0.0"
     tar-stream "^3.1.5"
 
-tar-fs@^3.0.5, tar-fs@^3.0.6:
+tar-fs@^3.0.6:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/tar-fs/-/tar-fs-3.0.6.tgz#eaccd3a67d5672f09ca8e8f9c3d2b89fa173f217"
   integrity sha512-iokBDQQkUyeXhgPYaZxmczGPhnhXZ0CmrqI+MOb/WFGS9DW5wnfrLgtjUJBvz50vQ3qfRwJ62QVoCFu8mPVu5w==
@@ -9192,25 +9192,25 @@ test-exclude@^6.0.0:
     minimatch "^3.0.4"
 
 testcontainers@^10.2.1:
-  version "10.9.0"
-  resolved "https://registry.yarnpkg.com/testcontainers/-/testcontainers-10.9.0.tgz#9d5b2ef189ed32a0be376d013017ba8593a09e93"
-  integrity sha512-LN+cKAOd61Up9SVMJW+3VFVGeVQG8JBqZhEQo2U0HBfIsAynyAXcsLBSo+KZrOfy9SBz7pGHctWN/KabLDbNFA==
+  version "10.10.0"
+  resolved "https://registry.yarnpkg.com/testcontainers/-/testcontainers-10.10.0.tgz#374b82f298efdcf64867b29bbe3d42a0c552881b"
+  integrity sha512-XlAdr6XzxM9ywTc5D6xA97Ug8dCotDnrOgOqmy3vYnAwUYrzhzAwrp791g97QAMvDOYp2pxkJl/P4WxuUbGShw==
   dependencies:
     "@balena/dockerignore" "^1.0.2"
-    "@types/dockerode" "^3.3.24"
+    "@types/dockerode" "^3.3.29"
     archiver "^5.3.2"
     async-lock "^1.4.1"
     byline "^5.0.0"
-    debug "^4.3.4"
-    docker-compose "^0.24.6"
+    debug "^4.3.5"
+    docker-compose "^0.24.8"
     dockerode "^3.3.5"
     get-port "^5.1.1"
     node-fetch "^2.7.0"
     proper-lockfile "^4.1.2"
     properties-reader "^2.3.0"
     ssh-remote-port-forward "^1.0.4"
-    tar-fs "^3.0.5"
-    tmp "^0.2.1"
+    tar-fs "^3.0.6"
+    tmp "^0.2.3"
 
 text-decoder@^1.1.0:
   version "1.1.0"
@@ -9254,7 +9254,7 @@ tmp@^0.0.33:
   dependencies:
     os-tmpdir "~1.0.2"
 
-tmp@^0.2.1, tmp@~0.2.1:
+tmp@^0.2.1, tmp@^0.2.3, tmp@~0.2.1:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.3.tgz#eb783cc22bc1e8bebd0671476d46ea4eb32a79ae"
   integrity sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==
