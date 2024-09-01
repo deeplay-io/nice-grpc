@@ -36,7 +36,7 @@
     "grpc-tools": "^1.10.0",
     "nice-grpc": "^2.1.9",
     "protobufjs": "^7.1.2",
-    "ts-proto": "^1.112.0"
+    "ts-proto": "^2.0.3"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.8.0",
