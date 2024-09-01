@@ -47,7 +47,7 @@
     "@wdio/browser-runner": "^8.32.4",
     "@wdio/browserstack-service": "^8.33.0",
     "@wdio/cli": "^8.32.2",
-    "@wdio/mocha-framework": "^8.32.4",
+    "@wdio/mocha-framework": "^9.0.6",
     "@wdio/spec-reporter": "^8.32.2",
     "assert-never": "^1.2.1",
     "chromedriver": "^126.0.4",
