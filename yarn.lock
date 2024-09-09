@@ -2853,7 +2853,7 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.13.0.tgz#d9b802e9bb9c248d7be5f7f5ef178dc3684e9dcc"
   integrity sha512-3AungXC4I8kKsS9PuS4JH2nc+0bVY/mjgrephHTIi8fpEeGsTHBUJeosp0Wc1myYMElmD0B3Oc4XL/HVJ4PV2g==
 
-axios@^1.6.0, axios@^1.6.7:
+axios@^1.6.0, axios@^1.7.4:
   version "1.7.7"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.7.tgz#2f554296f9892a72ac8d8e4c5b79c14a91d0a47f"
   integrity sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==
@@ -3313,13 +3313,13 @@ chownr@^2.0.0:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-2.0.0.tgz#15bfbe53d2eab4cf70f18a8cd68ebe5b3cb1dece"
   integrity sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==
 
-chromedriver@^126.0.4:
-  version "126.0.4"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-126.0.4.tgz#5c5e1f80c4269b55251c563cf47709154090135b"
-  integrity sha512-mIdJqdocfN/y9fl5BymIzM9WQLy64x078i5tS1jGFzbFAwXwXrj3zmA86Wf3R/hywPYpWqwXxFGBJHgqZTuGCA==
+chromedriver@^128.0.1:
+  version "128.0.1"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-128.0.1.tgz#971fb267cc6893a712808cea6c977473ba167145"
+  integrity sha512-UmWqZXXAyuRa37pE+lnU46vJcCM/y0ddF015LHxycEOYfuqsK7k9ZxJuXCQNWbws9e7FAMQj/GJZT92WPgis0g==
   dependencies:
     "@testim/chrome-version" "^1.1.4"
-    axios "^1.6.7"
+    axios "^1.7.4"
     compare-versions "^6.1.0"
     extract-zip "^2.0.1"
     proxy-agent "^6.4.0"
