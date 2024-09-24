@@ -235,8 +235,6 @@ function createServerWithMiddleware<CallContextExt = {}>(
         );
       });
 
-      server.start();
-
       return port;
     },
 
