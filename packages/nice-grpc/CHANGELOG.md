@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.10](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.9...nice-grpc@2.1.10) (2024-09-24)
+
+### Bug Fixes
+
+- **nice-grpc:** avoid server.start() deprecation warning
+  ([#661](https://github.com/deeplay-io/nice-grpc/issues/661))
+  ([bd5e82d](https://github.com/deeplay-io/nice-grpc/commit/bd5e82d65e7f8595bbc826cb51136f61031fd05b))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.1.9](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.8...nice-grpc@2.1.9) (2024-06-06)
 
 ### Bug Fixes
