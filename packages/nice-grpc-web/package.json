@@ -56,7 +56,7 @@
     "get-port": "^5.1.1",
     "glob": "^10.3.10",
     "google-protobuf": "^3.17.3",
-    "grpc-tools": "^1.11.2",
+    "grpc-tools": "^1.12.4",
     "just-cartesian-product": "^4.2.0",
     "mkdirp": "^3.0.1",
     "mocha": "^10.3.0",

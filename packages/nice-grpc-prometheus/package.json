@@ -33,7 +33,7 @@
     "@types/defer-promise": "^1.0.0",
     "@types/node": "^18.0.0",
     "defer-promise": "^2.0.1",
-    "grpc-tools": "^1.10.0",
+    "grpc-tools": "^1.12.4",
     "nice-grpc": "^2.1.9",
     "protobufjs": "^7.1.2",
     "ts-proto": "^1.112.0"

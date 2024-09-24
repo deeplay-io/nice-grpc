@@ -24,7 +24,7 @@
   "license": "MIT",
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
-    "grpc-tools": "^1.10.0",
+    "grpc-tools": "^1.12.4",
     "nice-grpc": "^2.1.9",
     "ts-proto": "^1.112.0"
   },

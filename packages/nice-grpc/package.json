@@ -38,7 +38,7 @@
     "@types/node": "^18.0.0",
     "defer-promise": "^2.0.1",
     "google-protobuf": "^3.14.0",
-    "grpc-tools": "^1.10.0",
+    "grpc-tools": "^1.12.4",
     "grpc_tools_node_protoc_ts": "^5.0.1",
     "ts-proto": "^1.112.0"
   },
