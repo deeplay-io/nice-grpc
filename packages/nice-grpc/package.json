@@ -40,7 +40,7 @@
     "google-protobuf": "^3.14.0",
     "grpc-tools": "^1.12.4",
     "grpc_tools_node_protoc_ts": "^5.0.1",
-    "ts-proto": "^1.112.0"
+    "ts-proto": "^2.2.1"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.10.8",
