@@ -45,7 +45,7 @@
     "@types/tmp": "^0.2.3",
     "@types/ws": "^8.2.2",
     "@wdio/browser-runner": "^8.32.4",
-    "@wdio/browserstack-service": "^8.33.0",
+    "@wdio/browserstack-service": "^9.2.6",
     "@wdio/cli": "^8.32.2",
     "@wdio/mocha-framework": "^9.0.8",
     "@wdio/spec-reporter": "^9.0.7",
