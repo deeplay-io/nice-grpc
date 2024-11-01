@@ -26,7 +26,7 @@
     "grpc-tools": "^1.12.4",
     "jest-mock-random": "^1.1.1",
     "nice-grpc": "^2.1.10",
-    "ts-proto": "^1.112.0"
+    "ts-proto": "^2.2.5"
   },
   "dependencies": {
     "abort-controller-x": "^0.4.0",
