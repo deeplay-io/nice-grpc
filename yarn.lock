@@ -2515,16 +2515,16 @@
     webdriverio "8.39.1"
 
 "@wdio/browserstack-service@^9.2.6":
-  version "9.2.6"
-  resolved "https://registry.yarnpkg.com/@wdio/browserstack-service/-/browserstack-service-9.2.6.tgz#4ef9f68c5ea171a308f2265148fd378663598f89"
-  integrity sha512-4dNZ4nIaUvsRXY/fC8iVbJe8oG5cntUwI/i4+S3FIR7uul8SXH+2MjN+sSU3SKJB1071G7fZ8Iv4Gndj0+FeUw==
+  version "9.4.1"
+  resolved "https://registry.yarnpkg.com/@wdio/browserstack-service/-/browserstack-service-9.4.1.tgz#7b05ba1ba3e3e893163cf4c5f0816f0f53d8873f"
+  integrity sha512-gRYh7xkQqE9/080S3R5Dz2zw4kQQzMgRO8lyf15R91TVJQkwhrXG6qeo1c3Ri1n7l34C6sJTlOf+ulQJXMUk9Q==
   dependencies:
     "@browserstack/ai-sdk-node" "1.5.9"
     "@percy/appium-app" "^2.0.1"
     "@percy/selenium-webdriver" "^2.0.3"
     "@types/gitconfiglocal" "^2.0.1"
     "@wdio/logger" "9.1.3"
-    "@wdio/reporter" "9.2.2"
+    "@wdio/reporter" "9.2.14"
     "@wdio/types" "9.2.2"
     browserstack-local "^1.5.1"
     chalk "^5.3.0"
@@ -2533,7 +2533,7 @@
     git-repo-info "^2.1.1"
     gitconfiglocal "^2.1.0"
     uuid "^10.0.0"
-    webdriverio "9.2.6"
+    webdriverio "9.4.1"
     winston-transport "^4.5.0"
     yauzl "^3.0.0"
 
@@ -2602,6 +2602,19 @@
     "@wdio/logger" "9.1.3"
     "@wdio/types" "9.2.2"
     "@wdio/utils" "9.2.5"
+    decamelize "^6.0.0"
+    deepmerge-ts "^7.0.3"
+    glob "^10.2.2"
+    import-meta-resolve "^4.0.0"
+
+"@wdio/config@9.2.8":
+  version "9.2.8"
+  resolved "https://registry.yarnpkg.com/@wdio/config/-/config-9.2.8.tgz#535479f2e146847d79d4e4c1b425a4392829f73c"
+  integrity sha512-EGMmBPGJbz6RmgMjebRWkWu3fGyeTIRcusF4UA4f2tiUEKY8nbzUO/ZyDjVQNR+YVB40q0jcqAqpszYRrIzzeg==
+  dependencies:
+    "@wdio/logger" "9.1.3"
+    "@wdio/types" "9.2.2"
+    "@wdio/utils" "9.2.8"
     decamelize "^6.0.0"
     deepmerge-ts "^7.0.3"
     glob "^10.2.2"
@@ -2735,6 +2748,17 @@
   dependencies:
     "@types/node" "^20.1.0"
 
+"@wdio/reporter@9.2.14":
+  version "9.2.14"
+  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-9.2.14.tgz#376b85af9b4e4bc79218c2e9956501fdb3b94a9d"
+  integrity sha512-njOqa9+w5zc9AY4fsUmW46EhZ2nzMFRXZPCmwnGZuYk81L3slVfAFhKk1wSTRhSbghjYAZndt9Yo3c4wFLh6Lg==
+  dependencies:
+    "@types/node" "^20.1.0"
+    "@wdio/logger" "9.1.3"
+    "@wdio/types" "9.2.2"
+    diff "^7.0.0"
+    object-inspect "^1.12.0"
+
 "@wdio/reporter@9.2.2":
   version "9.2.2"
   resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-9.2.2.tgz#5c59db97494cc1de4e03213861c373c98041b3fa"
@@ -2863,6 +2887,25 @@
   version "9.2.5"
   resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-9.2.5.tgz#55e3dc192ec21dc67f3967c939866aa5a7f7b419"
   integrity sha512-QgBxscPVuqC/fP62ggssBfWLnonVs2/r1xaj5MgH+tLNez/OVS98pWx0/FYsFHVeTVO5vPnJIhoTo2CXz8tQzA==
+  dependencies:
+    "@puppeteer/browsers" "^2.2.0"
+    "@wdio/logger" "9.1.3"
+    "@wdio/types" "9.2.2"
+    decamelize "^6.0.0"
+    deepmerge-ts "^7.0.3"
+    edgedriver "^5.6.1"
+    geckodriver "^4.3.3"
+    get-port "^7.0.0"
+    import-meta-resolve "^4.0.0"
+    locate-app "^2.2.24"
+    safaridriver "^0.1.2"
+    split2 "^4.2.0"
+    wait-port "^1.1.0"
+
+"@wdio/utils@9.2.8":
+  version "9.2.8"
+  resolved "https://registry.yarnpkg.com/@wdio/utils/-/utils-9.2.8.tgz#b782d8ff1486ad7b1d13451c40aa8da190cdbc33"
+  integrity sha512-rKm5FXkpsCyeqh8tdirtRUHvgNytWNMiaVKdctsvKOJvqnDVPAAQcz9Wmgo7bSwoLwtSHcDaRoxY7olV7J4QnA==
   dependencies:
     "@puppeteer/browsers" "^2.2.0"
     "@wdio/logger" "9.1.3"
@@ -10132,6 +10175,11 @@ undici@^6.19.5:
   resolved "https://registry.yarnpkg.com/undici/-/undici-6.20.1.tgz#fbb87b1e2b69d963ff2d5410a40ffb4c9e81b621"
   integrity sha512-AjQF1QsmqfJys+LXfGTNum+qw4S88CojRInG/6t31W/1fk6G59s92bnAvGz5Cmur+kQv2SURXEvvudLmbrE8QA==
 
+undici@^6.20.1:
+  version "6.21.0"
+  resolved "https://registry.yarnpkg.com/undici/-/undici-6.21.0.tgz#4b3d3afaef984e07b48e7620c34ed8a285ed4cd4"
+  integrity sha512-BUgJXc752Kou3oOIuU1i+yZZypyZRqNPW0vqoMPl8VaoalSfeR0D8/t4iAS3yirs79SSMTxTag+ZC86uswv+Cw==
+
 unicorn-magic@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/unicorn-magic/-/unicorn-magic-0.3.0.tgz#4efd45c85a69e0dd576d25532fbfa22aa5c8a104"
@@ -10377,6 +10425,22 @@ webdriver@9.2.5:
     deepmerge-ts "^7.0.3"
     ws "^8.8.0"
 
+webdriver@9.4.1:
+  version "9.4.1"
+  resolved "https://registry.yarnpkg.com/webdriver/-/webdriver-9.4.1.tgz#7d69464d01da508bfb8ac96ccb6e20b335a13d0d"
+  integrity sha512-vFDdxMj/9W1+6jhpHSiRYfO8dix23HjAUtLx7aOv9ejEsntC0EzCIAftJ59YsF3Ppu184+FkdDVhnivpkZPTFw==
+  dependencies:
+    "@types/node" "^20.1.0"
+    "@types/ws" "^8.5.3"
+    "@wdio/config" "9.2.8"
+    "@wdio/logger" "9.1.3"
+    "@wdio/protocols" "9.2.2"
+    "@wdio/types" "9.2.2"
+    "@wdio/utils" "9.2.8"
+    deepmerge-ts "^7.0.3"
+    undici "^6.20.1"
+    ws "^8.8.0"
+
 webdriverio@8.39.1:
   version "8.39.1"
   resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-8.39.1.tgz#605af5a79a7805bd08a36d16d078e618360f8aa9"
@@ -10471,6 +10535,39 @@ webdriverio@9.2.6:
     serialize-error "^11.0.3"
     urlpattern-polyfill "^10.0.0"
     webdriver "9.2.5"
+
+webdriverio@9.4.1:
+  version "9.4.1"
+  resolved "https://registry.yarnpkg.com/webdriverio/-/webdriverio-9.4.1.tgz#71c97ad3e9b1512929a45387f30dbdb97865f247"
+  integrity sha512-XIPtRnxSES4CoxH2BfUY/6QzNgEgJEUjMYu7t7SJR8bVfbLRVXAA1ie9kM0MtdLs4oZ2Pr8rR8fqytsA1CjEWw==
+  dependencies:
+    "@types/node" "^20.11.30"
+    "@types/sinonjs__fake-timers" "^8.1.5"
+    "@wdio/config" "9.2.8"
+    "@wdio/logger" "9.1.3"
+    "@wdio/protocols" "9.2.2"
+    "@wdio/repl" "9.0.8"
+    "@wdio/types" "9.2.2"
+    "@wdio/utils" "9.2.8"
+    archiver "^7.0.1"
+    aria-query "^5.3.0"
+    cheerio "^1.0.0-rc.12"
+    css-shorthand-properties "^1.1.1"
+    css-value "^0.0.1"
+    grapheme-splitter "^1.0.4"
+    htmlfy "^0.3.0"
+    import-meta-resolve "^4.0.0"
+    is-plain-obj "^4.1.0"
+    jszip "^3.10.1"
+    lodash.clonedeep "^4.5.0"
+    lodash.zip "^4.2.0"
+    minimatch "^9.0.3"
+    query-selector-shadow-dom "^1.0.1"
+    resq "^1.11.0"
+    rgb2hex "0.2.5"
+    serialize-error "^11.0.3"
+    urlpattern-polyfill "^10.0.0"
+    webdriver "9.4.1"
 
 webidl-conversions@^3.0.0:
   version "3.0.1"
