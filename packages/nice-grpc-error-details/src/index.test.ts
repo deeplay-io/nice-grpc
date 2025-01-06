@@ -92,9 +92,11 @@ describe('server and client', () => {
   });
   const anyPartial = Any.fromPartial({
     typeUrl: `types.googleapis.com/${CustomErrorDetail.$type}`,
-    value: CustomErrorDetail.encode(
-      CustomErrorDetail.fromPartial({test: 'custom-test'}),
-    ).finish(),
+    value: Buffer.from(
+      CustomErrorDetail.encode(
+        CustomErrorDetail.fromPartial({test: 'custom-test'}),
+      ).finish(),
+    ),
   });
 
   it('should be instance of preconditionFailure when server throws preconditionFailure error', async () => {
