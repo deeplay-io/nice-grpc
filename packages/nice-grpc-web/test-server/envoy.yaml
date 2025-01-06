@@ -61,6 +61,7 @@ static_resources:
     - name: backend
       connect_timeout: 0.25s
       type: logical_dns
+      dns_lookup_family: V4_ONLY
       lb_policy: round_robin
       typed_extension_protocol_options:
         envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
