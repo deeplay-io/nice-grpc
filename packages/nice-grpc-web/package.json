@@ -59,7 +59,7 @@
     "grpc-tools": "^1.12.4",
     "just-cartesian-product": "^4.2.0",
     "mkdirp": "^3.0.1",
-    "mocha": "^10.3.0",
+    "mocha": "^11.1.0",
     "path-exists-cli": "^2.0.0",
     "request": "^2.88.2",
     "selfsigned": "^2.1.1",
