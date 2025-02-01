@@ -2834,14 +2834,14 @@
     diff "^7.0.0"
     object-inspect "^1.12.0"
 
-"@wdio/reporter@9.5.0":
-  version "9.5.0"
-  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-9.5.0.tgz#f7577d31a1b38f70d4dc3414c1831c6e78b8f5eb"
-  integrity sha512-ycdbU97tDT7RCgutM+fSwbd0FIab821BAc0hYopCkB0FIooHUjIjvXmh0QichasS5a21tGe0UXfCcnn1S6V6Fw==
+"@wdio/reporter@9.6.3":
+  version "9.6.3"
+  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-9.6.3.tgz#c9693893fd980211f849fd9a1c578d149f919e69"
+  integrity sha512-OwuwhRtqDZDPU8/6TBSMg+bvw9DKgUVfGu160zamBt8jPg8LZ5VU2VoZlRBNZMAHl3OnSwj+ih2/meEoLf3DUg==
   dependencies:
     "@types/node" "^20.1.0"
     "@wdio/logger" "9.4.4"
-    "@wdio/types" "9.5.0"
+    "@wdio/types" "9.6.3"
     diff "^7.0.0"
     object-inspect "^1.12.0"
 
@@ -2863,12 +2863,12 @@
     webdriverio "8.39.1"
 
 "@wdio/spec-reporter@^9.0.7":
-  version "9.5.0"
-  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-9.5.0.tgz#b8a746fd3c6d2a19328f1df9403365028ccd0b55"
-  integrity sha512-xapzWIPZE8E5IHQdhIESJ9u10fZMWi91D0Hu3EiyDvZ6ClJR6LIS/eeGChXVx3+x/OeU6yiOwhmkV4mCUyFeNA==
+  version "9.6.3"
+  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-9.6.3.tgz#7e96390a9d5280a97dcc5db01b3191edaf853251"
+  integrity sha512-P9zi8PfdhUWGnwb1tcl7EyLGKHFiCOkS04I7nBnVRAkTTfeQ+jpuDIlefW8DkW91yHHOpoAOOVeMqVBGRc8OoQ==
   dependencies:
-    "@wdio/reporter" "9.5.0"
-    "@wdio/types" "9.5.0"
+    "@wdio/reporter" "9.6.3"
+    "@wdio/types" "9.6.3"
     chalk "^5.1.2"
     easy-table "^1.2.0"
     pretty-ms "^9.0.0"
@@ -2905,6 +2905,13 @@
   version "9.5.0"
   resolved "https://registry.yarnpkg.com/@wdio/types/-/types-9.5.0.tgz#260dd40f3bd26519adc0e1102a0c909a4faa402c"
   integrity sha512-sX1vH6VebVHvgdpySTOXzKNazHBu+yFr5bMvveJ2T4vKjJTJOAwO6nPftjKcgGDfhyYxM3xOCvboKICdQKFgEg==
+  dependencies:
+    "@types/node" "^20.1.0"
+
+"@wdio/types@9.6.3":
+  version "9.6.3"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-9.6.3.tgz#2fbbb5fcdec32f9d9953ee9d73c659052c0fb6b1"
+  integrity sha512-K3Lu7K5g5bsUcQV6/95XaS3jMwcGUn2pDdryYibKZafklhHjVt3o/xnw6Vgd/JzoSneCKHdwj941n+yDpTJHAw==
   dependencies:
     "@types/node" "^20.1.0"
 
