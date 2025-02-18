@@ -61,6 +61,7 @@ test('basic', async () => {
   for await (const response of client.testBidiStream(createRequest())) {
   }
 
+  await new Promise(resolve => setTimeout(resolve, 50));
   const finishedSpans = traceExporter.getFinishedSpans();
   expect(finishedSpans).toHaveLength(2);
   const serverSpan = finishedSpans.find(span => span.kind === SpanKind.SERVER)!;
@@ -204,6 +205,7 @@ test('error', async () => {
     })
     .catch(() => {});
 
+  await new Promise(resolve => setTimeout(resolve, 50));
   const finishedSpans = traceExporter.getFinishedSpans();
   expect(finishedSpans).toHaveLength(2);
   const serverSpan = finishedSpans.find(span => span.kind === SpanKind.SERVER)!;
@@ -313,6 +315,7 @@ test('aborted iteration on client', async () => {
 
   await new Promise(resolve => setTimeout(resolve, 100));
 
+  await new Promise(resolve => setTimeout(resolve, 50));
   const finishedSpans = traceExporter.getFinishedSpans();
   expect(finishedSpans).toHaveLength(2);
   const serverSpan = finishedSpans.find(span => span.kind === SpanKind.SERVER)!;

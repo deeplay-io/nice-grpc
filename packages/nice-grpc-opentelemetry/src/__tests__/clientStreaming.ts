@@ -60,6 +60,7 @@ test('basic', async () => {
 
   await client.testClientStream(createRequest());
 
+  await new Promise(resolve => setTimeout(resolve, 50));
   const finishedSpans = traceExporter.getFinishedSpans();
   expect(finishedSpans).toHaveLength(2);
   const serverSpan = finishedSpans.find(span => span.kind === SpanKind.SERVER)!;
@@ -171,6 +172,7 @@ test('error', async () => {
 
   await client.testClientStream(createRequest()).catch(() => {});
 
+  await new Promise(resolve => setTimeout(resolve, 50));
   const finishedSpans = traceExporter.getFinishedSpans();
   expect(finishedSpans).toHaveLength(2);
   const serverSpan = finishedSpans.find(span => span.kind === SpanKind.SERVER)!;
