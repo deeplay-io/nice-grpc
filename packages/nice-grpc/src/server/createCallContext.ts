@@ -55,7 +55,9 @@ export function createCallContext(call: ServerSurfaceCall): {
         return;
       }
 
-      call.sendMetadata(convertMetadataToGrpcJs(header));
+      if (!isEmptyMetadata(header)) {
+        call.sendMetadata(convertMetadataToGrpcJs(header));
+      }
       headerSent = true;
     },
     trailer,
@@ -63,4 +65,12 @@ export function createCallContext(call: ServerSurfaceCall): {
   };
 
   return {context, maybeCancel};
+}
+
+function isEmptyMetadata(metadata: Metadata) {
+  for (const _ of metadata) {
+    return false;
+  }
+
+  return true;
 }
