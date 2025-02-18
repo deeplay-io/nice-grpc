@@ -96,6 +96,7 @@ test('context propagation', async () => {
   expect(traceIdInClientMiddlewareStart).toEqual(traceId);
   expect(traceIdInClientMiddlewareEnd).toEqual(traceId);
 
+  await new Promise(resolve => setTimeout(resolve, 50));
   const finishedSpans = traceExporter.getFinishedSpans();
   expect(finishedSpans).toHaveLength(3);
   const serverSpan = finishedSpans.find(span => span.kind === SpanKind.SERVER)!;

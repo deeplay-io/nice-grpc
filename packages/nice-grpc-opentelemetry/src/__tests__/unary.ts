@@ -54,6 +54,7 @@ test('basic', async () => {
 
   await client.testUnary({});
 
+  await new Promise(resolve => setTimeout(resolve, 50));
   const finishedSpans = traceExporter.getFinishedSpans();
   expect(finishedSpans).toHaveLength(2);
   const serverSpan = finishedSpans.find(span => span.kind === SpanKind.SERVER)!;
@@ -127,6 +128,7 @@ test('error', async () => {
 
   await client.testUnary({}).catch(() => {});
 
+  await new Promise(resolve => setTimeout(resolve, 50));
   const finishedSpans = traceExporter.getFinishedSpans();
   expect(finishedSpans).toHaveLength(2);
   const serverSpan = finishedSpans.find(span => span.kind === SpanKind.SERVER)!;
@@ -200,6 +202,7 @@ test('unknown error', async () => {
 
   await client.testUnary({}).catch(() => {});
 
+  await new Promise(resolve => setTimeout(resolve, 50));
   const finishedSpans = traceExporter.getFinishedSpans();
   expect(finishedSpans).toHaveLength(2);
   const serverSpan = finishedSpans.find(span => span.kind === SpanKind.SERVER)!;
@@ -298,6 +301,7 @@ test('cancel', async () => {
 
   await new Promise(resolve => setTimeout(resolve, 100));
 
+  await new Promise(resolve => setTimeout(resolve, 50));
   const finishedSpans = traceExporter.getFinishedSpans();
   expect(finishedSpans).toHaveLength(2);
   const serverSpan = finishedSpans.find(span => span.kind === SpanKind.SERVER)!;
