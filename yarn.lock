@@ -3271,9 +3271,9 @@ asn1@^0.2.6, asn1@~0.2.3:
     safer-buffer "~2.1.0"
 
 assert-never@^1.2.1:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/assert-never/-/assert-never-1.3.0.tgz#c53cf3ad8fcdb67f400a941dea66dac7fe82dd2e"
-  integrity sha512-9Z3vxQ+berkL/JJo0dK+EY3Lp0s3NtSnP3VCLsh5HDcZPrh0M+KQRK5sWhUeyPPH+/RCxZqOxLMR+YC6vlviEQ==
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/assert-never/-/assert-never-1.4.0.tgz#b0d4988628c87f35eb94716cc54422a63927e175"
+  integrity sha512-5oJg84os6NMQNl27T9LnZkvvqzvAnHu03ShCnoj6bsJwS7L8AO4lf+C/XjK/nvzEqQB744moC6V128RucQd1jA==
 
 assert-plus@1.0.0, assert-plus@^1.0.0:
   version "1.0.0"
