@@ -44,7 +44,7 @@
     "@types/tcp-port-used": "^1.0.0",
     "@types/tmp": "^0.2.3",
     "@types/ws": "^8.2.2",
-    "@wdio/browser-runner": "^8.32.4",
+    "@wdio/browser-runner": "^9.9.1",
     "@wdio/browserstack-service": "^9.2.6",
     "@wdio/cli": "^9.2.6",
     "@wdio/mocha-framework": "^9.0.8",
