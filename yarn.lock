@@ -2871,13 +2871,6 @@
   dependencies:
     "@types/node" "^20.1.0"
 
-"@wdio/types@9.5.0":
-  version "9.5.0"
-  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-9.5.0.tgz#260dd40f3bd26519adc0e1102a0c909a4faa402c"
-  integrity sha512-sX1vH6VebVHvgdpySTOXzKNazHBu+yFr5bMvveJ2T4vKjJTJOAwO6nPftjKcgGDfhyYxM3xOCvboKICdQKFgEg==
-  dependencies:
-    "@types/node" "^20.1.0"
-
 "@wdio/types@9.6.3":
   version "9.6.3"
   resolved "https://registry.yarnpkg.com/@wdio/types/-/types-9.6.3.tgz#2fbbb5fcdec32f9d9953ee9d73c659052c0fb6b1"
@@ -10134,9 +10127,9 @@ ts-proto-descriptors@2.0.0:
     "@bufbuild/protobuf" "^2.0.0"
 
 ts-proto@^2.5.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-2.5.1.tgz#84c358bcc977a4420043bc5d5763d5a066186ae6"
-  integrity sha512-S80UVpv8h/855c+ODzx1GbolWMAvgQ52aKH4gLGOkeV5DoyvKjaTPUklZ20R9gqt+LhXXTcpCvsSNu04uZHbbQ==
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-2.6.1.tgz#3f112534408ec85019fc9d26b8c0b4911d184f10"
+  integrity sha512-4LTT99MkwkF1+fIA0b2mZu/58Qlpq3Q1g53TwEMZZgR1w/uX00PoVT4Z8aKJxMw0LeKQD4s9NrJYsF27Clckrg==
   dependencies:
     "@bufbuild/protobuf" "^2.0.0"
     case-anything "^2.1.13"
