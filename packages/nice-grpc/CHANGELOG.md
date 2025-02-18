@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.11](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.10...nice-grpc@2.1.11) (2025-02-18)
+
+### Bug Fixes
+
+- **nice-grpc:** disable implicit sending of empty header
+  ([#728](https://github.com/deeplay-io/nice-grpc/issues/728))
+  ([bd3811d](https://github.com/deeplay-io/nice-grpc/commit/bd3811dba1679ed26513e3a77ef37e938e1691c7)),
+  closes [#722](https://github.com/deeplay-io/nice-grpc/issues/722)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.1.10](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.9...nice-grpc@2.1.10) (2024-09-24)
 
 ### Bug Fixes

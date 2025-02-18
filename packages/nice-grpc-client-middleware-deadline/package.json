@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-client-middleware-deadline",
-  "version": "2.0.13",
+  "version": "2.0.14",
   "description": "Deadline client middleware for nice-grpc",
   "repository": "deeplay-io/nice-grpc",
   "main": "lib/index.js",
@@ -28,7 +28,7 @@
     "google-protobuf": "^3.14.0",
     "grpc-tools": "^1.12.4",
     "grpc_tools_node_protoc_ts": "^5.0.1",
-    "nice-grpc": "^2.1.10"
+    "nice-grpc": "^2.1.11"
   },
   "dependencies": {
     "nice-grpc-common": "^2.0.2"
