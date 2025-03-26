@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-error-details",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "gRPC rich error model implementation for nice-grpc",
   "repository": "deeplay-io/nice-grpc",
   "main": "lib/index.js",
@@ -25,7 +25,7 @@
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
     "grpc-tools": "^1.12.4",
-    "nice-grpc": "^2.1.11",
+    "nice-grpc": "^2.1.12",
     "ts-proto": "^2.5.1"
   },
   "dependencies": {

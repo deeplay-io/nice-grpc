@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-opentelemetry",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "OpenTelemetry instrumentation for nice-grpc",
   "keywords": [
     "grpc",
@@ -34,7 +34,7 @@
     "@types/defer-promise": "^1.0.0",
     "defer-promise": "^2.0.1",
     "grpc-tools": "^1.12.4",
-    "nice-grpc": "^2.1.11",
+    "nice-grpc": "^2.1.12",
     "protobufjs": "^7.1.2",
     "ts-proto": "^2.5.1"
   },
