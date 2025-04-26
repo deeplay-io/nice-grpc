@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-server-health",
-  "version": "2.0.14",
+  "version": "2.0.15",
   "description": "gRPC health checking protocol implementation for nice-grpc",
   "repository": "deeplay-io/nice-grpc",
   "main": "lib/index.js",

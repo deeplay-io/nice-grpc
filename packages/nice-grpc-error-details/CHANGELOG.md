@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.10](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-error-details@0.2.9...nice-grpc-error-details@0.2.10) (2025-04-26)
+
+### Bug Fixes
+
+- add missing dependency on @bufbuild/protobuf
+  ([#763](https://github.com/deeplay-io/nice-grpc/issues/763))
+  ([c78f2cd](https://github.com/deeplay-io/nice-grpc/commit/c78f2cd54f40489cadf56ac0445a6a7546d32da3)),
+  closes [#761](https://github.com/deeplay-io/nice-grpc/issues/761)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [0.2.9](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-error-details@0.2.8...nice-grpc-error-details@0.2.9) (2025-03-26)
 
 **Note:** Version bump only for package nice-grpc-error-details

@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.15](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-health@2.0.14...nice-grpc-server-health@2.0.15) (2025-04-26)
+
+### Bug Fixes
+
+- add missing dependency on @bufbuild/protobuf
+  ([#763](https://github.com/deeplay-io/nice-grpc/issues/763))
+  ([c78f2cd](https://github.com/deeplay-io/nice-grpc/commit/c78f2cd54f40489cadf56ac0445a6a7546d32da3)),
+  closes [#761](https://github.com/deeplay-io/nice-grpc/issues/761)
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.0.14](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-health@2.0.13...nice-grpc-server-health@2.0.14) (2025-03-26)
 
 **Note:** Version bump only for package nice-grpc-server-health
