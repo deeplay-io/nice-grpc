@@ -10,7 +10,7 @@ import {readFileSync} from 'fs';
 
 import {ServerReflection, ServerReflectionService} from '.';
 import {TestDefinition} from '../fixtures/test';
-import {ServerReflectionRequest} from './proto/grpc/reflection/v1alpha/reflection_pb';
+import {ServerReflectionRequest} from './proto/grpc/reflection/v1/reflection_pb';
 
 async function* arrayToIter<T>(requests: T[]): AsyncIterable<T> {
   for (const request of requests) {
