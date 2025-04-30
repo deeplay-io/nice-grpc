@@ -7,7 +7,7 @@ import {
   MethodDescriptorProto,
   ServiceDescriptorProto,
 } from 'google-protobuf/google/protobuf/descriptor_pb';
-import {IServerReflectionService} from './proto/grpc/reflection/v1alpha/reflection_grpc_pb';
+import {IServerReflectionService} from './proto/grpc/reflection/v1/reflection_grpc_pb';
 import {
   ErrorResponse,
   ExtensionNumberResponse,
@@ -16,9 +16,9 @@ import {
   ServerReflectionRequest,
   ServerReflectionResponse,
   ServiceResponse,
-} from './proto/grpc/reflection/v1alpha/reflection_pb';
+} from './proto/grpc/reflection/v1/reflection_pb';
 
-export {ServerReflectionService} from './proto/grpc/reflection/v1alpha/reflection_grpc_pb';
+export {ServerReflectionService} from './proto/grpc/reflection/v1/reflection_grpc_pb';
 
 export function ServerReflection(
   protoset: Uint8Array,
