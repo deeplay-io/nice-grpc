@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-reflection@2.0.14...nice-grpc-server-reflection@3.0.0) (2025-04-30)
+
+### ⚠ BREAKING CHANGES
+
+- **nice-grpc-server-reflection:** server reflection is now exposed via
+  `grpc.reflection.v1.ServerReflection` service instead of
+  `grpc.reflection.v1alpha.ServerReflection`. Tools like grpcurl should handle
+  this automatically.
+
+### Features
+
+- **nice-grpc-server-reflection:** use v1 protobufs
+  ([#765](https://github.com/deeplay-io/nice-grpc/issues/765))
+  ([f09ee80](https://github.com/deeplay-io/nice-grpc/commit/f09ee80bd428d541450fa9b248934d6806014efb))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.0.14](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-reflection@2.0.13...nice-grpc-server-reflection@2.0.14) (2025-03-26)
 
 **Note:** Version bump only for package nice-grpc-server-reflection
