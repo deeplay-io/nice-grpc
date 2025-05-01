@@ -50,7 +50,7 @@
     "@wdio/mocha-framework": "^9.0.8",
     "@wdio/spec-reporter": "^9.0.7",
     "assert-never": "^1.2.1",
-    "chromedriver": "^132.0.2",
+    "chromedriver": "^136.0.0",
     "cpr": "^3.0.1",
     "detect-browser": "^5.3.0",
     "get-port": "^5.1.1",
