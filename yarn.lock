@@ -2791,6 +2791,17 @@
   dependencies:
     "@types/node" "^20.1.0"
 
+"@wdio/reporter@9.12.6":
+  version "9.12.6"
+  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-9.12.6.tgz#116641dc4e416eddbdc999ba1d509ffdcdfacbcc"
+  integrity sha512-8cR74tEp5nzC8nP59n4hkDUpoaHUNDbJvP3jD9EfX+ZO4OgPMyJMVTGubo1o88Wuty/Gd2jvOZLHoGD8KlHcKw==
+  dependencies:
+    "@types/node" "^20.1.0"
+    "@wdio/logger" "9.4.4"
+    "@wdio/types" "9.12.6"
+    diff "^7.0.0"
+    object-inspect "^1.12.0"
+
 "@wdio/reporter@9.6.3":
   version "9.6.3"
   resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-9.6.3.tgz#c9693893fd980211f849fd9a1c578d149f919e69"
@@ -2799,17 +2810,6 @@
     "@types/node" "^20.1.0"
     "@wdio/logger" "9.4.4"
     "@wdio/types" "9.6.3"
-    diff "^7.0.0"
-    object-inspect "^1.12.0"
-
-"@wdio/reporter@9.9.0":
-  version "9.9.0"
-  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-9.9.0.tgz#6451b49eb95628d9e2a79c4c31996eae59f41ab6"
-  integrity sha512-JYZa2a40egdlYmJo4mJn931xp8o4x/o0+zFXt2Mvm5qPuQX+r2hKJxmnstbldP63WJw9MjXpS+8+Q3/d6x7mLQ==
-  dependencies:
-    "@types/node" "^20.1.0"
-    "@wdio/logger" "9.4.4"
-    "@wdio/types" "9.9.0"
     diff "^7.0.0"
     object-inspect "^1.12.0"
 
@@ -2831,12 +2831,12 @@
     webdriverio "8.39.1"
 
 "@wdio/spec-reporter@^9.0.7":
-  version "9.9.0"
-  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-9.9.0.tgz#94a5e016de32eae3d2c9564e352a21cc72421273"
-  integrity sha512-9Zb6J7Ku8NvthO3RNxZ90o2S0ApYnNwZE4W6zKTzFKj0z7YrPGbLl6k8lrrpgH+aL5Q9cqAnXFz9QRPTBL/CoQ==
+  version "9.12.6"
+  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-9.12.6.tgz#ce14e871c6b8424d22bbcd606c90055591f1116b"
+  integrity sha512-zLBbp5tuCdwyxCdh7IXdFk7fideP/e/U8GjuWpRMMuGHCrfIdVxShM5CEq1XEv7Lnw4RWkO6Yo00LU4F0Lafmg==
   dependencies:
-    "@wdio/reporter" "9.9.0"
-    "@wdio/types" "9.9.0"
+    "@wdio/reporter" "9.12.6"
+    "@wdio/types" "9.12.6"
     chalk "^5.1.2"
     easy-table "^1.2.0"
     pretty-ms "^9.0.0"
@@ -2854,6 +2854,13 @@
   integrity sha512-zK17uyON3Ise3m+XwiF5VrrdZcXXmvqB8AWXoKe88DiksFUPMVoCOuVL2SSX1KnA2YLlZBA55qcFZT99GORVKQ==
   dependencies:
     "@types/node" "^22.2.0"
+
+"@wdio/types@9.12.6":
+  version "9.12.6"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-9.12.6.tgz#62b243fa49c5de76f265882c506f63cb4c6a9622"
+  integrity sha512-WzZhaN834du9wjqT/Go9qPyB7VkzV2bjr6pr06DrIzxIpJq/snWOv96C6OjJu8nmYNRjV769mAxyggBUf+sUoQ==
+  dependencies:
+    "@types/node" "^20.1.0"
 
 "@wdio/types@9.12.6":
   version "9.12.6"
