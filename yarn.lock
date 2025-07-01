@@ -376,12 +376,7 @@
     axios "^1.7.4"
     uuid "9.0.1"
 
-"@bufbuild/protobuf@^2.0.0":
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/@bufbuild/protobuf/-/protobuf-2.2.2.tgz#1a6d89603fb215dc4d4178052d05b30b83c75402"
-  integrity sha512-UNtPCbrwrenpmrXuRwn9jYpPoweNXj8X5sMvYgsqYyaH8jQ6LfUJSk3dJLnBK+6sfYPrF4iAIo5sd5HQ+tg75A==
-
-"@bufbuild/protobuf@^2.2.5":
+"@bufbuild/protobuf@^2.0.0", "@bufbuild/protobuf@^2.2.5":
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/@bufbuild/protobuf/-/protobuf-2.2.5.tgz#8e82c0af292113b4a89f8b658c71c4636c8d2e36"
   integrity sha512-/g5EzJifw5GF8aren8wZ/G5oMuPoGeS6MQD3ca8ddcvdXR5UELUfdTZITCGNhNXynY/AYl3Z4plmxdj/tRl/hQ==
@@ -10034,10 +10029,10 @@ ts-node@^10.9.1, ts-node@^10.9.2:
     v8-compile-cache-lib "^3.0.1"
     yn "3.1.1"
 
-ts-poet@^6.7.0:
-  version "6.9.0"
-  resolved "https://registry.yarnpkg.com/ts-poet/-/ts-poet-6.9.0.tgz#e63ac8d8a9e91a2e0e5d2bf0755db71346728bd2"
-  integrity sha512-roe6W6MeZmCjRmppyfOURklO5tQFQ6Sg7swURKkwYJvV7dbGCrK28um5+51iW3twdPRKtwarqFAVMU6G1mvnuQ==
+ts-poet@^6.12.0:
+  version "6.12.0"
+  resolved "https://registry.yarnpkg.com/ts-poet/-/ts-poet-6.12.0.tgz#f28eb91778fdff8e1b264600c7ddddb40cd39d84"
+  integrity sha512-xo+iRNMWqyvXpFTaOAvLPA5QAWO6TZrSUs5s4Odaya3epqofBu/fMLHEWl8jPmjhA0s9sgj9sNvF1BmaQlmQkA==
   dependencies:
     dprint-node "^1.0.8"
 
@@ -10049,13 +10044,13 @@ ts-proto-descriptors@2.0.0:
     "@bufbuild/protobuf" "^2.0.0"
 
 ts-proto@^2.5.1:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-2.6.1.tgz#3f112534408ec85019fc9d26b8c0b4911d184f10"
-  integrity sha512-4LTT99MkwkF1+fIA0b2mZu/58Qlpq3Q1g53TwEMZZgR1w/uX00PoVT4Z8aKJxMw0LeKQD4s9NrJYsF27Clckrg==
+  version "2.7.5"
+  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-2.7.5.tgz#a12bd7b388969f64b3d41814f46d077e71ec304a"
+  integrity sha512-FoRxSaNW+P3m+GiXIZjUjhaHXT67Ah4zMGKzn4yklbGRQTS+PqpUhKo5AJnwfUDUByjEUG7ch36byFUYWRH9Nw==
   dependencies:
     "@bufbuild/protobuf" "^2.0.0"
     case-anything "^2.1.13"
-    ts-poet "^6.7.0"
+    ts-poet "^6.12.0"
     ts-proto-descriptors "2.0.0"
 
 ts-protoc-gen@^0.15.0:
