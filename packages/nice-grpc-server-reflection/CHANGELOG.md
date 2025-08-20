@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.0.1](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-reflection@3.0.0...nice-grpc-server-reflection@3.0.1) (2025-08-20)
+
+### Bug Fixes
+
+- **nice-grpc-server-reflection:** make server reflection lossless
+  ([#811](https://github.com/deeplay-io/nice-grpc/issues/811))
+  ([313371e](https://github.com/deeplay-io/nice-grpc/commit/313371e60a20409891cf1cb5b0701a472061adfc))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [3.0.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-reflection@2.0.14...nice-grpc-server-reflection@3.0.0) (2025-04-30)
 
 ### ⚠ BREAKING CHANGES
