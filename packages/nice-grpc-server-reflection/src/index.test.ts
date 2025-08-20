@@ -92,8 +92,11 @@ test('get', async () => {
         .getFileDescriptorResponse()
         ?.getFileDescriptorProtoList();
       expect(fd?.length).toBe(1);
-      const actual = Buffer.from(fd![0]);
+      const actual: Buffer = Buffer.from(fd![0]);
       expect(protoset.indexOf(actual)).toBeGreaterThan(-1);
+      // slice and subarray include the metadata such as the version annotation
+      const version = Buffer.from('1.0.0', 'utf-8');
+      expect(actual.indexOf(version)).toBeGreaterThan(-1);
     } else {
       throw new Error('reflection service returned too many results');
     }
