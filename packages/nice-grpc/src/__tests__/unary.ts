@@ -1,5 +1,5 @@
 import defer = require('defer-promise');
-import {forever, isAbortError} from 'abort-controller-x';
+import {forever, delay, isAbortError} from 'abort-controller-x';
 import {
   createChannel,
   createClient,
@@ -11,6 +11,7 @@ import {
 import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../fixtures/grpc-js/test_pb';
 import {throwUnimplemented} from './utils/throwUnimplemented';
+import {connectivityState} from '@grpc/grpc-js';
 
 test('basic', async () => {
   const server = createServer();
@@ -195,7 +196,7 @@ test('implicit header sending', async () => {
   await server.shutdown();
 });
 
-test('error', async () => {
+test('server error', async () => {
   const server = createServer();
 
   let serverSignal: AbortSignal;
@@ -240,7 +241,7 @@ test('error', async () => {
   await server.shutdown();
 });
 
-test('cancel', async () => {
+test('client cancel', async () => {
   const server = createServer();
 
   const serverRequestStartDeferred = defer<void>();
@@ -289,4 +290,139 @@ test('cancel', async () => {
   channel.close();
 
   await server.shutdown();
+});
+
+test('channel close', async () => {
+  const server = createServer();
+
+  let serverSignal: AbortSignal;
+  const serverRequestStartDeferred = defer<void>();
+
+  server.add(TestService, {
+    async testUnary(request: TestRequest, context) {
+      serverSignal = context.signal;
+      serverRequestStartDeferred.resolve();
+
+      await delay(context.signal, 200);
+
+      return new TestResponse().setId(request.getId());
+    },
+    testServerStream: throwUnimplemented,
+    testClientStream: throwUnimplemented,
+    testBidiStream: throwUnimplemented,
+  });
+
+  const port = await server.listen('127.0.0.1:0');
+
+  const channel = createChannel(`127.0.0.1:${port}`);
+  const client = createClient(TestService, channel);
+
+  const promise = client.testUnary(new TestRequest().setId('test'));
+
+  // close the channel after the unary call already reached the server
+  await serverRequestStartDeferred.promise;
+  channel.close();
+  expect(channel.getConnectivityState(false)).toBe(connectivityState.SHUTDOWN);
+
+  // closing channel does not affect already in-flight calls
+  await expect(promise).resolves.toMatchInlineSnapshot(`
+    nice_grpc.test.TestResponse {
+      "id": "test",
+    }
+  `);
+  expect(serverSignal!.aborted).toBe(false);
+
+  // however, any new call on a closed channel will fail
+  await expect(
+    client.testUnary(new TestRequest().setId('test')),
+  ).rejects.toMatchInlineSnapshot(`[Error: Channel has been shut down]`);
+
+  await server.shutdown();
+});
+
+test('graceful server shutdown', async () => {
+  const server = createServer();
+
+  let serverSignal: AbortSignal;
+  const serverRequestStartDeferred = defer<void>();
+
+  server.add(TestService, {
+    async testUnary(request: TestRequest, context) {
+      serverSignal = context.signal;
+      serverRequestStartDeferred.resolve();
+
+      await delay(context.signal, 200);
+
+      return new TestResponse().setId(request.getId());
+    },
+    testServerStream: throwUnimplemented,
+    testClientStream: throwUnimplemented,
+    testBidiStream: throwUnimplemented,
+  });
+
+  const port = await server.listen('127.0.0.1:0');
+
+  const channel = createChannel(`127.0.0.1:${port}`);
+  const client = createClient(TestService, channel);
+
+  const promise = client.testUnary(new TestRequest().setId('test'));
+
+  // a graceful server shutdown should not affect already in-flight calls
+  await serverRequestStartDeferred.promise;
+  const shutdownPromise = server.shutdown();
+
+  await expect(promise).resolves.toMatchInlineSnapshot(`
+    nice_grpc.test.TestResponse {
+      "id": "test",
+    }
+  `);
+  await shutdownPromise;
+  expect(serverSignal!.aborted).toBe(false);
+
+  // however, any new call for a closed server will fail
+  await expect(
+    client.testUnary(new TestRequest().setId('test')),
+  ).rejects.toThrow(
+    '/nice_grpc.test.Test/TestUnary UNAVAILABLE: No connection established',
+  );
+
+  await server.shutdown();
+});
+
+test('force server shutdown', async () => {
+  const server = createServer();
+
+  let serverSignal: AbortSignal;
+  const serverRequestStartDeferred = defer<void>();
+
+  server.add(TestService, {
+    async testUnary(request: TestRequest, context) {
+      serverSignal = context.signal;
+      serverRequestStartDeferred.resolve();
+
+      await delay(context.signal, 200);
+
+      return new TestResponse().setId(request.getId());
+    },
+    testServerStream: throwUnimplemented,
+    testClientStream: throwUnimplemented,
+    testBidiStream: throwUnimplemented,
+  });
+
+  const port = await server.listen('127.0.0.1:0');
+
+  const channel = createChannel(`127.0.0.1:${port}`);
+  const client = createClient(TestService, channel);
+
+  const promise = client.testUnary(new TestRequest().setId('test'));
+
+  // a graceful server shutdown should not affect already in-flight calls
+  await serverRequestStartDeferred.promise;
+  server.forceShutdown();
+
+  await expect(promise).rejects.toThrow(
+    `/nice_grpc.test.Test/TestUnary CANCELLED: Call cancelled`,
+  );
+  // on going server methods should get aborted on force shutdown
+  expect(serverSignal!.aborted).toBe(true);
 });
