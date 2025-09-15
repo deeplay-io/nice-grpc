@@ -769,8 +769,6 @@ test('graceful server shutdown', async () => {
   expect(serverGeneratorFinalized).toBe(true);
 
   channel.close();
-
-  await server.shutdown();
 });
 
 test('force server shutdown', async () => {
