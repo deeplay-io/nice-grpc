@@ -1,4 +1,3 @@
-import defer = require('defer-promise');
 import {forever, delay, isAbortError} from 'abort-controller-x';
 import {
   createChannel,
@@ -12,6 +11,7 @@ import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../fixtures/grpc-js/test_pb';
 import {throwUnimplemented} from './utils/throwUnimplemented';
 import {connectivityState} from '@grpc/grpc-js';
+import {defer} from './utils/defer';
 
 test('basic', async () => {
   const server = createServer();
@@ -62,7 +62,7 @@ test('metadata', async () => {
 
       context.sendHeader();
 
-      const response = await responseDeferred.promise;
+      const response = await responseDeferred;
 
       context.trailer.set('test', values);
       context.trailer.set('test-bin', binValues);
@@ -96,13 +96,13 @@ test('metadata', async () => {
     },
   });
 
-  await expect(headerDeferred.promise.then(header => header.getAll('test')))
-    .resolves.toMatchInlineSnapshot(`
+  await expect(headerDeferred.then(header => header.getAll('test'))).resolves
+    .toMatchInlineSnapshot(`
     [
       "test-value-1, test-value-2",
     ]
   `);
-  await expect(headerDeferred.promise.then(header => header.getAll('test-bin')))
+  await expect(headerDeferred.then(header => header.getAll('test-bin')))
     .resolves.toMatchInlineSnapshot(`
     [
       {
@@ -122,15 +122,14 @@ test('metadata', async () => {
 
   responseDeferred.resolve(new TestResponse());
 
-  await expect(trailerDeferred.promise.then(header => header.getAll('test')))
-    .resolves.toMatchInlineSnapshot(`
+  await expect(trailerDeferred.then(header => header.getAll('test'))).resolves
+    .toMatchInlineSnapshot(`
     [
       "test-value-1, test-value-2",
     ]
   `);
-  await expect(
-    trailerDeferred.promise.then(header => header.getAll('test-bin')),
-  ).resolves.toMatchInlineSnapshot(`
+  await expect(trailerDeferred.then(header => header.getAll('test-bin')))
+    .resolves.toMatchInlineSnapshot(`
     [
       {
         "data": [
@@ -277,7 +276,7 @@ test('client cancel', async () => {
     signal: abortController.signal,
   });
 
-  await serverRequestStartDeferred.promise;
+  await serverRequestStartDeferred;
 
   abortController.abort();
 
@@ -285,7 +284,7 @@ test('client cancel', async () => {
     `[AbortError: The operation has been aborted]`,
   );
 
-  await serverAbortDeferred.promise;
+  await serverAbortDeferred;
 
   channel.close();
 
@@ -320,7 +319,7 @@ test('channel close', async () => {
   const promise = client.testUnary(new TestRequest().setId('test'));
 
   // close the channel after the unary call already reached the server
-  await serverRequestStartDeferred.promise;
+  await serverRequestStartDeferred;
   channel.close();
   expect(channel.getConnectivityState(false)).toBe(connectivityState.SHUTDOWN);
 
@@ -368,7 +367,7 @@ test('graceful server shutdown', async () => {
   const promise = client.testUnary(new TestRequest().setId('test'));
 
   // a graceful server shutdown should not affect already in-flight calls
-  await serverRequestStartDeferred.promise;
+  await serverRequestStartDeferred;
   const shutdownPromise = server.shutdown();
 
   await expect(promise).resolves.toMatchInlineSnapshot(`
@@ -417,7 +416,7 @@ test('force server shutdown', async () => {
   const promise = client.testUnary(new TestRequest().setId('test'));
 
   // a graceful server shutdown should not affect already in-flight calls
-  await serverRequestStartDeferred.promise;
+  await serverRequestStartDeferred;
   server.forceShutdown();
 
   await expect(promise).rejects.toThrow(

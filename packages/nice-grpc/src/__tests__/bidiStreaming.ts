@@ -1,4 +1,3 @@
-import defer = require('defer-promise');
 import {forever, isAbortError} from 'abort-controller-x';
 import {
   createChannel,
@@ -11,6 +10,7 @@ import {
 import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../fixtures/grpc-js/test_pb';
 import {throwUnimplemented} from './utils/throwUnimplemented';
+import {defer} from './utils/defer';
 
 test('basic', async () => {
   const server = createServer();
@@ -81,7 +81,7 @@ test('metadata', async () => {
 
       context.sendHeader();
 
-      await responseDeferred.promise;
+      await responseDeferred;
 
       context.trailer.set('test', values);
       context.trailer.set('test-bin', binValues);
@@ -124,13 +124,13 @@ test('metadata', async () => {
     return responses;
   });
 
-  await expect(headerDeferred.promise.then(header => header.getAll('test')))
-    .resolves.toMatchInlineSnapshot(`
+  await expect(headerDeferred.then(header => header.getAll('test'))).resolves
+    .toMatchInlineSnapshot(`
     [
       "test-value-1, test-value-2",
     ]
   `);
-  await expect(headerDeferred.promise.then(header => header.getAll('test-bin')))
+  await expect(headerDeferred.then(header => header.getAll('test-bin')))
     .resolves.toMatchInlineSnapshot(`
     [
       {
@@ -152,15 +152,14 @@ test('metadata', async () => {
 
   await expect(promise).resolves.toMatchInlineSnapshot(`[]`);
 
-  await expect(trailerDeferred.promise.then(header => header.getAll('test')))
-    .resolves.toMatchInlineSnapshot(`
+  await expect(trailerDeferred.then(header => header.getAll('test'))).resolves
+    .toMatchInlineSnapshot(`
     [
       "test-value-1, test-value-2",
     ]
   `);
-  await expect(
-    trailerDeferred.promise.then(header => header.getAll('test-bin')),
-  ).resolves.toMatchInlineSnapshot(`
+  await expect(trailerDeferred.then(header => header.getAll('test-bin')))
+    .resolves.toMatchInlineSnapshot(`
     [
       {
         "data": [
@@ -300,7 +299,7 @@ test('error', async () => {
     ]
   `);
 
-  await requestIterableFinish.promise;
+  await requestIterableFinish;
 
   expect(serverSignal!.aborted).toBe(false);
 
@@ -398,9 +397,9 @@ test('cancel', async () => {
     ]
   `);
 
-  await serverAbortDeferred.promise;
+  await serverAbortDeferred;
 
-  await requestIterableFinish.promise;
+  await requestIterableFinish;
 
   channel.close();
 
@@ -468,7 +467,7 @@ test('early response', async () => {
     ]
   `);
 
-  await requestIterableFinish.promise;
+  await requestIterableFinish;
 
   expect(serverSignal!.aborted).toBe(false);
 
@@ -501,7 +500,7 @@ test('request iterable error', async () => {
   async function* createRequest() {
     yield new TestRequest().setId('test-1');
 
-    await serverRequestStartDeferred.promise;
+    await serverRequestStartDeferred;
 
     throw new Error('test');
   }
