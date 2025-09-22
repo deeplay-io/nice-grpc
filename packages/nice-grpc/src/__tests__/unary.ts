@@ -415,13 +415,12 @@ test('force server shutdown', async () => {
 
   const promise = client.testUnary(new TestRequest().setId('test'));
 
-  // a graceful server shutdown should not affect already in-flight calls
+  // a force server shutdown should abort all in-flight calls
   await serverRequestStartDeferred;
   server.forceShutdown();
 
   await expect(promise).rejects.toThrow(
     `/nice_grpc.test.Test/TestUnary CANCELLED: Call cancelled`,
   );
-  // on going server methods should get aborted on force shutdown
   expect(serverSignal!.aborted).toBe(true);
 });

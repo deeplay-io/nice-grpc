@@ -22,7 +22,6 @@
   "scripts": {
     "clean": "rimraf lib",
     "test": "jest",
-    "debug-test": "node --inspect --expose-gc ../../node_modules/jest/bin/jest.js --runInBand --logHeapUsage --testTimeout=1000000",
     "build": "tsc -P tsconfig.build.json",
     "prepublishOnly": "npm run clean && npm run build && npm test",
     "prepare:proto:grpc-js": "mkdirp ./fixtures/grpc-js && grpc_tools_node_protoc --plugin=protoc-gen-grpc=./node_modules/.bin/grpc_tools_node_protoc_plugin --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./fixtures/grpc-js --ts_out=grpc_js:./fixtures/grpc-js --grpc_out=grpc_js:./fixtures/grpc-js -I fixtures fixtures/*.proto",
