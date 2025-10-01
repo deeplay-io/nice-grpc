@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.16](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-health@2.0.15...nice-grpc-server-health@2.0.16) (2025-10-01)
+
+**Note:** Version bump only for package nice-grpc-server-health
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.0.15](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-server-health@2.0.14...nice-grpc-server-health@2.0.15) (2025-04-26)
 
 ### Bug Fixes
