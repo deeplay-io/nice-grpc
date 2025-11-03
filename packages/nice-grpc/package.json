@@ -33,10 +33,8 @@
   "license": "MIT",
   "devDependencies": {
     "@tsconfig/node14": "^14.1.0",
-    "@types/defer-promise": "^1.0.0",
     "@types/google-protobuf": "^3.7.4",
     "@types/node": "^18.0.0",
-    "defer-promise": "^2.0.1",
     "google-protobuf": "^3.14.0",
     "grpc-tools": "^1.12.4",
     "grpc_tools_node_protoc_ts": "^5.0.1",

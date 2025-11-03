@@ -1,4 +1,3 @@
-import defer = require('defer-promise');
 import {forever, isAbortError} from 'abort-controller-x';
 import {
   createChannel,
@@ -11,6 +10,7 @@ import {
 import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../fixtures/grpc-js/test_pb';
 import {throwUnimplemented} from './utils/throwUnimplemented';
+import {defer} from './utils/defer';
 
 test('basic', async () => {
   const server = createServer();
@@ -77,7 +77,7 @@ test('metadata', async () => {
 
       context.sendHeader();
 
-      const response = await responseDeferred.promise;
+      const response = await responseDeferred;
 
       context.trailer.set('test', values);
       context.trailer.set('test-bin', binValues);
@@ -113,13 +113,13 @@ test('metadata', async () => {
     },
   });
 
-  await expect(headerDeferred.promise.then(header => header.getAll('test')))
-    .resolves.toMatchInlineSnapshot(`
+  await expect(headerDeferred.then(header => header.getAll('test'))).resolves
+    .toMatchInlineSnapshot(`
     [
       "test-value-1, test-value-2",
     ]
   `);
-  await expect(headerDeferred.promise.then(header => header.getAll('test-bin')))
+  await expect(headerDeferred.then(header => header.getAll('test-bin')))
     .resolves.toMatchInlineSnapshot(`
     [
       {
@@ -139,15 +139,14 @@ test('metadata', async () => {
 
   responseDeferred.resolve(new TestResponse());
 
-  await expect(trailerDeferred.promise.then(header => header.getAll('test')))
-    .resolves.toMatchInlineSnapshot(`
+  await expect(trailerDeferred.then(header => header.getAll('test'))).resolves
+    .toMatchInlineSnapshot(`
     [
       "test-value-1, test-value-2",
     ]
   `);
-  await expect(
-    trailerDeferred.promise.then(header => header.getAll('test-bin')),
-  ).resolves.toMatchInlineSnapshot(`
+  await expect(trailerDeferred.then(header => header.getAll('test-bin')))
+    .resolves.toMatchInlineSnapshot(`
     [
       {
         "data": [
@@ -225,10 +224,11 @@ test('implicit header sending', async () => {
   await server.shutdown();
 });
 
-test('error', async () => {
+test('server error', async () => {
   const server = createServer();
 
   let serverSignal: AbortSignal;
+  let serverCallFinalized = false;
 
   server.add(TestService, {
     testUnary: throwUnimplemented,
@@ -237,11 +237,15 @@ test('error', async () => {
       serverSignal = context.signal;
       context.trailer.set('test', ['test-value-1', 'test-value-2']);
 
-      for await (const item of request) {
-        throw new ServerError(Status.NOT_FOUND, item.getId());
-      }
+      try {
+        for await (const item of request) {
+          throw new ServerError(Status.NOT_FOUND, item.getId());
+        }
 
-      return new TestResponse();
+        return new TestResponse();
+      } finally {
+        serverCallFinalized = true;
+      }
     },
     testBidiStream: throwUnimplemented,
   });
@@ -281,9 +285,10 @@ test('error', async () => {
     `[ClientError: /nice_grpc.test.Test/TestClientStream NOT_FOUND: test-0]`,
   );
 
-  await requestIterableFinish.promise;
+  await requestIterableFinish;
 
   expect(serverSignal!.aborted).toBe(false);
+  expect(serverCallFinalized).toBe(true);
 
   expect(trailer?.getAll('test')).toMatchInlineSnapshot(`
     [
@@ -296,12 +301,12 @@ test('error', async () => {
   await server.shutdown();
 });
 
-test('cancel', async () => {
+test('client cancel', async () => {
   const server = createServer();
 
   const serverRequestStartDeferred = defer<void>();
   const serverAbortDeferred = defer<void>();
-
+  let serverCallFinalized = false;
   server.add(TestService, {
     testUnary: throwUnimplemented,
     testServerStream: throwUnimplemented,
@@ -316,6 +321,8 @@ test('cancel', async () => {
         }
 
         throw err;
+      } finally {
+        serverCallFinalized = true;
       }
     },
     testBidiStream: throwUnimplemented,
@@ -350,7 +357,7 @@ test('cancel', async () => {
     signal: abortController.signal,
   });
 
-  await serverRequestStartDeferred.promise;
+  await serverRequestStartDeferred;
 
   abortController.abort();
 
@@ -358,9 +365,10 @@ test('cancel', async () => {
     `[AbortError: The operation has been aborted]`,
   );
 
-  await serverAbortDeferred.promise;
+  await serverAbortDeferred;
+  expect(serverCallFinalized).toBe(true);
 
-  await requestIterableFinish.promise;
+  await requestIterableFinish;
 
   channel.close();
 
@@ -418,7 +426,7 @@ test('early response', async () => {
     }
   `);
 
-  await requestIterableFinish.promise;
+  await requestIterableFinish;
 
   expect(serverSignal!.aborted).toBe(false);
 
@@ -430,16 +438,25 @@ test('early response', async () => {
 test('request iterable error', async () => {
   const server = createServer();
 
+  let serverSignal: AbortSignal;
   const serverRequestStartDeferred = defer<void>();
+  const serverCallFinalized = defer<void>();
 
   server.add(TestService, {
     testUnary: throwUnimplemented,
     testServerStream: throwUnimplemented,
-    async testClientStream(request: AsyncIterable<TestRequest>) {
-      for await (const _ of request) {
-        serverRequestStartDeferred.resolve();
+    async testClientStream(request: AsyncIterable<TestRequest>, context) {
+      serverSignal = context.signal;
+
+      try {
+        for await (const _ of request) {
+          serverRequestStartDeferred.resolve();
+        }
+        await forever(context.signal);
+        return new TestResponse();
+      } finally {
+        serverCallFinalized.resolve();
       }
-      return new TestResponse();
     },
     testBidiStream: throwUnimplemented,
   });
@@ -452,7 +469,7 @@ test('request iterable error', async () => {
   async function* createRequest() {
     yield new TestRequest().setId('test-1');
 
-    await serverRequestStartDeferred.promise;
+    await serverRequestStartDeferred;
 
     throw new Error('test');
   }
@@ -461,7 +478,129 @@ test('request iterable error', async () => {
     client.testClientStream(createRequest()),
   ).rejects.toMatchInlineSnapshot(`[Error: test]`);
 
+  await serverCallFinalized;
+  expect(serverSignal!.aborted).toBe(true);
+
   channel.close();
 
   await server.shutdown();
+});
+
+test('graceful server shutdown', async () => {
+  const server = createServer();
+
+  let serverSignal: AbortSignal;
+  const serverRequestStartDeferred = defer<void>();
+  let serverGeneratorFinalized = false;
+
+  server.add(TestService, {
+    testUnary: throwUnimplemented,
+    testServerStream: throwUnimplemented,
+    async testClientStream(request: AsyncIterable<TestRequest>, context) {
+      serverSignal = context.signal;
+      serverRequestStartDeferred.resolve();
+      const requests: TestRequest[] = [];
+
+      try {
+        for await (const req of request) {
+          requests.push(req);
+        }
+
+        return new TestResponse().setId(
+          requests.map(request => request.getId()).join(' '),
+        );
+      } finally {
+        serverGeneratorFinalized = true;
+      }
+    },
+    testBidiStream: throwUnimplemented,
+  });
+
+  const port = await server.listen('127.0.0.1:0');
+
+  const channel = createChannel(`127.0.0.1:${port}`);
+  const client = createClient(TestService, channel);
+
+  let shutdownPromise: Promise<void> | undefined;
+
+  async function* createRequest() {
+    yield new TestRequest().setId('test-1');
+    await serverRequestStartDeferred;
+    shutdownPromise = server.shutdown();
+    yield new TestRequest().setId('test-2');
+  }
+
+  const res = await client.testClientStream(createRequest());
+
+  expect(res).toMatchInlineSnapshot(`
+    nice_grpc.test.TestResponse {
+      "id": "test-1 test-2",
+    }
+  `);
+  await shutdownPromise;
+  expect(serverSignal!.aborted).toBe(false);
+  expect(serverGeneratorFinalized).toBe(true);
+
+  channel.close();
+});
+
+test('force server shutdown', async () => {
+  const server = createServer();
+
+  let serverSignal: AbortSignal;
+  const serverRequestStartDeferred = defer<void>();
+  let serverGeneratorFinalized = false;
+
+  server.add(TestService, {
+    testUnary: throwUnimplemented,
+    testServerStream: throwUnimplemented,
+    async testClientStream(request: AsyncIterable<TestRequest>, context) {
+      serverSignal = context.signal;
+      serverRequestStartDeferred.resolve();
+      const requests: TestRequest[] = [];
+
+      try {
+        for await (const req of request) {
+          requests.push(req);
+        }
+
+        return new TestResponse().setId(
+          requests.map(request => request.getId()).join(' '),
+        );
+      } finally {
+        serverGeneratorFinalized = true;
+      }
+    },
+    testBidiStream: throwUnimplemented,
+  });
+
+  const port = await server.listen('127.0.0.1:0');
+
+  const channel = createChannel(`127.0.0.1:${port}`);
+  const client = createClient(TestService, channel);
+
+  let clientIteratorFinalized = defer<void>();
+
+  async function* createRequest() {
+    try {
+      yield new TestRequest().setId('test-1');
+      await serverRequestStartDeferred;
+      server.forceShutdown();
+      yield new TestRequest().setId('test-2');
+    } finally {
+      clientIteratorFinalized.resolve();
+    }
+  }
+
+  await expect(
+    client.testClientStream(createRequest()),
+  ).rejects.toMatchInlineSnapshot(
+    `[ClientError: /nice_grpc.test.Test/TestClientStream CANCELLED: Call cancelled]`,
+  );
+
+  await clientIteratorFinalized;
+  expect(serverSignal!.aborted).toBe(true);
+  expect(serverGeneratorFinalized).toBe(true);
+
+  channel.close();
 });
