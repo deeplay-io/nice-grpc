@@ -26,8 +26,10 @@ jobs:
           # - node-version: '14.17'
           #   node-options: --experimental-abortcontroller
           # - node-version: 16.x
-          - node-version: 18.x
+          # - node-version: 18.x
           - node-version: 20.x
+          - node-version: 22.x
+          - node-version: 24.x
 
     steps:
       - uses: actions/checkout@v4
@@ -64,8 +66,10 @@ jobs:
           # Reached end of life:
           # - node-version: 16.x
           #   node-options: --experimental-fetch
-          - node-version: 18.x
+          # - node-version: 18.x
           - node-version: 20.x
+          - node-version: 22.x
+          - node-version: 24.x
 
     steps:
       - uses: actions/checkout@v4
@@ -101,15 +105,15 @@ jobs:
           fetch-depth: 0
       - name: Set up Chrome
         uses: browser-actions/setup-chrome@v1
-      - name: Use Node.js 20.x
+      - name: Use Node.js 24.x
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 24.x
       - name: Restore Cache
         uses: actions/cache@v4
         with:
           path: '**/node_modules'
-          key: modules-${{ runner.os }}-20.x-${{ hashFiles('yarn.lock') }}
+          key: modules-${{ runner.os }}-24.x-${{ hashFiles('yarn.lock') }}
       - run: yarn --frozen-lockfile
       - run: yarn build
       - run: yarn lerna run test:local-browser-headless --scope nice-grpc-web
