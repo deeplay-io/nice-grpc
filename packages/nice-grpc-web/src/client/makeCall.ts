@@ -1,4 +1,8 @@
-import {isAbortError, rethrowAbortError} from 'abort-controller-x';
+import {
+  isAbortError,
+  rethrowAbortError,
+  throwIfAborted,
+} from 'abort-controller-x';
 import {CallOptions, ClientError, Metadata, Status} from 'nice-grpc-common';
 import {MethodDefinition} from '../service-definitions';
 import {Channel} from './channel';
@@ -20,6 +24,8 @@ export async function* makeCall<Request, Response>(
     onHeader,
     onTrailer,
   } = options;
+
+  throwIfAborted(signal);
 
   let receivedTrailersOnly = false;
   let status: Status | undefined;

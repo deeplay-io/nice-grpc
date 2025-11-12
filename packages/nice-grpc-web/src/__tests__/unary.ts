@@ -184,6 +184,31 @@ const environment = detect();
       ]);
     });
 
+    it('aborts immediately when signal is already aborted', async () => {
+      let serverCalled = false;
+
+      const client = await init({
+        async testUnary() {
+          serverCalled = true;
+          return {};
+        },
+      });
+
+      const abortController = new AbortController();
+      abortController.abort();
+
+      let error: unknown;
+
+      try {
+        await client.testUnary({}, {signal: abortController.signal});
+      } catch (err) {
+        error = err;
+      }
+
+      expect(isAbortError(error)).toBe(true);
+      expect(serverCalled).toBe(false);
+    });
+
     it('sends metadata', async () => {
       const client = await init({
         async testUnary(request, context) {
