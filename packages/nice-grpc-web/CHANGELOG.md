@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.9](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.3.8...nice-grpc-web@3.3.9) (2025-11-12)
+
+### Bug Fixes
+
+- **nice-grpc-web:** fix handling early abort of AbortSignal in client calls
+  ([#827](https://github.com/deeplay-io/nice-grpc/issues/827))
+  ([cc9fba7](https://github.com/deeplay-io/nice-grpc/commit/cc9fba7d924c7f2d7be2347a313ac0781c026639))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [3.3.8](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web@3.3.7...nice-grpc-web@3.3.8) (2025-08-20)
 
 **Note:** Version bump only for package nice-grpc-web

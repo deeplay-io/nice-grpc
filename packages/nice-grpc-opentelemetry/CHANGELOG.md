@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.20](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-opentelemetry@0.1.19...nice-grpc-opentelemetry@0.1.20) (2025-11-12)
+
+**Note:** Version bump only for package nice-grpc-opentelemetry
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [0.1.19](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-opentelemetry@0.1.18...nice-grpc-opentelemetry@0.1.19) (2025-10-01)
 
 **Note:** Version bump only for package nice-grpc-opentelemetry
