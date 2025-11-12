@@ -291,6 +291,44 @@ test('client cancel', async () => {
   await server.shutdown();
 });
 
+test('aborts immediately when signal is already aborted', async () => {
+  const server = createServer();
+
+  let serverCalled = false;
+
+  server.add(TestService, {
+    async testUnary() {
+      serverCalled = true;
+      return new TestResponse();
+    },
+    testServerStream: throwUnimplemented,
+    testClientStream: throwUnimplemented,
+    testBidiStream: throwUnimplemented,
+  });
+
+  const port = await server.listen('127.0.0.1:0');
+
+  const channel = createChannel(`127.0.0.1:${port}`);
+  const client = createClient(TestService, channel);
+
+  const abortController = new AbortController();
+  abortController.abort();
+
+  await expect(
+    client.testUnary(new TestRequest(), {
+      signal: abortController.signal,
+    }),
+  ).rejects.toMatchInlineSnapshot(
+    `[AbortError: The operation has been aborted]`,
+  );
+
+  expect(serverCalled).toBe(false);
+
+  channel.close();
+
+  await server.shutdown();
+});
+
 test('channel close', async () => {
   const server = createServer();
 
