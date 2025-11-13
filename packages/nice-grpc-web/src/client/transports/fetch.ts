@@ -6,6 +6,23 @@ import {Transport} from '../Transport';
 export interface FetchTransportConfig {
   credentials?: RequestCredentials;
   cache?: RequestCache;
+  blobMode?: boolean;
+}
+
+/**
+ * Required because React Native (expo) does not support FileReader.arrayBuffer().
+ */
+export function blobReaderAsync(myBlob: Blob): Promise<Uint8Array> {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+    fileReader.onloadend = function () {
+      const dataString = (fileReader.result as string);
+      const base64String = dataString.substring(dataString.indexOf(",")+1);
+      const uint8Data = Base64.toUint8Array(base64String);
+      resolve(uint8Data);
+    }
+    fileReader.readAsDataURL(myBlob);
+  });
 }
 
 /**
@@ -29,6 +46,7 @@ export function FetchTransport(config?: FetchTransportConfig): Transport {
       let iterator: AsyncIterator<Uint8Array> | undefined;
 
       requestBody = new ReadableStream({
+                // @ts-ignore
         type: 'bytes',
         start() {
           iterator = body[Symbol.asyncIterator]();
@@ -76,17 +94,32 @@ export function FetchTransport(config?: FetchTransportConfig): Transport {
 
     throwIfAborted(signal);
 
-    const reader = response.body!.getReader();
+    let reader: ReadableStreamDefaultReader<Uint8Array> | undefined = undefined;
+    let value: Uint8Array | undefined = undefined;
+    let done: boolean = false;
+    let abortListener: any;
+    if (config?.blobMode ?? false) {
+      const dataBlob = await response.blob();
+      value = await blobReaderAsync(dataBlob);
+      done = true;
+    } else {
+      reader = response.body!.getReader();
 
-    const abortListener = () => {
-      reader.cancel().catch(() => {});
-    };
+      abortListener = () => {
+        reader!.cancel().catch(() => {
+        });
+      };
 
-    signal.addEventListener('abort', abortListener);
+      signal.addEventListener('abort', abortListener);
+    }
 
     try {
       while (true) {
-        const {done, value} = await reader.read();
+        if (config?.blobMode ?? false) {
+          const readResult = await reader!.read();
+          value = readResult.value;
+          done = readResult.done;
+        }
 
         if (value != null) {
           yield {
@@ -100,7 +133,9 @@ export function FetchTransport(config?: FetchTransportConfig): Transport {
         }
       }
     } finally {
-      signal.removeEventListener('abort', abortListener);
+      if (config?.blobMode ?? false) {
+        signal.removeEventListener('abort', abortListener);
+      }
 
       throwIfAborted(signal);
     }
@@ -114,7 +149,7 @@ function metadataToHeaders(metadata: Metadata): Headers {
     for (const value of values) {
       headers.append(
         key,
-        typeof value === 'string' ? value : Base64.fromUint8Array(value),
+                typeof value === 'string' ? value : Base64.fromUint8Array(value, true),
       );
     }
   }
@@ -125,6 +160,7 @@ function metadataToHeaders(metadata: Metadata): Headers {
 function headersToMetadata(headers: Headers): Metadata {
   const metadata = new Metadata();
 
+    // @ts-ignore
   for (const [key, value] of headers) {
     if (key.endsWith('-bin')) {
       for (const item of value.split(/,\s?/)) {
@@ -140,6 +176,8 @@ function headersToMetadata(headers: Headers): Metadata {
 
 function getStatusFromHttpCode(statusCode: number): Status {
   switch (statusCode) {
+        case 200:
+            return Status.OK;
     case 400:
       return Status.INTERNAL;
     case 401:
