@@ -24,7 +24,7 @@
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.1",
     "@types/defer-promise": "^1.0.0",
-    "abort-controller-x": "^0.4.0",
+    "abort-controller-x": "^0.5.0",
     "defer-promise": "^2.0.1",
     "grpc-tools": "^1.12.4",
     "nice-grpc": "^2.1.14",

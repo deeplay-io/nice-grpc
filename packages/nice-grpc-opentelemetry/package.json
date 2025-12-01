@@ -41,7 +41,7 @@
   "dependencies": {
     "@opentelemetry/api": "^1.8.0",
     "@opentelemetry/semantic-conventions": "^1.22.0",
-    "abort-controller-x": "^0.4.0",
+    "abort-controller-x": "^0.5.0",
     "ipaddr.js": "^2.0.1",
     "nice-grpc-common": "^2.0.2"
   }
