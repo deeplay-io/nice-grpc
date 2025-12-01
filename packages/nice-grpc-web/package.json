@@ -73,7 +73,7 @@
     "ws": "^8.4.2"
   },
   "dependencies": {
-    "abort-controller-x": "^0.4.0",
+    "abort-controller-x": "^0.5.0",
     "isomorphic-ws": "^5.0.0",
     "js-base64": "^3.7.2",
     "nice-grpc-common": "^2.0.2"
