@@ -1,6 +1,5 @@
 import {spawn} from 'child_process';
 import * as path from 'path';
-import 'jest-os-detection';
 import {createChannel, createClient, createServer} from 'nice-grpc';
 import {TerminatorMiddleware} from 'nice-grpc-server-middleware-terminator';
 import {HealthDefinition, HealthServiceImpl, HealthState} from '.';
@@ -164,7 +163,7 @@ test('watch', async () => {
   await server.shutdown();
 });
 
-test.skipWindows('grpc-health-probe', async () => {
+test.skipIf(process.platform === 'win32')('grpc-health-probe', async () => {
   const server = createServer();
 
   const healthState = HealthState();

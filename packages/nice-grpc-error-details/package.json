@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "clean": "rimraf lib",
-    "test": "jest",
+    "test": "vitest run",
     "build": "tsc -P tsconfig.build.json",
     "prepublishOnly": "npm run clean && npm run build && npm test",
     "build:proto": "grpc_tools_node_protoc --ts_proto_out=./fixtures --ts_proto_opt=outputServices=generic-definitions,useExactTypes=false,outputTypeRegistry=true -I fixtures fixtures/*.proto",

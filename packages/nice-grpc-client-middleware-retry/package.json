@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "clean": "rimraf lib",
-    "test": "jest",
+    "test": "vitest run",
     "build": "tsc -P tsconfig.build.json",
     "prepublishOnly": "npm run clean && npm run build && npm test",
     "build:proto": "grpc_tools_node_protoc --ts_proto_out=./fixtures --ts_proto_opt=outputServices=generic-definitions,useExactTypes=false,esModuleInterop=true -I fixtures fixtures/*.proto",
@@ -24,7 +24,6 @@
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.13",
     "grpc-tools": "^1.13.1",
-    "jest-mock-random": "^1.1.1",
     "nice-grpc": "^2.1.14",
     "ts-proto": "^2.5.1"
   },

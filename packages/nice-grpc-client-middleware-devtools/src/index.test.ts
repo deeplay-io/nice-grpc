@@ -22,12 +22,12 @@ function throwUnimplemented(): never {
   throw new ServerError(Status.UNIMPLEMENTED, '');
 }
 
-let windowSpy: jest.SpyInstance;
-let postMessageMock: jest.Mock;
+let windowSpy: ReturnType<typeof vi.spyOn>;
+let postMessageMock: ReturnType<typeof vi.fn>;
 
 beforeEach(() => {
-  postMessageMock = jest.fn();
-  windowSpy = jest.spyOn(window, 'postMessage');
+  postMessageMock = vi.fn();
+  windowSpy = vi.spyOn(window, 'postMessage');
   windowSpy.mockImplementation(postMessageMock);
 });
 
