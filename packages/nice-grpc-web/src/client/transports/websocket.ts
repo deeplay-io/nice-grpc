@@ -72,9 +72,20 @@ export function WebsocketTransport(): Transport {
       return yield* frames;
     } finally {
       pipeAbortController.abort();
-      webSocket.close();
+      if (
+        webSocket.readyState === WebSocket.OPEN ||
+        webSocket.readyState === WebSocket.CONNECTING
+      ) {
+        webSocket.close();
+      }
     }
   };
+}
+
+function sendIfOpen(webSocket: WebSocket, data: Uint8Array): void {
+  if (webSocket.readyState === WebSocket.OPEN) {
+    webSocket.send(data);
+  }
 }
 
 async function pipeBody(
@@ -87,7 +98,7 @@ async function pipeBody(
     await waitForEvent(signal, webSocket, 'open');
   }
 
-  webSocket.send(encodeMetadata(metadata));
+  sendIfOpen(webSocket, encodeMetadata(metadata));
 
   for await (const chunk of body) {
     throwIfAborted(signal);
@@ -96,10 +107,10 @@ async function pipeBody(
     data.set([0], 0);
     data.set(chunk, 1);
 
-    webSocket.send(data);
+    sendIfOpen(webSocket, data);
   }
 
-  webSocket.send(new Uint8Array([1]));
+  sendIfOpen(webSocket, new Uint8Array([1]));
 }
 
 function encodeMetadata(metadata: Metadata): Uint8Array {
