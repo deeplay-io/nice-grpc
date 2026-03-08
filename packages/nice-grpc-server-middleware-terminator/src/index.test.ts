@@ -119,9 +119,8 @@ test('cancel', async () => {
 
   abortController.abort();
 
-  await expect(promise).rejects.toMatchInlineSnapshot(
-    `[AbortError: The operation has been aborted]`,
-  );
+  const error = await promise.catch(err => err);
+  expect(isAbortError(error)).toBe(true);
 
   await serverAbortDeferred.promise;
 

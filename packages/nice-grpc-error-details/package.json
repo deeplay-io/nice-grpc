@@ -23,8 +23,8 @@
   "author": "Daniel Lytkin <aikoven@deeplay.io>",
   "license": "MIT",
   "devDependencies": {
-    "@tsconfig/recommended": "^1.0.1",
-    "grpc-tools": "^1.12.4",
+    "@tsconfig/recommended": "^1.0.13",
+    "grpc-tools": "^1.13.1",
     "nice-grpc": "^2.1.14",
     "ts-proto": "^2.5.1"
   },

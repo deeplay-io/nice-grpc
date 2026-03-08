@@ -361,9 +361,8 @@ test('client cancel', async () => {
 
   abortController.abort();
 
-  await expect(promise).rejects.toMatchInlineSnapshot(
-    `[AbortError: The operation has been aborted]`,
-  );
+  const error = await promise.catch(err => err);
+  expect(isAbortError(error)).toBe(true);
 
   await serverAbortDeferred;
   expect(serverCallFinalized).toBe(true);

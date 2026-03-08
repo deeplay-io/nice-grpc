@@ -280,9 +280,8 @@ test('client cancel', async () => {
 
   abortController.abort();
 
-  await expect(promise).rejects.toMatchInlineSnapshot(
-    `[AbortError: The operation has been aborted]`,
-  );
+  const error = await promise.catch(err => err);
+  expect(isAbortError(error)).toBe(true);
 
   await serverAbortDeferred;
 
@@ -314,13 +313,12 @@ test('aborts immediately when signal is already aborted', async () => {
   const abortController = new AbortController();
   abortController.abort();
 
-  await expect(
-    client.testUnary(new TestRequest(), {
+  const error2 = await client
+    .testUnary(new TestRequest(), {
       signal: abortController.signal,
-    }),
-  ).rejects.toMatchInlineSnapshot(
-    `[AbortError: The operation has been aborted]`,
-  );
+    })
+    .catch(err => err);
+  expect(isAbortError(error2)).toBe(true);
 
   expect(serverCalled).toBe(false);
 
