@@ -30,10 +30,10 @@
   "license": "MIT",
   "devDependencies": {
     "@opentelemetry/sdk-node": "^0.203.0",
-    "@tsconfig/recommended": "^1.0.1",
+    "@tsconfig/recommended": "^1.0.13",
     "@types/defer-promise": "^1.0.0",
     "defer-promise": "^2.0.1",
-    "grpc-tools": "^1.12.4",
+    "grpc-tools": "^1.13.1",
     "nice-grpc": "^2.1.14",
     "protobufjs": "^7.1.2",
     "ts-proto": "^2.5.1"
@@ -41,7 +41,7 @@
   "dependencies": {
     "@opentelemetry/api": "^1.8.0",
     "@opentelemetry/semantic-conventions": "^1.22.0",
-    "abort-controller-x": "^0.4.0",
+    "abort-controller-x": "^0.5.0",
     "ipaddr.js": "^2.0.1",
     "nice-grpc-common": "^2.0.2"
   }

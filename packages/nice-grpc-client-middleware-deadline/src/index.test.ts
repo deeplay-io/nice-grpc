@@ -1,4 +1,4 @@
-import {forever} from 'abort-controller-x';
+import {forever, isAbortError} from 'abort-controller-x';
 import {
   createChannel,
   createClientFactory,
@@ -135,9 +135,8 @@ test('already aborted', async () => {
     signal: abortController.signal,
   });
 
-  await expect(promise).rejects.toMatchInlineSnapshot(
-    `[AbortError: The operation has been aborted]`,
-  );
+  const error = await promise.catch(err => err);
+  expect(isAbortError(error)).toBe(true);
 
   channel.close();
 

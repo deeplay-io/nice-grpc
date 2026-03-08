@@ -24,15 +24,15 @@
   "author": "Sebastian Halder",
   "license": "MIT",
   "devDependencies": {
-    "@tsconfig/recommended": "^1.0.1",
+    "@tsconfig/recommended": "^1.0.13",
     "@types/google-protobuf": "^3.7.4",
     "google-protobuf": "^3.14.0",
-    "grpc-tools": "^1.12.4",
+    "grpc-tools": "^1.13.1",
     "grpc_tools_node_protoc_ts": "^5.0.1",
     "nice-grpc": "^2.1.14"
   },
   "dependencies": {
-    "abort-controller-x": "^0.4.0",
+    "abort-controller-x": "^0.5.0",
     "nice-grpc-common": "^2.0.2"
   }
 }
