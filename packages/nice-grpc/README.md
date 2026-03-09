@@ -666,10 +666,8 @@ When compiling Protobufs using `ts-proto`:
 
 ```ts
 import {createChannel, createClient} from 'nice-grpc';
-import {
-  ExampleServiceClient,
-  ExampleServiceDefinition,
-} from './compiled_proto/example';
+import {ExampleServiceDefinition} from './compiled_proto/example';
+import type {ExampleServiceClient} from './compiled_proto/example';
 
 const channel = createChannel('localhost:8080');
 
@@ -994,13 +992,14 @@ const client2 = clientFactory.use(middlewareC).create(Service2, channel2);
 In the above example, `Service1` client gets `middlewareA` and `middlewareB`,
 and `Service2` client gets `middlewareA` and `middlewareC`.
 
-Type augmentation to `Client` CallOptions is done automatically by adding a middleware, but can also be done by passing a generic. This code example shows how to correctly annotate client type given that middleware has type `ClientMiddleware<{callOption?: number}>`.
+Type augmentation to `Client` CallOptions is done automatically by adding a
+middleware, but can also be done by passing a generic. This code example shows
+how to correctly annotate client type given that middleware has type
+`ClientMiddleware<{callOption?: number}>`.
 
 ```ts
 let client: ExampleServiceClient<{callOption?: number}>;
-client = createClientFactory()
-  .use(middleware)
-  .create(ExampleService, channel);
+client = createClientFactory().use(middleware).create(ExampleService, channel);
 ```
 
 ##### Example: Logging
