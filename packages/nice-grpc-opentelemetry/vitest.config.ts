@@ -3,8 +3,6 @@ import {defineConfig} from 'vitest/config';
 export default defineConfig({
   test: {
     testTimeout: 15000,
-    pool: 'forks',
-    fileParallelism: false,
     include: ['src/__tests__/**/*.ts'],
     exclude: [
       '**/node_modules/**',

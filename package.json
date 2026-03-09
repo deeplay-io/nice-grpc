@@ -29,7 +29,6 @@
     "mkdirp": "^3.0.1",
     "prettier": "^2.8.8",
     "rimraf": "^6.1.2",
-    "ts-node": "^10.9.1",
     "typescript": "~5.8.3",
     "vitest": "^3.1.1"
   },
