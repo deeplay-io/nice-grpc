@@ -666,10 +666,8 @@ When compiling Protobufs using `ts-proto`:
 
 ```ts
 import {createChannel, createClient} from 'nice-grpc';
-import {
-  ExampleServiceClient,
-  ExampleServiceDefinition,
-} from './compiled_proto/example';
+import {ExampleServiceDefinition} from './compiled_proto/example';
+import type {ExampleServiceClient} from './compiled_proto/example';
 
 const channel = createChannel('localhost:8080');
 
