@@ -792,6 +792,19 @@ createChannel('example.com:8080', ChannelCredentials.createSsl());
 If the port is omitted, it defaults to `80` for insecure connections, and `443`
 for secure connections.
 
+To wait for a channel to be ready before making calls, use
+`waitForChannelReady`. It is not required to call this function before making
+calls — they will connect automatically. This can be useful if you want to
+verify that the server is reachable at startup.
+
+```ts
+import {createChannel, waitForChannelReady} from 'nice-grpc';
+
+const channel = createChannel('localhost:8080');
+
+await waitForChannelReady(channel, new Date(Date.now() + 5000));
+```
+
 #### Metadata
 
 Client can send request metadata and receive response header and trailer:
