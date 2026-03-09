@@ -8,14 +8,12 @@ import {
 import {retryMiddleware} from '.';
 import {TestDefinition} from '../fixtures/test';
 
-const originalMathRandom = Math.random;
-
 beforeEach(() => {
-  Math.random = () => 0.5;
+  vi.spyOn(Math, 'random').mockReturnValue(0.5);
 });
 
 afterEach(() => {
-  Math.random = originalMathRandom;
+  vi.restoreAllMocks();
 });
 
 test('basic', async () => {
