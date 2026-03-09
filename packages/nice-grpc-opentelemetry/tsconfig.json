@@ -6,8 +6,7 @@
     "sourceMap": true,
     "declaration": true,
     "stripInternal": true,
-    "esModuleInterop": false,
-    "types": ["node", "vitest/globals"]
+    "esModuleInterop": false
   },
   "include": ["src"]
 }

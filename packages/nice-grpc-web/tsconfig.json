@@ -10,7 +10,6 @@
     "allowJs": true
   },
   "include": [
-    "global.d.ts",
     "src/**/*.ts",
     "src/**/__tests__/**/*.ts",
     "src/**/*.test.ts",

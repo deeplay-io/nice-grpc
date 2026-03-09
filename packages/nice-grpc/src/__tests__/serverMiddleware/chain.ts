@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest';
 import {createChannel, createClient, createServer} from '../..';
 import {TestService} from '../../../fixtures/grpc-js/test_grpc_pb';
 import {TestRequest, TestResponse} from '../../../fixtures/grpc-js/test_pb';

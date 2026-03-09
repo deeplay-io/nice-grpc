@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest';
 import {randomBytes} from 'crypto';
 import {
   createChannel,

@@ -5,8 +5,7 @@
     "sourceMap": true,
     "declaration": true,
     "stripInternal": true,
-    "esModuleInterop": false,
-    "types": ["node", "vitest/globals"]
+    "esModuleInterop": false
   },
   "files": ["src/index.ts"],
   "include": ["src/**/__tests__/**/*.ts", "src/**/*.test.ts"]

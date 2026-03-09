@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest';
 import {ClientMiddleware, ServerMiddleware} from 'nice-grpc-common';
 import {createChannel, createClient, createServer} from '..';
 import {

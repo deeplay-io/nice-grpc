@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest';
 import {spawn} from 'child_process';
 import * as path from 'path';
 import {createChannel, createClient, createServer} from 'nice-grpc';

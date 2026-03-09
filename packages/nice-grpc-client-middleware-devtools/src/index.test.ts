@@ -1,3 +1,4 @@
+import {describe, test, expect, beforeEach, afterEach, vi} from 'vitest';
 import defer = require('defer-promise');
 import {forever} from 'abort-controller-x';
 import {

@@ -5,8 +5,7 @@
     "outDir": "lib",
     "sourceMap": true,
     "declaration": true,
-    "stripInternal": true,
-    "types": ["node", "vitest/globals"]
+    "stripInternal": true
   },
   "files": ["src/index.ts"],
   "include": ["src/**/__tests__/**/*.ts", "src/**/*.test.ts"]

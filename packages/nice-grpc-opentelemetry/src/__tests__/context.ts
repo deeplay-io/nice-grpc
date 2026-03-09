@@ -1,3 +1,4 @@
+import {test, expect, beforeAll, afterAll, afterEach} from 'vitest';
 import {context, SpanKind, trace} from '@opentelemetry/api';
 import {NodeSDK, tracing} from '@opentelemetry/sdk-node';
 import {createChannel, createClientFactory, createServer} from 'nice-grpc';

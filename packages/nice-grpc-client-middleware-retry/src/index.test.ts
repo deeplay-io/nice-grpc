@@ -1,3 +1,4 @@
+import {test, expect, beforeEach, afterEach, vi} from 'vitest';
 import {
   createChannel,
   createClientFactory,

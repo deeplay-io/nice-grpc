@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest';
 import {forever, isAbortError} from 'abort-controller-x';
 import defer from 'defer-promise';
 import {createChannel, createClient, createServer} from 'nice-grpc';
