@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest';
 import {forever, delay, isAbortError} from 'abort-controller-x';
 import {
   createChannel,

@@ -1,4 +1,4 @@
-import {mockRandom, resetMockRandom} from 'jest-mock-random';
+import {test, expect, beforeEach, afterEach, vi} from 'vitest';
 import {
   createChannel,
   createClientFactory,
@@ -10,17 +10,17 @@ import {retryMiddleware} from '.';
 import {TestDefinition} from '../fixtures/test';
 
 beforeEach(() => {
-  mockRandom(0.5);
+  vi.spyOn(Math, 'random').mockReturnValue(0.5);
 });
 
 afterEach(() => {
-  resetMockRandom();
+  vi.restoreAllMocks();
 });
 
 test('basic', async () => {
   const server = createServer();
 
-  const testMethodMock = jest.fn(() => {
+  const testMethodMock = vi.fn(() => {
     throw new ServerError(Status.UNAVAILABLE, 'Unavailable');
   });
 
@@ -38,7 +38,7 @@ test('basic', async () => {
     .use(retryMiddleware)
     .create(TestDefinition, channel);
 
-  const onRetryableErrorMock = jest.fn();
+  const onRetryableErrorMock = vi.fn();
 
   await expect(
     client.test(
@@ -60,7 +60,7 @@ test('basic', async () => {
 test('retries enabled', async () => {
   const server = createServer();
 
-  const testMethodMock = jest.fn(() => {
+  const testMethodMock = vi.fn(() => {
     throw new ServerError(Status.UNAVAILABLE, 'Unavailable');
   });
 
@@ -78,7 +78,7 @@ test('retries enabled', async () => {
     .use(retryMiddleware)
     .create(TestDefinition, channel);
 
-  const onRetryableErrorMock = jest.fn();
+  const onRetryableErrorMock = vi.fn();
 
   await expect(
     client.test(
@@ -109,7 +109,7 @@ test('retries enabled', async () => {
 test('idempotent', async () => {
   const server = createServer();
 
-  const testMethodMock = jest.fn(() => {
+  const testMethodMock = vi.fn(() => {
     throw new ServerError(Status.UNAVAILABLE, 'Unavailable');
   });
 
@@ -127,7 +127,7 @@ test('idempotent', async () => {
     .use(retryMiddleware)
     .create(TestDefinition, channel);
 
-  const onRetryableErrorMock = jest.fn();
+  const onRetryableErrorMock = vi.fn();
 
   await expect(
     client.testIdempotent(

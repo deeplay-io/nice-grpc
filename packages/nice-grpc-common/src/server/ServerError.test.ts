@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest';
 import ExtendableError from 'ts-error';
 import {Status} from '../Status';
 import {ServerError} from './ServerError';

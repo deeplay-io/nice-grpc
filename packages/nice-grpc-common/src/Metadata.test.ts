@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest';
 import {Metadata} from './Metadata';
 
 test('init', () => {
@@ -135,25 +136,25 @@ test('init', () => {
   expect(() => {
     Metadata(new Map().set('key-1-bin', 'value-1'));
   }).toThrowErrorMatchingInlineSnapshot(
-    `"Metadata key 'key-1-bin' ends with '-bin', thus it must have binary value"`,
+    `[Error: Metadata key 'key-1-bin' ends with '-bin', thus it must have binary value]`,
   );
 
   expect(() => {
     Metadata({'key-1-bin': 'value-1'});
   }).toThrowErrorMatchingInlineSnapshot(
-    `"Metadata key 'key-1-bin' ends with '-bin', thus it must have binary value"`,
+    `[Error: Metadata key 'key-1-bin' ends with '-bin', thus it must have binary value]`,
   );
 
   expect(() => {
     Metadata(new Map().set('key-1', new Uint8Array()));
   }).toThrowErrorMatchingInlineSnapshot(
-    `"Metadata key 'key-1' doesn't end with '-bin', thus it must have string value"`,
+    `[Error: Metadata key 'key-1' doesn't end with '-bin', thus it must have string value]`,
   );
 
   expect(() => {
     Metadata({'key-1': new Uint8Array()});
   }).toThrowErrorMatchingInlineSnapshot(
-    `"Metadata key 'key-1' doesn't end with '-bin', thus it must have string value"`,
+    `[Error: Metadata key 'key-1' doesn't end with '-bin', thus it must have string value]`,
   );
 });
 
@@ -364,7 +365,7 @@ test('invalid key', () => {
   const metadata = Metadata();
 
   expect(() => metadata.set('лол', 'value')).toThrowErrorMatchingInlineSnapshot(
-    `"Metadata key 'лол' contains illegal characters"`,
+    `[Error: Metadata key 'лол' contains illegal characters]`,
   );
 });
 
@@ -372,6 +373,6 @@ test('invalid value', () => {
   const metadata = Metadata();
 
   expect(() => metadata.set('key', 'лол')).toThrowErrorMatchingInlineSnapshot(
-    `"Metadata value 'лол' of key 'key' contains illegal characters"`,
+    `[Error: Metadata value 'лол' of key 'key' contains illegal characters]`,
   );
 });

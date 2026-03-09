@@ -1,3 +1,4 @@
+import {test, expect, beforeEach} from 'vitest';
 import {
   createChannel,
   createClientFactory,

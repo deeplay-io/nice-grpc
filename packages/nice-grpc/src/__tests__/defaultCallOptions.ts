@@ -1,3 +1,4 @@
+import {test, expect, beforeEach, afterEach} from 'vitest';
 import {Channel} from '@grpc/grpc-js';
 import {createChannel, createClient, createServer, Metadata, Server} from '..';
 import {TestService} from '../../fixtures/grpc-js/test_grpc_pb';

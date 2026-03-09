@@ -1,3 +1,4 @@
+import {test, expect} from 'vitest';
 import {delay, forever, isAbortError} from 'abort-controller-x';
 import {
   Metadata,
