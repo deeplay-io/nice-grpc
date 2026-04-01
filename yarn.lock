@@ -1792,9 +1792,9 @@
     "@opentelemetry/sdk-trace-base" "2.0.1"
 
 "@opentelemetry/semantic-conventions@^1.22.0", "@opentelemetry/semantic-conventions@^1.29.0":
-  version "1.36.0"
-  resolved "https://registry.yarnpkg.com/@opentelemetry/semantic-conventions/-/semantic-conventions-1.36.0.tgz#149449bd4df4d0464220915ad4164121e0d75d4d"
-  integrity sha512-TtxJSRD8Ohxp6bKkhrm27JRHAxPczQA7idtcTOMYI+wQRRrfgqxHv1cFbCApcSnNjtXkmzFozn6jQtFrOmbjPQ==
+  version "1.40.0"
+  resolved "https://registry.yarnpkg.com/@opentelemetry/semantic-conventions/-/semantic-conventions-1.40.0.tgz#10b2944ca559386590683392022a897eefd011d3"
+  integrity sha512-cifvXDhcqMwwTlTK04GBNeIe7yyo28Mfby85QXFe1Yk8nmi36Ab/5UQwptOx84SsoGNRg+EVSjwzfSZMy6pmlw==
 
 "@originjs/vite-plugin-commonjs@^1.0.3":
   version "1.0.3"
