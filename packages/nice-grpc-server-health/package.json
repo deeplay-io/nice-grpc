@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-server-health",
-  "version": "2.0.17",
+  "version": "2.0.18",
   "description": "gRPC health checking protocol implementation for nice-grpc",
   "repository": "deeplay-io/nice-grpc",
   "main": "lib/index.js",
@@ -26,14 +26,14 @@
     "@tsconfig/node14": "^14.1.0",
     "@types/node": "^18.0.0",
     "grpc-tools": "^1.13.1",
-    "nice-grpc-server-middleware-terminator": "^2.0.16",
+    "nice-grpc-server-middleware-terminator": "^2.0.17",
     "request": "^2.88.2",
     "ts-proto": "^2.5.1"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.2.5",
     "abort-controller-x": "^0.5.0",
-    "nice-grpc": "^2.1.14",
+    "nice-grpc": "^2.1.15",
     "protobufjs": "^8.0.0",
     "typed-emitter": "^2.0.0"
   }
