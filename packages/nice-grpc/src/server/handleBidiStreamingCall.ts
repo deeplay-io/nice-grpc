@@ -59,7 +59,10 @@ export function createBidiStreamingMethodHandler<Request, Response>(
 
     Promise.resolve()
       .then(async () => {
-        const iterable = handler(readableToAsyncIterable(call), context);
+        const iterable = handler(
+          readableToAsyncIterable(call, context.signal),
+          context,
+        );
         const iterator = iterable[Symbol.asyncIterator]();
 
         try {

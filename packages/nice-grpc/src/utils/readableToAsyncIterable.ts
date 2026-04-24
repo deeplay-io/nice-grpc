@@ -1,3 +1,4 @@
+import {AbortError} from 'abort-controller-x';
 import {ObjectReadable} from '@grpc/grpc-js/build/src/object-stream';
 
 type NodeInternalReadableState = {
@@ -42,6 +43,7 @@ function nodejsInternalsAccessible(obj: any): obj is NodeInternalReadableState {
  */
 export async function* readableToAsyncIterable<T>(
   stream: ObjectReadable<T>,
+  signal?: AbortSignal,
 ): AsyncIterable<T> {
   let callback = nop;
 
@@ -85,6 +87,11 @@ export async function* readableToAsyncIterable<T>(
     if (chunk !== null) {
       yield chunk;
     } else if (errorEmitted) {
+      if (signal?.aborted) {
+        const abortError = new AbortError();
+        (abortError as any).cause = error;
+        throw abortError;
+      }
       throw error;
     } else if (endEmitted) {
       break;
