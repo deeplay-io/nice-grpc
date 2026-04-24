@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.16](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.15...nice-grpc@2.1.16) (2026-04-24)
+
+### Bug Fixes
+
+- **nice-grpc:** throw AbortError on cancelled client request stream
+  ([#872](https://github.com/deeplay-io/nice-grpc/issues/872))
+  ([c3c3d5c](https://github.com/deeplay-io/nice-grpc/commit/c3c3d5cbf1f3de2740837974b1e558e9110b8105))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.1.15](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.14...nice-grpc@2.1.15) (2026-04-12)
 
 **Note:** Version bump only for package nice-grpc
