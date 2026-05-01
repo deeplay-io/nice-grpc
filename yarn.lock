@@ -2945,14 +2945,14 @@
     diff "^7.0.0"
     object-inspect "^1.12.0"
 
-"@wdio/reporter@9.27.0":
-  version "9.27.0"
-  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-9.27.0.tgz#781d0a15290f2c24783fc63c1d65014fb5966de8"
-  integrity sha512-JsazSrpdKrUEz0RkZcNzHHO9EaoJsWnjzi8Lk3hyI3e2T0M0d/EZTaYwLU+zZXr9VRJBulv8DhRfmBx+gbY2jw==
+"@wdio/reporter@9.27.1":
+  version "9.27.1"
+  resolved "https://registry.yarnpkg.com/@wdio/reporter/-/reporter-9.27.1.tgz#4d7f7a3a42e6c9cf56c4b2522cbdb93e02cbc057"
+  integrity sha512-2ueVjd5hOCclfC+GV3yhaN/4Tids1mXMcpPtNTPushHIQY4gLmBqqKDe5RSXAED3bNU+DRdHq2uBiZTBd4QDJg==
   dependencies:
     "@types/node" "^20.1.0"
     "@wdio/logger" "9.18.0"
-    "@wdio/types" "9.27.0"
+    "@wdio/types" "9.27.1"
     diff "^8.0.2"
     object-inspect "^1.12.0"
 
@@ -2974,12 +2974,12 @@
     webdriverio "8.39.1"
 
 "@wdio/spec-reporter@^9.0.7":
-  version "9.27.0"
-  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-9.27.0.tgz#6e7f8742640047600354ceb6c43396731dc4c370"
-  integrity sha512-pSrSfflFGthCc14B/4VZqthrz6T5/N+PDqpIOf+bfwJwtPgVlzZoLzbkKYDmCYHGDlDFt1QrZS9WQ5Qw2Qz/Ow==
+  version "9.27.1"
+  resolved "https://registry.yarnpkg.com/@wdio/spec-reporter/-/spec-reporter-9.27.1.tgz#01c643157a4c021024670c5e409984fd17984260"
+  integrity sha512-q9UMJJbCcP+nCOojIvOIcsXnerhHICmWu94guRMRYPbW2IsG/5VM/uhzwru8SU/1WRXLtKgTjkuXXsjzjVpf2w==
   dependencies:
-    "@wdio/reporter" "9.27.0"
-    "@wdio/types" "9.27.0"
+    "@wdio/reporter" "9.27.1"
+    "@wdio/types" "9.27.1"
     chalk "^5.1.2"
     easy-table "^1.2.0"
     pretty-ms "^9.0.0"
@@ -3019,10 +3019,10 @@
   dependencies:
     "@types/node" "^20.1.0"
 
-"@wdio/types@9.27.0":
-  version "9.27.0"
-  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-9.27.0.tgz#9bc5efc962c193ea388aa5afb4971a667d527c56"
-  integrity sha512-DQJ+OdRBqUBcQ30DN2Z651hEVh3OoxnlDUSRqlWy9An2AY6v9rYWTj825B6zsj5pLLEToYO1tfwWq0ab183pXg==
+"@wdio/types@9.27.1":
+  version "9.27.1"
+  resolved "https://registry.yarnpkg.com/@wdio/types/-/types-9.27.1.tgz#099ac76e58bff86ce58230ca8269898d2361479a"
+  integrity sha512-EHBNCvLmvpYerln4mb/OBxzKtnavL2wdenjhwuYjzkZMOWHgm/uLXH6sLThM0y6DIbCU72Asth16fo1eDcsofA==
   dependencies:
     "@types/node" "^20.1.0"
 
