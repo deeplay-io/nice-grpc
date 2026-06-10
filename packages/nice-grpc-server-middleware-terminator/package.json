@@ -2,7 +2,15 @@
   "name": "nice-grpc-server-middleware-terminator",
   "version": "2.0.18",
   "description": "Server middleware for nice-grpc to terminate long-running calls on shutdown",
-  "repository": "deeplay-io/nice-grpc",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deeplay-io/nice-grpc.git",
+    "directory": "packages/nice-grpc-server-middleware-terminator"
+  },
+  "homepage": "https://github.com/deeplay-io/nice-grpc/tree/master/packages/nice-grpc-server-middleware-terminator#readme",
+  "bugs": {
+    "url": "https://github.com/deeplay-io/nice-grpc/issues"
+  },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [

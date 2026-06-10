@@ -11,7 +11,15 @@
     "abort-signal",
     "typescript"
   ],
-  "repository": "deeplay-io/nice-grpc",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deeplay-io/nice-grpc.git",
+    "directory": "packages/nice-grpc-web"
+  },
+  "homepage": "https://github.com/deeplay-io/nice-grpc/tree/master/packages/nice-grpc-web#readme",
+  "bugs": {
+    "url": "https://github.com/deeplay-io/nice-grpc/issues"
+  },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [

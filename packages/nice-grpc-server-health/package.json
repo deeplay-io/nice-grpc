@@ -2,7 +2,15 @@
   "name": "nice-grpc-server-health",
   "version": "2.0.19",
   "description": "gRPC health checking protocol implementation for nice-grpc",
-  "repository": "deeplay-io/nice-grpc",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deeplay-io/nice-grpc.git",
+    "directory": "packages/nice-grpc-server-health"
+  },
+  "homepage": "https://github.com/deeplay-io/nice-grpc/tree/master/packages/nice-grpc-server-health#readme",
+  "bugs": {
+    "url": "https://github.com/deeplay-io/nice-grpc/issues"
+  },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [

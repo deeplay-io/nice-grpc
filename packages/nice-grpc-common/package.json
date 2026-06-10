@@ -2,7 +2,15 @@
   "name": "nice-grpc-common",
   "version": "2.0.3",
   "description": "Common stuff for nice-grpc and nice-grpc-web",
-  "repository": "deeplay-io/nice-grpc",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deeplay-io/nice-grpc.git",
+    "directory": "packages/nice-grpc-common"
+  },
+  "homepage": "https://github.com/deeplay-io/nice-grpc/tree/master/packages/nice-grpc-common#readme",
+  "bugs": {
+    "url": "https://github.com/deeplay-io/nice-grpc/issues"
+  },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [

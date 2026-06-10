@@ -2,7 +2,15 @@
   "name": "nice-grpc-error-details",
   "version": "0.2.14",
   "description": "gRPC rich error model implementation for nice-grpc",
-  "repository": "deeplay-io/nice-grpc",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deeplay-io/nice-grpc.git",
+    "directory": "packages/nice-grpc-error-details"
+  },
+  "homepage": "https://github.com/deeplay-io/nice-grpc/tree/master/packages/nice-grpc-error-details#readme",
+  "bugs": {
+    "url": "https://github.com/deeplay-io/nice-grpc/issues"
+  },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
