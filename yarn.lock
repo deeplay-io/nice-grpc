@@ -2311,9 +2311,9 @@
   integrity sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==
 
 "@tsconfig/node14@^14.1.0":
-  version "14.1.5"
-  resolved "https://registry.yarnpkg.com/@tsconfig/node14/-/node14-14.1.5.tgz#606ca7630601b819c114ccd5fd8769f2aa74ff46"
-  integrity sha512-hsldDMdbjF18BgvqFX6rHwqb0wlDh4lxyXmo3VATa7LwL4AFrHijv8Or9ySXBSg9TyysRkldJyAC/kplyF/Mmg==
+  version "14.1.8"
+  resolved "https://registry.yarnpkg.com/@tsconfig/node14/-/node14-14.1.8.tgz#e45082f8acbcd357ce3bce67faa4ac102474f9a0"
+  integrity sha512-SjGT+qPvh8Uhc849yNMD0ZIPr69AyB7Z46nMqhrI3gCVocd6mhI0jP4YE4onO/ufpmengRfTxNMpdpKEp2xRIg==
 
 "@tsconfig/recommended@^1.0.13":
   version "1.0.13"
