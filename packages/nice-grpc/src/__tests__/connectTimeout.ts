@@ -15,7 +15,7 @@ const connectTimeoutMs = 3000;
 const waitMs = 10_000;
 
 const channelOptions: ChannelOptions = {
-  'grpc-node.connect_timeout_ms': connectTimeoutMs,
+  'grpc.min_reconnect_backoff_ms': connectTimeoutMs,
   // Keep backoff short, so that a retry, if any, happens within the test.
   'grpc.initial_reconnect_backoff_ms': 100,
   'grpc.max_reconnect_backoff_ms': 100,
@@ -179,6 +179,58 @@ test('call over a silent path fails instead of hanging', async () => {
 });
 
 /**
+ * The timeout must be configurable, and disabled when set to `0` — otherwise
+ * there is no way back to the unpatched behavior.
+ */
+test('connection attempt timeout is configurable', async () => {
+  const server = await startSilentServer();
+
+  const disabled = createChannel(`127.0.0.1:${server.port}`, undefined, {
+    ...channelOptions,
+    'grpc.min_reconnect_backoff_ms': 0,
+  });
+
+  try {
+    disabled.getConnectivityState(true);
+
+    // With the timeout disabled, the channel is expected to stay in CONNECTING,
+    // i.e. behave as unpatched grpc-js does.
+    expect(await watchStateChange(disabled, connectivityState.IDLE, 1000)).toBe(
+      true,
+    );
+    expect(
+      await watchStateChange(
+        disabled,
+        connectivityState.CONNECTING,
+        connectTimeoutMs * 2,
+      ),
+    ).toBe(false);
+  } finally {
+    disabled.close();
+  }
+
+  // A custom value is honored: the attempt fails well before the 20s default.
+  const custom = createChannel(`127.0.0.1:${server.port}`, undefined, {
+    ...channelOptions,
+    'grpc.min_reconnect_backoff_ms': 1000,
+  });
+
+  try {
+    custom.getConnectivityState(true);
+
+    expect(await watchStateChange(custom, connectivityState.IDLE, 1000)).toBe(
+      true,
+    );
+    expect(
+      await watchStateChange(custom, connectivityState.CONNECTING, 5000),
+    ).toBe(true);
+  } finally {
+    custom.close();
+    await server.close();
+  }
+});
+
+/**
  * A timed out connection attempt must be torn down. Otherwise every retry
  * leaves behind an established socket that the client will never use, and a
  * channel reconnecting in a loop leaks a socket per attempt.
@@ -188,7 +240,7 @@ test('timed out connection attempts do not leak sockets', async () => {
 
   const channel = createChannel(`127.0.0.1:${server.port}`, undefined, {
     ...channelOptions,
-    'grpc-node.connect_timeout_ms': 500,
+    'grpc.min_reconnect_backoff_ms': 500,
   });
 
   try {

@@ -816,13 +816,20 @@ such a timeout, a network path that accepts TCP connections but never responds
 leaves the channel stuck in `CONNECTING` forever, and calls made without a
 deadline hang indefinitely.
 
-The timeout can be changed, or disabled by setting it to `0`:
+The timeout can be changed via the `grpc.min_reconnect_backoff_ms` channel
+option, or disabled by setting it to `0`:
 
 ```ts
 createChannel('example.com:8080', undefined, {
-  'grpc-node.connect_timeout_ms': 10_000,
+  'grpc.min_reconnect_backoff_ms': 10_000,
 });
 ```
+
+Despite its name, this is the channel argument that other gRPC implementations
+use for `MIN_CONNECT_TIMEOUT`: C-core parses
+[`GRPC_ARG_MIN_RECONNECT_BACKOFF_MS`](https://github.com/grpc/grpc/blob/master/include/grpc/impl/channel_arg_names.h)
+into the deadline it gives a connection attempt, and grpc-go has the equivalent
+`minConnectTimeout`. grpc-js itself does not read this option.
 
 #### Metadata
 

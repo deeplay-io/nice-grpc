@@ -13,8 +13,17 @@ const defaultConnectTimeoutMs = 20_000;
 /**
  * Channel option that overrides the connection attempt timeout, in
  * milliseconds. Set to `0` to disable the timeout.
+ *
+ * This is the channel argument that other gRPC implementations use for
+ * `MIN_CONNECT_TIMEOUT`, despite what its name suggests. C-core documents
+ * `GRPC_ARG_MIN_RECONNECT_BACKOFF_MS` as "the minimum time between subsequent
+ * connection attempts" referring to `MIN_CONNECT_TIMEOUT`, and parses it into
+ * the deadline it gives a connection attempt; the Objective-C wrapper maps its
+ * `connectMinTimeout` option onto it; grpc-go has the equivalent
+ * `MinConnectTimeout` in `ConnectParams`. grpc-js accepts the option but never
+ * reads it.
  */
-const connectTimeoutOption = 'grpc-node.connect_timeout_ms';
+const connectTimeoutOption = 'grpc.min_reconnect_backoff_ms';
 
 type ConnectorPrototype = {
   connect(
