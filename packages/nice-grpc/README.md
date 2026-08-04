@@ -805,6 +805,32 @@ const channel = createChannel('localhost:8080');
 await waitForChannelReady(channel, new Date(Date.now() + 5000));
 ```
 
+##### Connection attempt timeout
+
+A connection attempt that gets no response is aborted after 20 seconds, matching
+`MIN_CONNECT_TIMEOUT` from the
+[gRPC connection backoff spec](https://github.com/grpc/grpc/blob/master/doc/connection-backoff.md),
+after which the channel retries it with backoff. This works around
+[grpc/grpc-node#2785](https://github.com/grpc/grpc-node/issues/2785): without
+such a timeout, a network path that accepts TCP connections but never responds
+leaves the channel stuck in `CONNECTING` forever, and calls made without a
+deadline hang indefinitely.
+
+The timeout can be changed via the `grpc.min_reconnect_backoff_ms` channel
+option, or disabled by setting it to `0`:
+
+```ts
+createChannel('example.com:8080', undefined, {
+  'grpc.min_reconnect_backoff_ms': 10_000,
+});
+```
+
+Despite its name, this is the channel argument that other gRPC implementations
+use for `MIN_CONNECT_TIMEOUT`: C-core parses
+[`GRPC_ARG_MIN_RECONNECT_BACKOFF_MS`](https://github.com/grpc/grpc/blob/master/include/grpc/impl/channel_arg_names.h)
+into the deadline it gives a connection attempt, and grpc-go has the equivalent
+`minConnectTimeout`. grpc-js itself does not read this option.
+
 #### Metadata
 
 Client can send request metadata and receive response header and trailer:
