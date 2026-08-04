@@ -4,7 +4,8 @@ import type {ChannelOptions} from '@grpc/grpc-js';
 /**
  * Default connection attempt timeout, in milliseconds.
  *
- * Matches `MIN_CONNECT_TIMEOUT` from the gRPC connection backoff spec:
+ * Matches the value of `MIN_CONNECT_TIMEOUT` — the shortest deadline a
+ * connection attempt may be given — from the gRPC connection backoff spec:
  * https://github.com/grpc/grpc/blob/master/doc/connection-backoff.md
  */
 const defaultConnectTimeoutMs = 20_000;
@@ -39,10 +40,10 @@ const pendingSockets = new WeakMap<object, Set<Socket>>();
  * without a deadline hang indefinitely, and keepalive does not help because it
  * only applies to an established transport.
  *
- * The gRPC spec requires a connection attempt to be given at most
- * `MIN_CONNECT_TIMEOUT` (20 seconds), after which it fails and backoff retries
- * it. This patch adds that timeout, covering the whole attempt: TCP connect,
- * TLS handshake and waiting for SETTINGS.
+ * The gRPC spec has connection attempts bounded by a deadline, of at least
+ * `MIN_CONNECT_TIMEOUT` (20 seconds), after which the attempt fails and backoff
+ * retries it. This patch adds such a deadline, covering the whole attempt: TCP
+ * connect, TLS handshake and waiting for SETTINGS.
  *
  * Reported upstream: https://github.com/grpc/grpc-node/issues/2785
  *

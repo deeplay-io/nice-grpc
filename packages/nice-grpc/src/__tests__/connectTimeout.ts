@@ -86,9 +86,9 @@ function watchStateChange(
  * A connection attempt that completes at the TCP level but never receives the
  * server's HTTP/2 SETTINGS frame must not hang forever.
  *
- * The gRPC connection backoff spec requires a connection attempt to be given at
- * most `MIN_CONNECT_TIMEOUT` (20 seconds), after which it fails and the
- * subchannel goes to TRANSIENT_FAILURE, from where backoff retries it:
+ * The gRPC connection backoff spec bounds a connection attempt by a deadline, of
+ * at least `MIN_CONNECT_TIMEOUT` (20 seconds), after which the attempt fails and
+ * the subchannel goes to TRANSIENT_FAILURE, from where backoff retries it:
  * https://github.com/grpc/grpc/blob/master/doc/connection-backoff.md
  *
  * grpc-js has no such timeout: `Http2SubchannelConnector.createSession` awaits

@@ -39,6 +39,10 @@ test('does nothing when grpc-js internals are missing', () => {
   try {
     expect(applyConnectTimeoutPatch()).toBe(false);
   } finally {
-    require.cache[path] = original;
+    if (original == null) {
+      delete require.cache[path];
+    } else {
+      require.cache[path] = original;
+    }
   }
 });
