@@ -2,7 +2,15 @@
   "name": "nice-grpc-client-middleware-devtools",
   "version": "1.0.11",
   "description": "Client middleware for nice-grpc to work with grpc-web-devtools https://github.com/SafetyCulture/grpc-web-devtools",
-  "repository": "deeplay-io/nice-grpc",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/deeplay-io/nice-grpc.git",
+    "directory": "packages/nice-grpc-client-middleware-devtools"
+  },
+  "homepage": "https://github.com/deeplay-io/nice-grpc/tree/master/packages/nice-grpc-client-middleware-devtools#readme",
+  "bugs": {
+    "url": "https://github.com/deeplay-io/nice-grpc/issues"
+  },
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
