@@ -1,3 +1,10 @@
+import {applyConnectTimeoutPatch} from './client/connectTimeoutPatch';
+
+// Works around the missing connection attempt timeout in grpc-js, which
+// otherwise leaves channels stuck in CONNECTING forever when a network path
+// accepts connections but never responds. See the module for details.
+applyConnectTimeoutPatch();
+
 export * from 'nice-grpc-common';
 
 export * from './server/Server';

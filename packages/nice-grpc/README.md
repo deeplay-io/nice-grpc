@@ -805,6 +805,25 @@ const channel = createChannel('localhost:8080');
 await waitForChannelReady(channel, new Date(Date.now() + 5000));
 ```
 
+##### Connection attempt timeout
+
+A connection attempt that gets no response is aborted after 20 seconds, matching
+`MIN_CONNECT_TIMEOUT` from the
+[gRPC connection backoff spec](https://github.com/grpc/grpc/blob/master/doc/connection-backoff.md),
+after which the channel retries it with backoff. This works around
+[grpc/grpc-node#2785](https://github.com/grpc/grpc-node/issues/2785): without
+such a timeout, a network path that accepts TCP connections but never responds
+leaves the channel stuck in `CONNECTING` forever, and calls made without a
+deadline hang indefinitely.
+
+The timeout can be changed, or disabled by setting it to `0`:
+
+```ts
+createChannel('example.com:8080', undefined, {
+  'grpc-node.connect_timeout_ms': 10_000,
+});
+```
+
 #### Metadata
 
 Client can send request metadata and receive response header and trailer:
