@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.17](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.16...nice-grpc@2.1.17) (2026-08-04)
+
+### Bug Fixes
+
+- **nice-grpc:** time out connection attempts that get no response
+  ([#904](https://github.com/deeplay-io/nice-grpc/issues/904))
+  ([bede2e3](https://github.com/deeplay-io/nice-grpc/commit/bede2e3f833f48fcce282ca9c6a1ead0648b1a96))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.1.16](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.15...nice-grpc@2.1.16) (2026-04-24)
 
 ### Bug Fixes

@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.12](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-devtools@1.0.11...nice-grpc-client-middleware-devtools@1.0.12) (2026-08-04)
+
+**Note:** Version bump only for package nice-grpc-client-middleware-devtools
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [1.0.11](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-devtools@1.0.10...nice-grpc-client-middleware-devtools@1.0.11) (2026-04-24)
 
 **Note:** Version bump only for package nice-grpc-client-middleware-devtools

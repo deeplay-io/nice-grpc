@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.0.20](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-deadline@2.0.19...nice-grpc-client-middleware-deadline@2.0.20) (2026-08-04)
+
+**Note:** Version bump only for package nice-grpc-client-middleware-deadline
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.0.19](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-client-middleware-deadline@2.0.18...nice-grpc-client-middleware-deadline@2.0.19) (2026-04-24)
 
 **Note:** Version bump only for package nice-grpc-client-middleware-deadline
