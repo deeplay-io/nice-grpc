@@ -7310,7 +7310,7 @@ loglevel@^1.6.0:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.9.1.tgz#d63976ac9bcd03c7c873116d41c2a85bafff1be7"
   integrity sha512-hP3I3kCrDIMuRwAwHltphhDM1r8i55H33GgqjXbrisuJhF4kRhW1dNuxsRklp4bXl8DSdLaNLuiL4A/LWRfxvg==
 
-long@^5.0.0, long@^5.2.3:
+long@^5.0.0, long@^5.2.3, long@^5.3.2:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/long/-/long-5.3.2.tgz#1d84463095999262d7d7b7f8bfd4a8cc55167f83"
   integrity sha512-mNAgZ1GmyNhD7AuqnTG3/VQ26o760+ZYBPKjPvugO8+nLbYfX6TVpJPseBvopbdY+qpZ/lKUnmEc1LeZYS3QAA==
@@ -8841,12 +8841,11 @@ protobufjs@^7.2.5, protobufjs@^7.3.2, protobufjs@^7.5.3:
     long "^5.0.0"
 
 protobufjs@^8.0.0:
-  version "8.0.3"
-  resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-8.0.3.tgz#f14b215443856b5069d3ddf9c7459aa1d607f9b8"
-  integrity sha512-LBYnMWkKLB8fE/ljROPDbCl7mgLSlI+oBe1fAAr5MTqFg4TIi0tYrVVurJvQggOjnUYMQtEZBjrej59ojMNTHQ==
+  version "8.6.6"
+  resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-8.6.6.tgz#c606f56d65e1f5f01e35146e648dea1e4fdc2406"
+  integrity sha512-RkLIhE+Tdc2Kpq1F4Uw6OnpAXPca7B+GSDov/GqGCqNBpVyDskQ9yReZfgM+C7xw9AAix873iQZXbBWXj6NzYQ==
   dependencies:
-    "@types/node" ">=13.7.0"
-    long "^5.0.0"
+    long "^5.3.2"
 
 protocols@^2.0.0, protocols@^2.0.1:
   version "2.0.1"
