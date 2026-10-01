@@ -196,10 +196,10 @@
     axios "^1.7.4"
     uuid "9.0.1"
 
-"@bufbuild/protobuf@^2.0.0", "@bufbuild/protobuf@^2.2.5", "@bufbuild/protobuf@^2.5.2":
-  version "2.13.0"
-  resolved "https://registry.yarnpkg.com/@bufbuild/protobuf/-/protobuf-2.13.0.tgz#92ae09d6412c658a56b3c2cd867386850064c901"
-  integrity sha512-acq7c49vxfm1ggJ95P70TX7ABDM0vxr1SYD3BB0o0jnBLB4OAqeHyKuN+cD3w80gXEDQ2zxHpR6CUeA+O/aU9g==
+"@bufbuild/protobuf@^2.0.0", "@bufbuild/protobuf@^2.14.1", "@bufbuild/protobuf@^2.2.5", "@bufbuild/protobuf@^2.5.2":
+  version "2.16.0"
+  resolved "https://registry.yarnpkg.com/@bufbuild/protobuf/-/protobuf-2.16.0.tgz#130eff69a232f29fb4e2b3f8ebbb0b3e0adf5a36"
+  integrity sha512-FWa0sPlqYGJgpTs6OxBRcL/AW4JT0OIO+W1ajerluoTVh8CV0B7XM1qsNCRgnkSCkRCgOICKHRQlY17jrsm0+Q==
 
 "@colors/colors@1.6.0":
   version "1.6.0"
@@ -10381,22 +10381,22 @@ ts-poet@^6.12.0:
   dependencies:
     dprint-node "^1.0.8"
 
-ts-proto-descriptors@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/ts-proto-descriptors/-/ts-proto-descriptors-2.0.0.tgz#3a0e301a91cc6e932ac8dd13f7e07caa8a032c43"
-  integrity sha512-wHcTH3xIv11jxgkX5OyCSFfw27agpInAd6yh89hKG6zqIXnjW9SYqSER2CVQxdPj4czeOhGagNvZBEbJPy7qkw==
+ts-proto-descriptors@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/ts-proto-descriptors/-/ts-proto-descriptors-2.1.0.tgz#0c60525ea94748f7b3f394dc10d6eb8eeac4fe39"
+  integrity sha512-S5EZYEQ6L9KLFfjSRpZWDIXDV/W7tAj8uW7pLsihIxyr62EAVSiKuVPwE8iWnr849Bqa53enex1jhDUcpgquzA==
   dependencies:
     "@bufbuild/protobuf" "^2.0.0"
 
 ts-proto@^2.5.1:
-  version "2.7.7"
-  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-2.7.7.tgz#a30f164b3dc65123816fe0f6af4a7bd7caf99d75"
-  integrity sha512-/OfN9/Yriji2bbpOysZ/Jzc96isOKz+eBTJEcKaIZ0PR6x1TNgVm4Lz0zfbo+J0jwFO7fJjJyssefBPQ0o1V9A==
+  version "2.12.4"
+  resolved "https://registry.yarnpkg.com/ts-proto/-/ts-proto-2.12.4.tgz#4319305f639a6c9605327f79c9503c5cea8ced6f"
+  integrity sha512-nZ2UyT+xEanL90lCnL0BrTfKtljZE4wnOvUqR0XUpuWCu3w4k8LUnR4AKJoy1UtxPDa1HpJ1z//pu2tvIPDrUA==
   dependencies:
-    "@bufbuild/protobuf" "^2.0.0"
+    "@bufbuild/protobuf" "^2.14.1"
     case-anything "^2.1.13"
     ts-poet "^6.12.0"
-    ts-proto-descriptors "2.0.0"
+    ts-proto-descriptors "2.1.0"
 
 ts-protoc-gen@^0.15.0:
   version "0.15.0"
