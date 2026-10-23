@@ -47,8 +47,8 @@
     "ts-proto": "^2.5.1"
   },
   "dependencies": {
+    "@prometheus-io/client": "^0.16.1",
     "abort-controller-x": "^0.5.0",
-    "nice-grpc-common": "^2.0.4",
-    "prom-client": "^15.1.0"
+    "nice-grpc-common": "^2.0.4"
   }
 }

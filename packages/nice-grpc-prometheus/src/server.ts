@@ -6,7 +6,7 @@ import {
   ServerMiddlewareCall,
   Status,
 } from 'nice-grpc-common';
-import {Counter, Histogram} from 'prom-client';
+import {Counter, Histogram} from '@prometheus-io/client';
 import {
   codeLabel,
   getLabels,

@@ -1,4 +1,4 @@
-import {Registry} from 'prom-client';
+import {Registry} from '@prometheus-io/client';
 
 export async function dumpMetrics(registry: Registry) {
   const metricsString = await registry.metrics();
