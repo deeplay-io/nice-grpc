@@ -2658,12 +2658,10 @@
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.4.tgz#56e2cc26c397c038fab0e3a917a12d5c5909e901"
   integrity sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==
 
-"@types/parse-path@^7.0.0":
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/@types/parse-path/-/parse-path-7.1.0.tgz#1bdddfe4fb2038e76c7e622234a97d6a050a1be3"
-  integrity sha512-EULJ8LApcVEPbrfND0cRQqutIOdiIgJ1Mgrhpy755r14xMohPTEpkV/k28SJvuOs9bHRFW8x+KeDAEPiGQPB9Q==
-  dependencies:
-    parse-path "*"
+"@types/parse-path@7.0.3", "@types/parse-path@^7.0.0":
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/@types/parse-path/-/parse-path-7.0.3.tgz#cec2da2834ab58eb2eb579122d9a1fc13bd7ef36"
+  integrity sha512-LriObC2+KYZD3FzCrgWGv/qufdUy4eXrxcLgQMfYXgPbLIecKIsVBaQgUPmxSSLcjmYbDTQbMgr6qr6l/eb7Bg==
 
 "@types/sinonjs__fake-timers@^8.1.5":
   version "8.1.5"
@@ -8126,13 +8124,6 @@ parse-ms@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/parse-ms/-/parse-ms-4.0.0.tgz#c0c058edd47c2a590151a718990533fd62803df4"
   integrity sha512-TXfryirbmq34y8QBwgqCVLi+8oA3oWx2eAnSn62ITyEhEYaWRlVZ2DvMM9eZbMs/RfxPu/PK/aBLyGj4IrqMHw==
-
-parse-path@*:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/parse-path/-/parse-path-7.1.0.tgz#41fb513cb122831807a4c7b29c8727947a09d8c6"
-  integrity sha512-EuCycjZtfPcjWk7KTksnJ5xPMvWGA/6i4zrLYhRG0hGvC3GPU/jGUj3Cy+ZR0v30duV3e23R95T1lE2+lsndSw==
-  dependencies:
-    protocols "^2.0.0"
 
 parse-path@^7.0.0:
   version "7.0.0"
