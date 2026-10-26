@@ -121,7 +121,7 @@ export const config: Options.Testrunner = {
       certPath = path.resolve(__dirname, './test-server/cert/self-signed.crt');
       keyPath = path.resolve(__dirname, './test-server/cert/self-signed.key');
 
-      const cert = selfsigned.generate(
+      const cert = await selfsigned.generate(
         [{name: 'commonName', value: hostname}],
         {
           keySize: 2048,
