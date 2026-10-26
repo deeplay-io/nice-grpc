@@ -174,6 +174,28 @@ describe('server and client', () => {
     expect(richClientError.extra).toEqual(badRequestFieldViolationError);
   });
 
+  it('should preserve the reason of a BadRequest_FieldViolation', async () => {
+    // `reason` is the machine-readable cause a client is meant to branch on,
+    // unlike `description`, whose wording a service is free to reword. It has
+    // to survive the round trip, or a client is left matching on prose.
+    const badRequestFieldViolationError = [
+      BadRequest_FieldViolation.fromPartial({
+        field: 'field',
+        description: 'description',
+        reason: 'UNSUPPORTED_SCHEME',
+      }),
+    ];
+    const {richClientError} = await beforeEachServerAndClientTest(
+      Status.INVALID_ARGUMENT,
+      badRequestFieldViolationError,
+    );
+
+    expect(richClientError.extra).toEqual(badRequestFieldViolationError);
+    expect((richClientError.extra[0] as BadRequest_FieldViolation).reason).toBe(
+      'UNSUPPORTED_SCHEME',
+    );
+  });
+
   it('should be instance of quota failure violation when server throws QuotaFailure_Violation error', async () => {
     const quotaFailureViolationError = [
       QuotaFailure_Violation.fromPartial({
