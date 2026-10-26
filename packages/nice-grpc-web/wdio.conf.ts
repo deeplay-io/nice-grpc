@@ -27,6 +27,16 @@ export const config: Options.Testrunner = {
     {
       headless: USE_HEADLESS_BROWSER === 'true',
       viteConfig: {
+        // jest-message-util (dependency of expect) calls
+        // `path.resolve(__dirname, ...)` at module top level since 30.5
+        define: {
+          __dirname: JSON.stringify('/'),
+        },
+        resolve: {
+          alias: {
+            path: 'path-browserify',
+          },
+        },
         optimizeDeps: {
           include: [
             'nice-grpc-common',
