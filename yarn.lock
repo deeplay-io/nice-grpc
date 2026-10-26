@@ -4671,35 +4671,34 @@ dir-glob@^3.0.1:
   dependencies:
     path-type "^4.0.0"
 
-docker-compose@^1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/docker-compose/-/docker-compose-1.3.1.tgz#92928c4e564fb6eefc311ef1fea75afe9dcbc20b"
-  integrity sha512-rF0wH69G3CCcmkN9J1RVMQBaKe8o77LT/3XmqcLIltWWVxcWAzp2TnO7wS3n/umZHN3/EVrlT3exSBMal+Ou1w==
+docker-compose@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/docker-compose/-/docker-compose-1.5.0.tgz#f46f6651ba08bdca3edc28f34dc6866c0e6c53ed"
+  integrity sha512-O+eD6c63+BJORUWddXA7uAlI6H1KLDPd/aS14k73nXYpFliM48C3xrrKB3sXsR1Fp/rHUZQe7+fJ+QA7+jepyw==
   dependencies:
     yaml "^2.2.2"
 
-docker-modem@^5.0.6:
-  version "5.0.6"
-  resolved "https://registry.yarnpkg.com/docker-modem/-/docker-modem-5.0.6.tgz#cbe9d86a1fe66d7a072ac7fb99a9fc390a3e8b9a"
-  integrity sha512-ens7BiayssQz/uAxGzH8zGXCtiV24rRWXdjNha5V4zSOcxmAZsfGVm/PPFbwQdqEkDnhG+SyR9E3zSHUbOKXBQ==
+docker-modem@^5.0.7:
+  version "5.0.7"
+  resolved "https://registry.yarnpkg.com/docker-modem/-/docker-modem-5.0.7.tgz#57f3f0e2c7a893e66a0d4a626f9cbc933d77157b"
+  integrity sha512-XJgGhoR/CLpqshm4d3L7rzH6t8NgDFUIIpztYlLHIApeJjMZKYJMz2zxPsYxnejq5h3ELYSw/RBsi3t5h7gNTA==
   dependencies:
     debug "^4.1.1"
     readable-stream "^3.5.0"
     split-ca "^1.0.1"
     ssh2 "^1.15.0"
 
-dockerode@^4.0.9:
-  version "4.0.9"
-  resolved "https://registry.yarnpkg.com/dockerode/-/dockerode-4.0.9.tgz#15b32000edad25520be6fafa9ad6bc4529b06be7"
-  integrity sha512-iND4mcOWhPaCNh54WmK/KoSb35AFqPAUWFMffTQcp52uQt36b5uNwEJTSXntJZBbeGad72Crbi/hvDIv6us/6Q==
+dockerode@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/dockerode/-/dockerode-5.0.1.tgz#c389c0e32e825a818a3964f8c9b26f60aa306be1"
+  integrity sha512-avsq/xk4YPIrn0CgleX5bjT9Y8IT1p9PxrNQ++RBQ2WEyFfHCTDsT9kmyxz+H/axnjAwg8wJWEIuPGOUuNupiA==
   dependencies:
     "@balena/dockerignore" "^1.0.2"
     "@grpc/grpc-js" "^1.11.1"
     "@grpc/proto-loader" "^0.7.13"
-    docker-modem "^5.0.6"
+    docker-modem "^5.0.7"
     protobufjs "^7.3.2"
     tar-fs "^2.1.4"
-    uuid "^10.0.0"
 
 dom-serializer@^2.0.0:
   version "2.0.0"
@@ -10097,21 +10096,10 @@ tar-fs@^2.1.4:
     pump "^3.0.0"
     tar-stream "^2.1.4"
 
-tar-fs@^3.0.6:
-  version "3.0.8"
-  resolved "https://registry.yarnpkg.com/tar-fs/-/tar-fs-3.0.8.tgz#8f62012537d5ff89252d01e48690dc4ebed33ab7"
-  integrity sha512-ZoROL70jptorGAlgAYiLoBLItEKw/fUxg9BSYK/dF/GAGYFJOJJJMvjPAKDJraCXFwadD456FCuvLWgfhMsPwg==
-  dependencies:
-    pump "^3.0.0"
-    tar-stream "^3.1.5"
-  optionalDependencies:
-    bare-fs "^4.0.1"
-    bare-path "^3.0.0"
-
-tar-fs@^3.1.1:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/tar-fs/-/tar-fs-3.1.2.tgz#114b012f54796f31e62f3e57792820a80b83ae6e"
-  integrity sha512-QGxxTxxyleAdyM3kpFs14ymbYmNFrfY+pHj7Z8FgtbZ7w2//VAgLMac7sT6nRpIHjppXO2AwwEOg0bPFVRcmXw==
+tar-fs@^3.0.6, tar-fs@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/tar-fs/-/tar-fs-3.1.3.tgz#05668cc68a30741c3813f9c16593b8dec7dcbcd1"
+  integrity sha512-/hU4AXnIdZu+Gvl1pk0oI5f5HxWsCJRtY2aFaJdk9VvyL48DWU6iU5WAIPG+wIi1YvWA6eTJvIviP/tMAZZNwQ==
   dependencies:
     pump "^3.0.0"
     tar-stream "^3.1.5"
@@ -10198,10 +10186,10 @@ test-exclude@^6.0.0:
     glob "^7.1.4"
     minimatch "^3.0.4"
 
-testcontainers@^11.9.0:
-  version "11.12.0"
-  resolved "https://registry.yarnpkg.com/testcontainers/-/testcontainers-11.12.0.tgz#2a2b9f9d20955f658959a44ed5ac0f2aedf7077a"
-  integrity sha512-VWtH+UQejVYYvb53ohEZRbx2naxyDvwO9lQ6A0VgmVE2Oh8r9EF09I+BfmrXpd9N9ntpzhao9di2yNwibSz5KA==
+testcontainers@^12.2.1:
+  version "12.2.1"
+  resolved "https://registry.yarnpkg.com/testcontainers/-/testcontainers-12.2.1.tgz#4da0f33ffffd9732e610139d39e212e11c387ebf"
+  integrity sha512-JfbCyOvLdzatwgqUI3AvYCwRW0P5mCkKQVBPO8U5qSH1efC2kHvnfWmi9VHloy1rAFG2MEqWZObRH4bq0gU1kQ==
   dependencies:
     "@balena/dockerignore" "^1.0.2"
     "@types/dockerode" "^4.0.1"
@@ -10209,15 +10197,15 @@ testcontainers@^11.9.0:
     async-lock "^1.4.1"
     byline "^5.0.0"
     debug "^4.4.3"
-    docker-compose "^1.3.1"
-    dockerode "^4.0.9"
-    get-port "^7.1.0"
+    docker-compose "^1.5.0"
+    dockerode "^5.0.1"
+    get-port "^5.1.1"
     proper-lockfile "^4.1.2"
     properties-reader "^3.0.1"
     ssh-remote-port-forward "^1.0.4"
-    tar-fs "^3.1.1"
-    tmp "^0.2.5"
-    undici "^7.22.0"
+    tar-fs "^3.1.3"
+    tmp "^0.2.7"
+    undici "^8.11.2"
 
 text-decoder@^1.1.0:
   version "1.1.0"
@@ -10317,15 +10305,10 @@ tmp@^0.0.33:
   dependencies:
     os-tmpdir "~1.0.2"
 
-tmp@^0.2.3, tmp@~0.2.1:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.3.tgz#eb783cc22bc1e8bebd0671476d46ea4eb32a79ae"
-  integrity sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==
-
-tmp@^0.2.5:
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.5.tgz#b06bcd23f0f3c8357b426891726d16015abfd8f8"
-  integrity sha512-voyz6MApa1rQGUxT3E+BK7/ROe8itEx7vD8/HEvt4xwXucvQ5G5oeEiHkmHZJuBO21RpOf+YYm9MOivj709jow==
+tmp@^0.2.3, tmp@^0.2.7, tmp@~0.2.1:
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.7.tgz#26f4db11d1601ce8012dcb8a798ece1c06a99059"
+  integrity sha512-e0votIpp4Uo2AJYSzVHV6xCcawuiez3DzqDAbrTc3YxBkplN6e+dM13ZeIcZnDg/QpSuU2zfZ3rzwY8ukEnaXw==
 
 to-regex-range@^5.0.1:
   version "5.0.1"
@@ -10567,10 +10550,10 @@ undici@^6.19.5, undici@^6.20.1, undici@^6.21.3, undici@^6.24.0, undici@^6.27.0:
   resolved "https://registry.yarnpkg.com/undici/-/undici-6.29.1.tgz#a3317c5df0236e0633727d9a7bd4f7ed195d8575"
   integrity sha512-EvRlUt/QqAEvXdQeRMYUfwOQsfzpDztykrG2owGEE/rBOBoYv9uF39ZzsNDh4lTFHhTr2XOZjKkYgueD12ZmGA==
 
-undici@^7.22.0:
-  version "7.30.1"
-  resolved "https://registry.yarnpkg.com/undici/-/undici-7.30.1.tgz#360b3de104b94abc52729aa1a4a07e027aa71f73"
-  integrity sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==
+undici@^8.11.2:
+  version "8.12.3"
+  resolved "https://registry.yarnpkg.com/undici/-/undici-8.12.3.tgz#e76a91feee9c275ad0f43bfc0eb632b6124d3bb6"
+  integrity sha512-+fdndUTwBP86cVjihTp21hZHo7d6oj1c/47XPA3lL8mM0XHs+C4EkcjmgRsFnFk2f/UONGDy9ItBItmXsLOQHw==
 
 unicorn-magic@^0.3.0:
   version "0.3.0"
