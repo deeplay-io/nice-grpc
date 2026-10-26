@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-client-middleware-deadline",
-  "version": "2.0.20",
+  "version": "2.0.21",
   "description": "Deadline client middleware for nice-grpc",
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
     "google-protobuf": "^4.0.3",
     "grpc-tools": "^1.13.1",
     "grpc_tools_node_protoc_ts": "^5.0.1",
-    "nice-grpc": "^2.1.17"
+    "nice-grpc": "^2.1.18"
   },
   "dependencies": {
     "nice-grpc-common": "^2.0.4"

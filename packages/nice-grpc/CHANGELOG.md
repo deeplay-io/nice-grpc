@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.1.18](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc%402.1.17...nice-grpc%402.1.18) (2026-10-26)
+
+### Bug Fixes
+
+- **nice-grpc:** honor pre-aborted signals in response streams
+  ([#925](https://github.com/deeplay-io/nice-grpc/issues/925))
+  ([328f400](https://github.com/deeplay-io/nice-grpc/commit/328f400664df7b479777894a8cc59a2954792b6c))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.1.17](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc@2.1.16...nice-grpc@2.1.17) (2026-08-04)
 
 ### Bug Fixes

@@ -1,6 +1,6 @@
 {
   "name": "nice-grpc-client-middleware-devtools",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Client middleware for nice-grpc to work with grpc-web-devtools https://github.com/SafetyCulture/grpc-web-devtools",
   "repository": {
     "type": "git",
@@ -37,7 +37,7 @@
     "google-protobuf": "^4.0.3",
     "grpc-tools": "^1.13.1",
     "grpc_tools_node_protoc_ts": "^5.0.1",
-    "nice-grpc": "^2.1.17"
+    "nice-grpc": "^2.1.18"
   },
   "dependencies": {
     "abort-controller-x": "^0.5.0",
