@@ -26,30 +26,43 @@ for (const file of files) {
   mocha.addFile(file);
 }
 
-const certPath = path.resolve(__dirname, './test-server/cert/self-signed.crt');
-const keyPath = path.resolve(__dirname, './test-server/cert/self-signed.key');
+async function main() {
+  const certPath = path.resolve(
+    __dirname,
+    './test-server/cert/self-signed.crt',
+  );
+  const keyPath = path.resolve(__dirname, './test-server/cert/self-signed.key');
 
-const hostname = '127.0.0.1';
-const cert = selfsigned.generate([{name: 'commonName', value: hostname}], {
-  keySize: 2048,
-});
+  const hostname = '127.0.0.1';
+  const cert = await selfsigned.generate(
+    [{name: 'commonName', value: hostname}],
+    {
+      keySize: 2048,
+    },
+  );
 
-fs.writeFileSync(certPath, cert.cert);
-fs.writeFileSync(keyPath, cert.private);
+  fs.writeFileSync(certPath, cert.cert);
+  fs.writeFileSync(keyPath, cert.private);
 
-process.on('beforeExit', () => {
-  fs.unlinkSync(certPath);
-  fs.unlinkSync(keyPath);
-});
+  process.on('beforeExit', () => {
+    fs.unlinkSync(certPath);
+    fs.unlinkSync(keyPath);
+  });
 
-const server = startMockServer({
-  certPath,
-  keyPath,
-  enableDebugLogs: false,
-});
+  const server = startMockServer({
+    certPath,
+    keyPath,
+    enableDebugLogs: false,
+  });
 
-mocha.run(failures => {
-  server.close();
+  mocha.run(failures => {
+    server.close();
 
-  process.exitCode = failures ? 1 : 0;
+    process.exitCode = failures ? 1 : 0;
+  });
+}
+
+main().catch(err => {
+  console.error(err);
+  process.exitCode = 1;
 });

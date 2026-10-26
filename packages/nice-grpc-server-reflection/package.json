@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@types/google-protobuf": "^3.7.4",
-    "google-protobuf": "^3.15.6",
+    "google-protobuf": "^4.0.3",
     "nice-grpc": "^2.1.17"
   }
 }
