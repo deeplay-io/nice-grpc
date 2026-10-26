@@ -64,7 +64,7 @@
     "expect": "^30.3.0",
     "get-port": "^5.1.1",
     "glob": "^13.0.6",
-    "google-protobuf": "^3.17.3",
+    "google-protobuf": "^4.0.3",
     "grpc-tools": "^1.13.1",
     "just-cartesian-product": "^4.2.0",
     "mkdirp": "^3.0.1",
