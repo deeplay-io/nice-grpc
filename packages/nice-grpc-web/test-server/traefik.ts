@@ -1,8 +1,9 @@
 import fs from 'fs/promises';
 import * as path from 'path';
 import {env} from 'string-env-interpolation';
-import {GenericContainer, Wait} from 'testcontainers';
+import {GenericContainer} from 'testcontainers';
 import * as tmp from 'tmp';
+import {useHostNetwork, waitForHttpStatus} from './docker';
 
 export async function startTraefikProxy(
   listenPort: number,
@@ -12,8 +13,8 @@ export async function startTraefikProxy(
     keyPath: string;
   },
 ): Promise<{stop(): void}> {
-  const internalListenPort = 8080;
-  const backendHost = 'host.docker.internal';
+  const internalListenPort = useHostNetwork ? listenPort : 8080;
+  const backendHost = useHostNetwork ? '127.0.0.1' : 'host.docker.internal';
   const internalCertPath = '/etc/certs/tls.crt';
   const internalKeyPath = '/etc/certs/tls.key';
 
@@ -50,49 +51,52 @@ export async function startTraefikProxy(
     'utf8',
   );
 
+  let containerBuilder = new GenericContainer(
+    'traefik:v3.0.0-beta2',
+  ).withBindMounts([
+    ...(tls
+      ? [
+          {
+            source: tls.certPath,
+            target: internalCertPath,
+          },
+          {
+            source: tls.keyPath,
+            target: internalKeyPath,
+          },
+        ]
+      : []),
+    {
+      source: tempDir.name,
+      target: '/etc/traefik',
+    },
+  ]);
+
+  if (useHostNetwork) {
+    containerBuilder = containerBuilder.withNetworkMode('host');
+  } else {
+    containerBuilder = containerBuilder
+      .withExposedPorts({
+        container: internalListenPort,
+        host: listenPort,
+      })
+      .withExtraHosts([
+        {
+          host: 'host.docker.internal',
+          ipAddress: 'host-gateway',
+        },
+      ]);
+  }
+
+  const container = await containerBuilder.start();
+
   // Traefik can return 404 for a while after start.
   // See https://github.com/traefik/traefik/issues/7347
   // Once the gRPC server is reached it returns 415.
-  let waitStrategy = Wait.forHttp(
-    '/fake-probe',
-    internalListenPort,
-  ).forStatusCode(415);
-
-  if (tls) {
-    waitStrategy = waitStrategy.usingTls().allowInsecure();
-  }
-
-  const container = await new GenericContainer('traefik:v3.0.0-beta2')
-    .withBindMounts([
-      ...(tls
-        ? [
-            {
-              source: tls.certPath,
-              target: internalCertPath,
-            },
-            {
-              source: tls.keyPath,
-              target: internalKeyPath,
-            },
-          ]
-        : []),
-      {
-        source: tempDir.name,
-        target: '/etc/traefik',
-      },
-    ])
-    .withExposedPorts({
-      container: internalListenPort,
-      host: listenPort,
-    })
-    .withExtraHosts([
-      {
-        host: 'host.docker.internal',
-        ipAddress: 'host-gateway',
-      },
-    ])
-    .withWaitStrategy(waitStrategy)
-    .start();
+  await waitForHttpStatus(
+    `${tls ? 'https' : 'http'}://127.0.0.1:${listenPort}/fake-probe`,
+    415,
+  );
 
   // const logStream = await container.logs();
 

@@ -413,7 +413,7 @@ Service implementation method receives request as an Async Iterable:
 
 ```ts
 const exampleServiceImpl: ExampleServiceImplementation = {
-  async exampleUnaryMethod(
+  async exampleClientStreamingMethod(
     request: AsyncIterable<ExampleRequest>,
   ): Promise<DeepPartial<ExampleResponse>> {
     for await (const item of request) {

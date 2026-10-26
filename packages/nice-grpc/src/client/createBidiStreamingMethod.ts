@@ -49,6 +49,8 @@ export function createBidiStreamingMethod<Request, Response>(
 
     const signal = options.signal ?? new AbortController().signal;
 
+    throwIfAborted(signal);
+
     const pipeAbortController = new AbortController();
 
     const call = client.makeBidiStreamRequest(

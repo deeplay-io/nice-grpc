@@ -27,8 +27,30 @@ export const config: Options.Testrunner = {
     {
       headless: USE_HEADLESS_BROWSER === 'true',
       viteConfig: {
+        // jest-message-util (dependency of expect) calls
+        // `path.resolve(__dirname, ...)` at module top level since 30.5
+        define: {
+          __dirname: JSON.stringify('/'),
+        },
+        resolve: {
+          alias: {
+            path: 'path-browserify',
+          },
+        },
         optimizeDeps: {
-          include: ['nice-grpc-common'],
+          include: [
+            'nice-grpc-common',
+            // Otherwise Vite discovers these lazily and reloads the page, which
+            // may happen in the middle of a test and fail it with "execution
+            // contexts cleared"
+            '@bufbuild/protobuf/wire',
+            'abort-controller-x',
+            'assert-never',
+            'detect-browser',
+            'isomorphic-ws',
+            'js-base64',
+            'just-cartesian-product',
+          ],
         },
         build: {
           commonjsOptions: {
@@ -121,7 +143,7 @@ export const config: Options.Testrunner = {
       certPath = path.resolve(__dirname, './test-server/cert/self-signed.crt');
       keyPath = path.resolve(__dirname, './test-server/cert/self-signed.key');
 
-      const cert = selfsigned.generate(
+      const cert = await selfsigned.generate(
         [{name: 'commonName', value: hostname}],
         {
           keySize: 2048,
