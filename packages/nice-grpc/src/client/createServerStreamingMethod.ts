@@ -49,6 +49,8 @@ export function createServerStreamingMethod<Request, Response>(
 
     const signal = options.signal ?? new AbortController().signal;
 
+    throwIfAborted(signal);
+
     const call = client.makeServerStreamRequest(
       grpcMethodDefinition.path,
       grpcMethodDefinition.requestSerialize,
