@@ -119,6 +119,12 @@ jobs:
       - run: yarn --frozen-lockfile
       - run: yarn build
       - run: yarn lerna run test:local-browser-headless --scope nice-grpc-web
+        env:
+          # Ryuk container is attached to the bridge network, and its network
+          # interface appearing during tests makes Chrome fail in-flight
+          # requests with net::ERR_NETWORK_CHANGED. Containers are stopped
+          # explicitly, and the runner is ephemeral anyway.
+          TESTCONTAINERS_RYUK_DISABLED: 'true'
 
   # Empty job that finishes after all required jobs finish.
   # Needed to not have to specify every single required job in branch protection.
