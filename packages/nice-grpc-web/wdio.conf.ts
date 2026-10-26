@@ -28,7 +28,19 @@ export const config: Options.Testrunner = {
       headless: USE_HEADLESS_BROWSER === 'true',
       viteConfig: {
         optimizeDeps: {
-          include: ['nice-grpc-common'],
+          include: [
+            'nice-grpc-common',
+            // Otherwise Vite discovers these lazily and reloads the page, which
+            // may happen in the middle of a test and fail it with "execution
+            // contexts cleared"
+            '@bufbuild/protobuf/wire',
+            'abort-controller-x',
+            'assert-never',
+            'detect-browser',
+            'isomorphic-ws',
+            'js-base64',
+            'just-cartesian-product',
+          ],
         },
         build: {
           commonjsOptions: {
