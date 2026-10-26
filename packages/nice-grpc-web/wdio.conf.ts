@@ -27,6 +27,11 @@ export const config: Options.Testrunner = {
     {
       headless: USE_HEADLESS_BROWSER === 'true',
       viteConfig: {
+        define: {
+          // jest-message-util (dependency of expect) references `__dirname` at
+          // module top level since 30.5
+          __dirname: JSON.stringify('/'),
+        },
         optimizeDeps: {
           include: ['nice-grpc-common'],
         },
