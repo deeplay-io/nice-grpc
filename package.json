@@ -22,7 +22,7 @@
     "*.{ts,js,md,json,yaml}": "prettier --write"
   },
   "devDependencies": {
-    "conventional-changelog-conventionalcommits": "^6.1.0",
+    "conventional-changelog-conventionalcommits": "^10.4.1",
     "husky": "^9.0.11",
     "lerna": "^10.1.1",
     "lint-staged": "^17.6.0",
