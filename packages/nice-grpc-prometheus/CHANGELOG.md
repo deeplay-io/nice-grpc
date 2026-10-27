@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-prometheus%400.2.13...nice-grpc-prometheus%400.3.0) (2026-10-27)
+
+### ⚠ BREAKING CHANGES
+
+- **nice-grpc-prometheus:** nice-grpc-prometheus now uses @prometheus-io/client
+  instead of the deprecated prom-client. Import `Registry`, `Counter`,
+  `Histogram`, etc. from @prometheus-io/client when merging registries or
+  defining custom metrics. Requires Node.js 22+.
+
+### Features
+
+- **nice-grpc-prometheus:** migrate to @prometheus-io/client
+  ([#930](https://github.com/deeplay-io/nice-grpc/issues/930))
+  ([ac395f8](https://github.com/deeplay-io/nice-grpc/commit/ac395f886f5b6c334b968c9593ab83cb22e8bbef))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [0.2.13](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-prometheus%400.2.12...nice-grpc-prometheus%400.2.13) (2026-10-26)
 
 **Note:** Version bump only for package nice-grpc-prometheus
