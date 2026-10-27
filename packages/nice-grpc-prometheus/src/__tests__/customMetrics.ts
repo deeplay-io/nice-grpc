@@ -6,7 +6,7 @@ import {
   ServerError,
   Status,
 } from 'nice-grpc';
-import {Counter, Histogram, Registry} from 'prom-client';
+import {Counter, Histogram, Registry} from '@prometheus-io/client';
 import {
   labelNames,
   labelNamesWithCode,
