@@ -1,5 +1,5 @@
 import {MethodDescriptor} from 'nice-grpc-common';
-import {Counter, exponentialBuckets} from 'prom-client';
+import {Counter, exponentialBuckets} from '@prometheus-io/client';
 
 export const typeLabel = 'grpc_type';
 export const serviceLabel = 'grpc_service';

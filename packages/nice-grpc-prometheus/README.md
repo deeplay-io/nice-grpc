@@ -2,7 +2,8 @@
 
 [Prometheus](https://prometheus.io/) monitoring for
 [nice-grpc](https://github.com/deeplay-io/nice-grpc). Uses
-[prom-client](https://github.com/siimon/prom-client). Metrics mostly mimic
+[@prometheus-io/client](https://github.com/prometheus/client_js). Metrics mostly
+mimic
 [go-grpc-prometheus](https://github.com/grpc-ecosystem/go-grpc-prometheus).
 
 ## Installation
@@ -12,10 +13,10 @@
 ## Usage
 
 Import `nice-grpc-prometheus` metrics registry and
-[merge it with the global registry](https://github.com/siimon/prom-client#multiple-registries):
+[merge it with the global registry](https://github.com/prometheus/client_js#multiple-registries):
 
 ```ts
-import {register as globalRegistry, Registry} from 'prom-client';
+import {register as globalRegistry, Registry} from '@prometheus-io/client';
 import {registry as niceGrpcRegistry} from 'nice-grpc-prometheus';
 
 // use `await mergedRegistry.metrics()` to export all metrics
@@ -101,7 +102,7 @@ import {
   labelNamesWithCode,
   prometheusClientMiddleware,
 } from 'nice-grpc-prometheus';
-import {Histogram, Registry} from 'prom-client';
+import {Histogram, Registry} from '@prometheus-io/client';
 
 const registry = new Registry();
 
@@ -119,7 +120,7 @@ const clientFactory = createClientFactory()
 ```
 
 Don't forget
-[to merge new registry with the global registry](https://github.com/siimon/prom-client#multiple-registries)
+[to merge new registry with the global registry](https://github.com/prometheus/client_js#multiple-registries)
 or use default registry instead.
 
 Client middleware options:
