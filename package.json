@@ -30,7 +30,7 @@
     "prettier": "^2.8.8",
     "rimraf": "^6.1.2",
     "typescript": "~5.8.3",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.5"
   },
   "packageManager": "yarn@1.22.22",
   "resolutions": {
