@@ -55,7 +55,7 @@
     "@wdio/browser-runner": "~9.15.0",
     "@wdio/browserstack-service": "^9.2.6",
     "@wdio/cli": "^9.21.1",
-    "@wdio/mocha-framework": "^9.0.8",
+    "@wdio/mocha-framework": "^10.1.0",
     "@wdio/spec-reporter": "^9.0.7",
     "assert-never": "^1.2.1",
     "chromedriver": "^156.0.0",
