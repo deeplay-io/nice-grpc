@@ -68,7 +68,7 @@
     "grpc-tools": "^1.13.1",
     "just-cartesian-product": "^4.2.0",
     "mkdirp": "^3.0.1",
-    "mocha": "^11.7.5",
+    "mocha": "^12.0.3",
     "path-browserify": "^1.0.1",
     "path-exists-cli": "^2.0.0",
     "request": "^2.88.2",
