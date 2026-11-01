@@ -6248,9 +6248,9 @@ ip-regex@^2.1.0:
   integrity sha512-58yWmlHpp7VYfcdTwMTvwMmqx/Elfxjd9RXTDyMsbL7lLWmhMylLEqiYVLKuLzOZqVgiWXD9MfR62Vv89VRxkw==
 
 ipaddr.js@^2.0.1:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-2.2.0.tgz#d33fa7bac284f4de7af949638c9d68157c6b92e8"
-  integrity sha512-Ag3wB2o37wslZS19hZqorUnrnzSkpOVy+IiiDEiTqNubEYpYuHWIf6K4psgN2ZWKExS4xhVCrRVfb/wfW8fWJA==
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-2.5.0.tgz#7d4b6c39f9392fb61cf807de6e425e22c10e061f"
+  integrity sha512-aq+t5NAc+cS6rZQQVWC2x98CPqGtKKTMDd4Gaodv0wShnItdKg/51djkGJ1hqH+Oy0ivDftCbSLCQob8zso01w==
 
 is-arrayish@^0.2.1:
   version "0.2.1"
