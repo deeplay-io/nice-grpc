@@ -25,18 +25,25 @@ import {
 } from '../../test-server/client';
 import {NodeHttpTransport} from '../client/transports/nodeHttp';
 import {defer} from './utils/defer';
+import {XHRTransport} from "../client/transports/xhr";
 
 const environment = detect();
 
 [
   ...cartesianProduct([
     ['envoy' as const, 'grpcwebproxy' as const, 'traefik' as const],
-    ['fetch' as const, 'node-http' as const],
+    ['fetch' as const, 'node-http' as const, 'xhr' as const, 'fetch-blob' as const],
     ['http' as const, 'https' as const],
   ]),
   ['grpcwebproxy', 'websocket', 'http'] as const,
 ].forEach(([proxyType, transport, protocol]) => {
   if (transport === 'node-http' && environment?.type !== 'node') {
+    return;
+  }
+  if (transport === 'xhr' && environment?.type === 'node'){
+    return;
+  }
+  if (transport === 'fetch-blob' && environment?.type === 'node') {
     return;
   }
 
@@ -60,6 +67,10 @@ const environment = detect();
               ? WebsocketTransport()
               : transport === 'node-http'
               ? NodeHttpTransport()
+              : transport === 'xhr'
+              ? XHRTransport()
+              : transport === 'fetch-blob'
+              ? FetchTransport({blobMode: true})
               : assertNever(transport),
           ),
         );
@@ -474,6 +485,10 @@ const environment = detect();
             ? WebsocketTransport()
             : transport === 'node-http'
             ? NodeHttpTransport()
+            : transport === 'fetch-blob'
+            ? FetchTransport({blobMode: true})
+            : transport === 'xhr'
+            ? XHRTransport()
             : assertNever(transport),
         ),
       );
