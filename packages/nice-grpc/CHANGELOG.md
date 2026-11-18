@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.2.0](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc%402.1.18...nice-grpc%402.2.0) (2026-11-18)
+
+### Features
+
+- **nice-grpc:** re-export ServerCredentials from @grpc/grpc-js
+  ([#955](https://github.com/deeplay-io/nice-grpc/issues/955))
+  ([e2657d9](https://github.com/deeplay-io/nice-grpc/commit/e2657d98e4288514f1a0076fc673f9b63b1cf3b9))
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [2.1.18](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc%402.1.17...nice-grpc%402.1.18) (2026-10-26)
 
 ### Bug Fixes

@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [3.3.13](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web%403.3.12...nice-grpc-web%403.3.13) (2026-11-18)
+
+**Note:** Version bump only for package nice-grpc-web
+
+# Change Log
+
+All notable changes to this project will be documented in this file. See
+[Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
 ## [3.3.12](https://github.com/deeplay-io/nice-grpc/compare/nice-grpc-web%403.3.11...nice-grpc-web%403.3.12) (2026-10-26)
 
 **Note:** Version bump only for package nice-grpc-web
