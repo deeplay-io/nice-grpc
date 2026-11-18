@@ -211,6 +211,20 @@ server.add(ExampleServiceDefinition, exampleServiceImpl);
 await server.listen('0.0.0.0:8080');
 ```
 
+By default, the server listens without TLS. To enable it, pass server
+credentials:
+
+```ts
+import {createServer, ServerCredentials} from 'nice-grpc';
+
+await server.listen(
+  '0.0.0.0:8080',
+  ServerCredentials.createSsl(rootCert, [
+    {private_key: privateKey, cert_chain: certChain},
+  ]),
+);
+```
+
 Once we need to stop, gracefully shut down the server:
 
 ```ts
