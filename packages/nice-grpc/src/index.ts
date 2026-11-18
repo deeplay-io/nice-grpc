@@ -9,6 +9,7 @@ export * from 'nice-grpc-common';
 
 export * from './server/Server';
 export * from './server/ServiceImplementation';
+export {ServerCredentials} from '@grpc/grpc-js';
 
 export {createChannel, waitForChannelReady} from './client/channel';
 export {Channel, ChannelOptions, ChannelCredentials} from '@grpc/grpc-js';
